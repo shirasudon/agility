@@ -1,10 +1,37 @@
 import { Button, Form, FormGroup, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import React, {Component} from 'react';
-import {LinkContainer} from 'react-router-bootstrap';
+import {connect} from 'react-redux';
+import {login as loginAction} from '../actions/SessionAction';
 
 class LoginForm extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: {
+                email: '',
+                password: '',
+            }
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    onChange(e) {
+        const {value, name} = e.target;
+        const newState = Object.assign({}, this.state);
+        const {user} = newState;
+        user[name] = value;
+        this.setState(newState);
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+        this.props.login(this.state.user);
+    }
+
     render() {
+        const { user: { email, password } } = this.state;
         return (
             <Form horizontal>
                 <FormGroup controlId="formHorizontalEmail">
@@ -12,7 +39,13 @@ class LoginForm extends Component {
                         Email
                     </Col>
                     <Col sm={3}>
-                        <FormControl type="email" placeholder="Email"/>
+                        <FormControl
+                            type="email"
+                            placeholder="Email"
+                            name="email"
+                            value={email}
+                            onChange={this.onChange}
+                        />
                     </Col>
                 </FormGroup>
 
@@ -21,17 +54,21 @@ class LoginForm extends Component {
                         Password
                     </Col>
                     <Col sm={3}>
-                        <FormControl type="password" placeholder="Password"/>
+                        <FormControl
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={this.onChange}
+                        />
                     </Col>
                 </FormGroup>
 
                 <FormGroup>
                     <Col smOffset={2} sm={10}>
-                        <LinkContainer to="/">
-                            <Button>
-                                Sign in
-                            </Button>
-                        </LinkContainer>
+                        <Button onClick={this.onSubmit} >
+                            Sign in
+                        </Button>
                     </Col>
                 </FormGroup>
             </Form>
@@ -39,4 +76,15 @@ class LoginForm extends Component {
     }
 }
 
-export default LoginForm;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        login: user => {
+            dispatch(loginAction(user))
+        }
+    };
+};
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(LoginForm);
