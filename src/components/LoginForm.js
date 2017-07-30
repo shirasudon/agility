@@ -1,13 +1,16 @@
 import { Button, Form, FormGroup, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {login as loginAction} from '../actions/SessionAction';
+import {Redirect} from 'react-router';
+
+import {login as loginAction} from '../actions/AuthActions';
 
 class LoginForm extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            redirect: false,
             user: {
                 email: '',
                 password: '',
@@ -27,11 +30,23 @@ class LoginForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.login(this.state.user);
+        const {login} = this.props;
+        const {user} = this.state;
+        const onSuccess = () => {
+            //const newState = Object.assign({}, this.state, {redirect: true});
+            //this.setState(newState);
+        };
+        login(user, onSuccess);
     }
 
     render() {
-        const { user: { email, password } } = this.state;
+        const { user: { email, password }} = this.state;
+        const {authenticated} = this.props;
+
+        if (authenticated) {
+            return <Redirect to="/chat" />;
+        }
+
         return (
             <Form horizontal>
                 <FormGroup controlId="formHorizontalEmail">
@@ -66,7 +81,7 @@ class LoginForm extends Component {
 
                 <FormGroup>
                     <Col smOffset={2} sm={10}>
-                        <Button onClick={this.onSubmit} >
+                        <Button onClick={this.onSubmit}>
                             Sign in
                         </Button>
                     </Col>
@@ -76,15 +91,19 @@ class LoginForm extends Component {
     }
 }
 
+const mapStateToProps = ({session}) => ({
+   authenticated: session.authenticated,
+});
+
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: user => {
-            dispatch(loginAction(user))
-        }
+        login: (user, cb) => {
+            dispatch(loginAction(user, cb));
+        },
     };
 };
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(LoginForm);

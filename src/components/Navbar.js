@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {LinkContainer} from 'react-router-bootstrap';
 import React, {Component} from 'react';
 
-import {logout as logoutAction} from '../actions/SessionAction';
+import {logout as logoutAction} from '../actions/AuthActions';
 
 class Navbar extends Component {
 
