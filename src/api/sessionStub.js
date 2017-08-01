@@ -7,7 +7,7 @@ export const login = (user) => {
 
     const match = users.find(u => u.username === user.username && u.password === user.password);
     let response;
-    if (match == undefined) {
+    if (match === undefined) {
         response = {
             ok: false,
         }
