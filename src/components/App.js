@@ -11,16 +11,11 @@ import PrivateRoute from './PrivateRoute';
 
 class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {login: false};
-    }
-
     render() {
         return (
             <Router history={createHistory()}>
                 <div>
-                    <Navbar login={this.state.login} />
+                    <Navbar />
                     <Switch>
                         <Route exact={true} path="/" component={Home} />
                         <PrivateRoute exact={true} path="/chat" component={Chat} />

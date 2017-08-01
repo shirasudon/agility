@@ -1,7 +1,7 @@
 import {sessionService} from 'redux-react-session';
-import * as defaultSessionApi from '../api/sessionStub';
+import SessionApiStub from '../api/sessionStub';
 
-let sessionApi = defaultSessionApi;
+let sessionApi = SessionApiStub;
 
 export const setSessionApi = api => {
     sessionApi = api;
