@@ -18,7 +18,7 @@ const store = createStore(
     applyMiddleware(thunk)
 );
 
-sessionService.initSessionService(store);
+sessionService.initSessionService(store, {driver: 'COOKIES'} );
 
 ReactDOM.render(
     <Provider store={store}>

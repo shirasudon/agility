@@ -9,6 +9,7 @@ import {logout as logoutAction} from '../actions/AuthActions';
 class Navbar extends Component {
 
     render(){
+        const {authenticated, logout} = this.props;
         return(
             <Nb inverse collapseOnSelect>
                 <Nb.Header>
@@ -18,9 +19,9 @@ class Navbar extends Component {
                     <Nb.Toggle />
                 </Nb.Header>
                 <Nav pullRight>
-                    {this.props.login ?
+                    {authenticated ?
                         (
-                            <NavItem onClick={this.props.logout}>Logout</NavItem>
+                            <NavItem onClick={logout}>Logout</NavItem>
                         ):
                         (
                             <LinkContainer to="/login">
@@ -42,7 +43,11 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const mapStateToProps = ({session}) => ({
+    authenticated: session.authenticated,
+});
+
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(Navbar);

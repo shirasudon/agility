@@ -7,21 +7,18 @@ export const setSessionApi = api => {
     sessionApi = api;
 }
 
-export const login = (user, onSuccess = ()=>{}, onError = ()=>{}) => {
+export const login = (user) => {
     return (dispatch) => {
         return sessionApi.login(user).then(response => {
-            sessionService.saveSession(response.token)
-                .then(() => {
-                    sessionService.saveUser(response.data);
-                })
-                .then(() => {
-                    dispatch(loginSuccess());
-                    onSuccess();
-                })
-                .catch(err => {
-                    console.error(err);
-                    onError();
-                });
+            if (response.ok) {
+                return sessionService.saveSession(response.token)
+                    .then(() => {
+                        sessionService.saveUser(response.data);
+                        return Promise.resolve(true);
+                    });
+            } else {
+                return Promise.resolve(false);
+            }
         });
     }
 }

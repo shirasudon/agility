@@ -1,16 +1,31 @@
 
 export const login = (user) => {
-    const response = {
-        token: '82jf3td9h',
-        data: {
-            email: user.email,
-            firstName: 'nobi',
-            lastName: 'nobita'
+    const users = [
+        {username: "john", password: "pass", firstName: "john", lastName: "perry"},
+        {username: "kary", password: "hey", firstName: "kary", lastName: "huston"},
+    ];
+
+    const match = users.find(u => u.username === user.username && u.password === user.password);
+    let response;
+    if (match == undefined) {
+        response = {
+            ok: false,
         }
     }
-    return new Promise(resolve => setTimeout(resolve(response), 1));
+    else {
+        response = {
+            ok: true,
+            token: '82jf3td9h',
+            data: {
+                email: user.username,
+                firstName: match.firstName,
+                lastName: match.lastName,
+            }
+        }
+    }
+    return new Promise(resolve => setTimeout(() => {resolve(response)}, 1000));
 };
 
 export const logout = () => {
-    return new Promise(resolve => setTimeout(resolve, 1));
+    return new Promise(resolve => setTimeout(resolve, 1000));
 }
