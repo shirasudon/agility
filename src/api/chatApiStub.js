@@ -53,3 +53,25 @@ export function fetchRoomInfo(roomId){
         return Promise.reject();
     }
 }
+
+export function fetchFriends(){
+    return Promise.resolve(
+        [
+            {
+                username: "hitochan",
+                lastName: "Hitoshi",
+                firstName: "Otsuki"
+            },
+            {
+                username: "tasaki",
+                lastName: "Tsukuru",
+                firstName: "Tasaki"
+            },
+            {
+                username: "furugura",
+                lastName: "Calbee",
+                firstName: "Fruit"
+            },
+        ]     
+    );
+}

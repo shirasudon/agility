@@ -53,3 +53,24 @@ export function fetchRooms() {
         });
     };
 }
+
+export function requestFriends(){
+    return {type: REQUEST_FRIENDS};
+}
+
+export function receiveFriends(friends = {}){
+    return {
+        type: RECEIVE_FRIENDS,
+        friends
+    };
+}
+
+
+export function fetchFriends() {
+    return (dispatch) => {
+        dispatch(requestFriends());
+        return chatApi.fetchFriends().then((friends) => {
+            dispatch(receiveFriends(friends));
+        });
+    };
+}

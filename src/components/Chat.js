@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {Panel, Grid, Row, Col, ListGroup, ListGroupItem, Tabs, Tab} from 'react-bootstrap';
 
-import {fetchRoomInfo, fetchRooms} from '../actions/chat';
+import {fetchRoomInfo, fetchRooms, fetchFriends} from '../actions/chat';
 
 
 const FRIEND_KEY = "friend-list";
@@ -23,8 +23,9 @@ class Chat extends Component {
     }
 
     componentDidMount(){
-        const {fetchRooms} = this.props;
+        const {fetchRooms, fetchFriends} = this.props;
         fetchRooms();
+        fetchFriends();
     }
 
     onSelect(eventKey){
@@ -123,6 +124,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     fetchRooms: () => {
         dispatch(fetchRooms());
+    },
+    fetchFriends: () => {
+        dispatch(fetchFriends());
     },
 });
 

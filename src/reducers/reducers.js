@@ -1,27 +1,30 @@
 import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO} from '../actions/chat';
 
-const initialFriends = [
-    {
-        username: "hitochan",
-        lastName: "Hitoshi",
-        firstName: "Otsuki"
-    },
-    {
-        username: "tasaki",
-        lastName: "Tsukuru",
-        firstName: "Tasaki"
-    },
-    {
-        username: "furugura",
-        lastName: "Calbee",
-        firstName: "Fruit"
-    },
-];
+const initialFriend = {
+    username: "",
+    lastName: "",
+    firstName: ""
+};
 
-export function friends(state = initialFriends, action){
+export function friend(state = initialFriend, action) {
+    switch(action.type) {
+        case RECEIVE_FRIENDS:
+             return Object.assign({}, state, {
+                 username: action.username,
+                 lastName: action.lastName,
+                 firstName: action.firstName,
+            }); 
+        default:
+            return state;
+    }
+}
+
+export function friends(state = [], action){
     switch(action.type){
         case RECEIVE_FRIENDS:
-            return state;
+            return action.friends.map((f, index) => 
+                friend(undefined, {type: action.type, ...f})
+            );
         default:
             return state;
     }
