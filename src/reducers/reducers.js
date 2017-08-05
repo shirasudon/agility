@@ -27,7 +27,7 @@ export function friends(state = initialFriends, action){
     }
 }
 
-export function room(state = {}, action){
+export function room(state = {id: null, name: null, initialFetch: false, messages: [], members: []}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             return Object.assign({}, state, {
@@ -35,6 +35,14 @@ export function room(state = {}, action){
                 members: action.members,
                 initialFetch: true,
             }); 
+
+        case RECEIVE_ROOMS:
+            return Object.assign({}, state, {
+                id: action.id,
+                name: action.name,
+                initialFetch: false,
+            });
+
         default:
             return state;
     } 
@@ -46,12 +54,8 @@ export function rooms(state = initialRooms, action){
     switch(action.type){
         case RECEIVE_ROOMS:
             let newState = {};
-            action.rooms.forEach((room, index) => {
-                newState[room.id] = {
-                    id: room.id,
-                    name: room.name,
-                    initialFetch: false,
-                };
+            action.rooms.forEach((r, index) => {
+                newState[r.id] = room(state[action.id], {type: action.type, ...r});
             });
             return newState;
 
