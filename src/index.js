@@ -7,14 +7,17 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './components/App';
+import {friends, rooms} from './reducers/reducers';
 import registerServiceWorker from './registerServiceWorker';
 
-const reducers = combineReducers({
-    session
+const rootReducer = combineReducers({
+    session,
+    friends,
+    rooms,
 });
 
 const store = createStore(
-    reducers,
+    rootReducer,
     applyMiddleware(thunk)
 );
 
@@ -28,3 +31,5 @@ ReactDOM.render(
 );
 
 registerServiceWorker();
+
+console.log(rootReducer(undefined, { type: null }));
