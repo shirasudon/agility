@@ -1,4 +1,4 @@
-import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO} from '../actions/chat';
+import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, SENDING_ENTER_ROOM} from '../actions/chat';
 
 const initialFriend = {
     username: "",
@@ -19,12 +19,15 @@ export function friend(state = initialFriend, action) {
     }
 }
 
-export function friends(state = [], action){
+export function friends(state = {byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_FRIENDS:
-            return action.friends.map((f, index) => 
-                friend(undefined, {type: action.type, ...f})
-            );
+            let newState = {byUsername: {}, all: []};
+            action.friends.forEach((f, index) => {
+                newState["byUsername"][f.username] = friend(undefined, {type: action.type, ...f});
+                newState.all.push(f.username);
+            });
+            return newState;
         default:
             return state;
     }
@@ -51,25 +54,43 @@ export function room(state = {id: null, name: null, initialFetch: false, message
     } 
 }
 
-const initialRooms = {};
 
-export function rooms(state = initialRooms, action){
+export function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
-        case RECEIVE_ROOMS:
-            let newState = {};
+        case RECEIVE_ROOMS: {
+            let newState = {byId: {}, all: []};
             action.rooms.forEach((r, index) => {
-                newState[r.id] = room(state[action.id], {type: action.type, ...r});
+                newState.byId[r.id] = room(state.byId[action.id], {type: action.type, ...r});
+                newState.all.push(r.id);
             });
             return newState;
+        }
 
-        case RECEIVE_ROOM_INFO:
+        case RECEIVE_ROOM_INFO: {
+            let newState = Object.assign(
+                {}, 
+                state
+            );
+
+            newState.byId[action.id] = room(state.byId[action.id], action);
+        }
+
+        default:
+            return state;
+    }
+}
+
+export function websocket(state = {roomStatus: null}, action) {
+    switch(action.type){
+        case SENDING_ENTER_ROOM:
             return Object.assign(
                 {}, 
                 state,
                 {
-                    [action.id]: room(state[action.id], action)
+                    roomStatus: SENDING_ENTER_ROOM
                 }
             );
+
         default:
             return state;
     }

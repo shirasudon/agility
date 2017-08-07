@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {Panel, Grid, Row, Col, ListGroup, ListGroupItem, Tabs, Tab} from 'react-bootstrap';
+import {Button, Panel, Grid, Row, Col, ListGroup, ListGroupItem, Tabs, Tab} from 'react-bootstrap';
 
-import {fetchRoomInfo, fetchRooms, fetchFriends} from '../actions/chat';
-
+import {fetchRoomInfo, fetchRooms, fetchFriends, enterRoom} from '../actions/chat';
+import socket from '../api/socket';
 
 const FRIEND_KEY = "friend-list";
 const ROOM_KEY = "room-list";
@@ -33,12 +33,13 @@ class Chat extends Component {
     }
 
     showRoom(roomId){
-        const {fetchRoomInfo, rooms} = this.props;
-        const {initialFetch} = this.props.rooms[roomId];
+        const {fetchRoomInfo, enterRoom, rooms} = this.props;
+        const {initialFetch} = this.props.rooms.byId[roomId];
+        enterRoom(roomId);
         if(!initialFetch){
             fetchRoomInfo(roomId);
         }
-        this.setState({room: rooms[roomId]});
+        this.setState({room: rooms.byId[roomId]});
     }
 
     // showFriendTalk(username){
@@ -50,20 +51,24 @@ class Chat extends Component {
     render() {
         const {friends, rooms} = this.props;
 
-        const friendList = friends.map(
-            (friend, index) => (
-                <ListGroupItem 
-                    key={index} 
-                    header={friend.firstName + " " + friend.lastName}
-                >
-                    {friend.username}
-                </ListGroupItem>
-            )
+        const friendList = friends.all.map(
+            (username, index) => {
+                const friend = friends.byUsername[username];
+                return (
+                    <ListGroupItem 
+                        key={index} 
+                        header={friend.firstName + " " + friend.lastName}
+                    >
+                        {friend.username}
+                    </ListGroupItem>
+                );
+            }
         );
 
-        const roomList = Object.keys(rooms).map(
+        console.log(rooms);
+        const roomList = rooms.all.map(
             (roomId, index) => {
-                const room = rooms[roomId];
+                const room = rooms.byId[roomId];
                 return (
                 <ListGroupItem 
                     key={index} 
@@ -73,11 +78,12 @@ class Chat extends Component {
                 </ListGroupItem>);
             }
         );
-
+        
         return (
             <Grid>
                 <Row>
                     <Col xsOffset={1} xs={3}>
+                         <Button>グループ作成</Button>
                          <Tabs activeKey={this.state.activeTab} onSelect={this.onSelect} id="controlled-tab-example">
                             <Tab eventKey={FRIEND_KEY} title="友達">
                                 <ListGroup>
@@ -127,6 +133,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     fetchFriends: () => {
         dispatch(fetchFriends());
+    },
+    enterRoom: (roomId) => {
+        dispatch(enterRoom(roomId));  
     },
 });
 
