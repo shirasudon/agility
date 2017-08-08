@@ -1,9 +1,25 @@
-import { Alert, Button, Form, FormGroup, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router';
 
+import Button from 'material-ui/Button';
+import TextField from 'material-ui/TextField';
+import Grid from 'material-ui/Grid';
+import { withStyles, createStyleSheet } from 'material-ui/styles';
+
 import {login as loginAction} from '../actions/AuthActions';
+
+
+const styleSheet = createStyleSheet(theme => ({
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 200,
+    },
+    loginButton: {
+        marginTop: theme.spacing.unit,
+    },
+})); 
 
 class LoginForm extends Component {
 
@@ -54,7 +70,7 @@ class LoginForm extends Component {
 
     render() {
         const { user: { username, password }, loginFail} = this.state;
-        const {authenticated} = this.props;
+        const {authenticated, classes} = this.props;
 
         if (authenticated) {
             return <Redirect to="/chat" />;
@@ -62,51 +78,32 @@ class LoginForm extends Component {
 
         return (
             <div>
+            <Grid container justify="center">
                 {
-                    loginFail &&
-                    (<Alert bsStyle="danger">
-                        <strong>Wrong username or password! Please try again!</strong>
-                    </Alert>)
+                    loginFail && <strong>Wrong username or password! Please try again!</strong>
                 }
-                <Form horizontal>
-                    <FormGroup controlId="formHorizontalEmail">
-                        <Col componentClass={ControlLabel} sm={2}>
-                            Email
-                        </Col>
-                        <Col sm={3}>
-                            <FormControl
-                                type="username"
-                                placeholder="Username"
-                                name="username"
-                                value={username}
-                                onChange={this.onChange}
-                            />
-                        </Col>
-                    </FormGroup>
-
-                    <FormGroup controlId="formHorizontalPassword">
-                        <Col componentClass={ControlLabel} sm={2}>
-                            Password
-                        </Col>
-                        <Col sm={3}>
-                            <FormControl
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={this.onChange}
-                            />
-                        </Col>
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Col smOffset={2} sm={10}>
-                            <Button onClick={this.onSubmit}>
-                                Sign in
-                            </Button>
-                        </Col>
-                    </FormGroup>
-                </Form>
+                <TextField
+                    name="username"
+                    label="ユーザー名"
+                    value={username}
+                    className={classes.textField}
+                    onChange={this.onChange}
+                    margin="normal"
+                />
+            </Grid>
+            <Grid container justify="center">
+                <TextField
+                    name="password"
+                    label="パスワード"
+                    value={password}
+                    className={classes.textField}
+                    onChange={this.onChange}
+                    margin="normal"
+                />
+            </Grid>
+            <Grid container justify="center">
+                <Button color="primary" raised onClick={this.onSubmit} className={classes.loginButton}>ログイン</Button>
+            </Grid>
             </div>
         );
     }
@@ -124,7 +121,9 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const StyledLoginForm = withStyles(styleSheet)(LoginForm);
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginForm);
+)(StyledLoginForm);

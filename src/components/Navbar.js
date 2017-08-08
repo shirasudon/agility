@@ -1,4 +1,3 @@
-import {Navbar as Nb, Nav, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
