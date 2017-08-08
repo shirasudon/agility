@@ -1,36 +1,49 @@
 import {Navbar as Nb, Nav, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {LinkContainer} from 'react-router-bootstrap';
 import React, {Component} from 'react';
 
+import { withStyles, createStyleSheet } from 'material-ui/styles';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
+
 import {logout as logoutAction} from '../actions/AuthActions';
+
+const styleSheet = createStyleSheet({
+    root: {
+        "margin-bottom": '30px',
+        width: '100%',
+    },
+    flex: {
+        flex: 1,
+    },
+});
 
 class Navbar extends Component {
 
     render(){
-        const {authenticated, logout} = this.props;
+        const {authenticated, logout, classes} = this.props;
         return(
-            <Nb inverse collapseOnSelect>
-                <Nb.Header>
-                    <Nb.Brand>
-                        <Link to="/">Chat</Link>
-                    </Nb.Brand>
-                    <Nb.Toggle />
-                </Nb.Header>
-                <Nav pullRight>
-                    {authenticated ?
-                        (
-                            <NavItem onClick={logout}>Logout</NavItem>
-                        ):
-                        (
-                            <LinkContainer to="/login">
-                                <NavItem>Login</NavItem>
-                            </LinkContainer>
-                        )
-                    }
-                </Nav>
-            </Nb>
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <Typography type="title" color="inherit" className={classes.flex}>
+                            Chat
+                        </Typography>
+                        {authenticated ?
+                            (
+                                <Button onClick={logout} color="contrast">Logout</Button>
+                            ):
+                            (
+                                <Button component={Link} to="/login" color="contrast">Login</Button>
+                            )
+                        }
+                    </Toolbar>
+                </AppBar>
+            </div>
         );
     }
 }
@@ -47,7 +60,9 @@ const mapStateToProps = ({session}) => ({
     authenticated: session.authenticated,
 });
 
+const StyledNavbar = withStyles(styleSheet)(Navbar);
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Navbar);
+)(StyledNavbar);

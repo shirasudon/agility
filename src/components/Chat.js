@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {Button, Panel, Grid, Row, Col, ListGroup, ListGroupItem, Tabs, Tab} from 'react-bootstrap';
+
+
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Grid from 'material-ui/Grid';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Button from 'material-ui/Button';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Divider from 'material-ui/Divider';
 
 import {fetchRoomInfo, fetchRooms, fetchFriends, enterRoom} from '../actions/chat';
 import socket from '../api/socket';
 import CreateGroupModal from './CreateGroupModal';
 
-const FRIEND_KEY = "friend-list";
-const ROOM_KEY = "room-list";
+// const FRIEND_KEY = "friend-list";
+// const ROOM_KEY = "room-list";
+
+const TabContainer = props =>
+  <div style={{ padding: 20 }}>
+    {props.children}
+  </div>;
 
 class Chat extends Component {
 
@@ -15,11 +27,11 @@ class Chat extends Component {
         super(props);
         this.props = props;
         this.state = {
-            activeTab: FRIEND_KEY,
+            activeTab: 0,
             room: null,
             showModal: false,
         };
-        this.onSelect = this.onSelect.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.showRoom = this.showRoom.bind(this);
         this.openCreateGroupModal = this.openCreateGroupModal.bind(this);
         this.closeCreateGroupModal = this.closeCreateGroupModal.bind(this);
@@ -32,8 +44,8 @@ class Chat extends Component {
         fetchFriends();
     }
 
-    onSelect(eventKey){
-        this.setState({activeTab: eventKey});
+    onChange(event, index){
+        this.setState({activeTab: index});
     }
 
     showRoom(roomId){
@@ -67,12 +79,12 @@ class Chat extends Component {
             (username, index) => {
                 const friend = friends.byUsername[username];
                 return (
-                    <ListGroupItem 
-                        key={index} 
-                        header={friend.firstName + " " + friend.lastName}
-                    >
-                        {friend.username}
-                    </ListGroupItem>
+                    <ListItem button key={index}>
+                        <ListItemText 
+                            primary={friend.firstName + " " + friend.lastName}
+                            secondary={friend.username}
+                        />
+                    </ListItem>
                 );
             }
         );
@@ -81,59 +93,67 @@ class Chat extends Component {
             (roomId, index) => {
                 const room = rooms.byId[roomId];
                 return (
-                <ListGroupItem 
-                    key={index} 
-                    header={room.name}
-                    onClick={() => {this.showRoom(room.id);}}
-                >
-                </ListGroupItem>);
+                    <ListItem button key={index}>
+                        <ListItemText
+                            primary={room.name}
+                            onClick={() => {this.showRoom(room.id);}}
+                        />
+                    </ListItem>
+                );
             }
         );
         
         return (
-            <div>
-                <CreateGroupModal showModal={this.state.showModal} closeModal={this.closeCreateGroupModal} />
-                <Grid>
-                    <Row>
-                        <Col xsOffset={1} xs={3}>
-                             <Button
-                                bsStyle="primary"
-                                onClick={this.openCreateGroupModal}
-                             >
-                             グループ作成
-                             </Button>
-                             <Tabs activeKey={this.state.activeTab} onSelect={this.onSelect} id="controlled-tab-example">
-                                <Tab eventKey={FRIEND_KEY} title="友達">
-                                    <ListGroup>
-                                        {friendList}
-                                    </ListGroup>
-                                </Tab>
-                                <Tab eventKey={ROOM_KEY} title="ルーム">
-                                    <ListGroup>
-                                        {roomList}
-                                    </ListGroup>
-                                </Tab>
-                            </Tabs>
-                       </Col>
-
-                        <Col xs={6}>
-                            {this.state.room == null ? 
-                                (
-                                    <Panel>
-                                        <div>Lets start chatting with your friends!!</div>
-                                    </Panel>
-                                ):
-                                (
-                                    <Panel header={this.state.room.name}>
-                                        {this.state.room.name}
-                                    </Panel>
-                                )
-                            }
-                        </Col>
-
-                    </Row>
+            <Grid container justify="center">
+                <Grid item xs={3}>
+                    <CreateGroupModal showModal={this.state.showModal} closeModal={this.closeCreateGroupModal} />
+                    <Button
+                       onClick={this.openCreateGroupModal}
+                    >
+                    グループ作成
+                    </Button>
+                    <Tabs index={this.state.activeTab} onChange={this.onChange}>
+                       <Tab label="友達"/>
+                       <Tab label="ルーム"/>
+                    </Tabs>
+                    {
+                        this.state.activeTab === 0 &&
+                        <TabContainer>
+                            {friendList}
+                        </TabContainer>
+                    }
+                    {
+                        this.state.activeTab === 1 &&
+                        <TabContainer>
+                        {roomList}
+                        </TabContainer>
+                    }
                 </Grid>
-            </div>
+                <Grid item xs={6}>
+                    {this.state.room == null ? 
+                        (
+                            <Card>
+                                <CardContent>
+                                    <div>Lets start chatting with your friends!!</div>
+                                </CardContent>
+                            </Card>
+
+                        ):
+                        (
+                            <Card>
+                                <CardHeader
+                                  title={this.state.room.name}
+                                  subheader="September 14, 2016"
+                                />
+                                <Divider/>
+                                <CardContent>
+                                   {this.state.room.name}
+                                </CardContent>
+                            </Card>
+                        )
+                    }
+                </Grid>
+            </Grid>
         );
     }
 }

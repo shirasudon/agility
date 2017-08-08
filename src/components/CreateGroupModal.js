@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {Modal, Button} from 'react-bootstrap';
+
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
 
 class CreateGroupModal extends Component {
 
@@ -11,17 +12,12 @@ class CreateGroupModal extends Component {
     render(){
         const {showModal, closeModal} = this.props;
         return (
-            <Modal show={showModal} onHide={closeModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>グループ作成</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+            <Dialog open={showModal} onRequestClose={closeModal}>
+                <DialogTitle>グループ作成</DialogTitle>
+                <div>
                     <h4>友達を選んでください！</h4>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={closeModal}>閉じる</Button>
-                </Modal.Footer>
-            </Modal>
+                </div>
+            </Dialog>
         );
     }
 }
