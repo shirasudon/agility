@@ -72,6 +72,37 @@ export function fetchFriends(){
                 lastName: "Calbee",
                 firstName: "Fruit"
             },
-        ]     
+            {
+                username: "senjo",
+                lastName: "Senjogahara",
+                firstName: "Misaki"
+            },
+            {
+                username: "shinjo",
+                lastName: "Shinjo",
+                firstName: "Tsuyoshi"
+            },
+            {
+                username: "pokemon",
+                lastName: "Pokemon",
+                firstName: "Go"
+            },
+            {
+                username: "aka",
+                lastName: "Akagi",
+                firstName: "Taro",
+            },
+            {
+                username: "mike",
+                lastName: "Michael",
+                firstName: "Jackson",
+            },
+            {
+                username: "aeron",
+                lastName: "Aeron",
+                firstName: "Davichi",
+            },
+
+        ]
     );
 }
