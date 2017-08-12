@@ -6,6 +6,13 @@ import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import IconButton from 'material-ui/IconButton';
+import Typography from 'material-ui/Typography';
+import CloseIcon from 'material-ui-icons/Close';
+import Slide from 'material-ui/transitions/Slide';
+import Button from 'material-ui/Button';
 
 import ChipsArray from './ChipsArray';
 
@@ -43,7 +50,7 @@ class CreateGroupModal extends Component {
     render(){
         const {
             showModal, 
-            closeModal, 
+            closeModal,
             friends,
         } = this.props;
 
@@ -74,10 +81,19 @@ class CreateGroupModal extends Component {
         });
 
         return (
-            <Dialog open={showModal} onRequestClose={closeModal}>
+            <Dialog 
+                open={showModal} 
+                onRequestClose={closeModal} 
+                fullScreen
+                transition={<Slide direction="up" />}     
+            >
+                <AppBar>
+                    <IconButton color="contrast" onClick={closeModal} aria-label="Close">
+                        <CloseIcon />
+                    </IconButton>
+                </AppBar>
                 <DialogTitle>グループ作成</DialogTitle>
                 <div>
-                    <h4>友達を選んでください！</h4>
                         <ChipsArray chipData={chipData} handleRequestDelete={this.handleDeleteChip}/>
                         <TextField
                             id="search-friend"
@@ -87,6 +103,9 @@ class CreateGroupModal extends Component {
                             fullWidth
                             margin="normal"
                        />
+                        <Button onClick={()=>{console.log("request create room");}}>
+                            Go!
+                        </Button>
 
                        {matchedUserList.length > 0 ? (
                             <List>
