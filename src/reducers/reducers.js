@@ -1,4 +1,6 @@
-import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, SENDING_ENTER_ROOM} from '../actions/chat';
+import {combineReducers} from 'redux';
+
+import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, } from '../actions/chat';
 
 const initialFriend = {
     username: "",
@@ -6,20 +8,20 @@ const initialFriend = {
     firstName: ""
 };
 
-export function friend(state = initialFriend, action) {
+function friend(state = initialFriend, action) {
     switch(action.type) {
         case RECEIVE_FRIENDS:
-             return Object.assign({}, state, {
-                 username: action.username,
-                 lastName: action.lastName,
-                 firstName: action.firstName,
-            }); 
+            return Object.assign({}, state, {
+                username: action.username,
+                lastName: action.lastName,
+                firstName: action.firstName,
+            });
         default:
             return state;
     }
 }
 
-export function friends(state = {byUsername: {}, all: []}, action){
+function friends(state = {byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_FRIENDS:
             let newState = {byUsername: {}, all: []};
@@ -33,14 +35,14 @@ export function friends(state = {byUsername: {}, all: []}, action){
     }
 }
 
-export function room(state = {id: null, name: null, initialFetch: false, messages: [], members: []}, action){
+function room(state = {id: null, name: null, initialFetch: false, messages: [], members: []}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             return Object.assign({}, state, {
                 messages: action.messages,
                 members: action.members,
                 initialFetch: true,
-            }); 
+            });
 
         case RECEIVE_ROOMS:
             return Object.assign({}, state, {
@@ -51,11 +53,11 @@ export function room(state = {id: null, name: null, initialFetch: false, message
 
         default:
             return state;
-    } 
+    }
 }
 
 
-export function rooms(state = {byId: {}, all: []}, action){
+function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_ROOMS: {
             let newState = {byId: {}, all: []};
@@ -68,7 +70,7 @@ export function rooms(state = {byId: {}, all: []}, action){
 
         case RECEIVE_ROOM_INFO: {
             let newState = Object.assign(
-                {}, 
+                {},
                 state
             );
 
@@ -80,17 +82,15 @@ export function rooms(state = {byId: {}, all: []}, action){
     }
 }
 
-export function websocket(state = {roomStatus: null}, action) {
-    switch(action.type){
-        case SENDING_ENTER_ROOM:
-            return Object.assign(
-                {}, 
-                state,
-                {
-                    roomStatus: SENDING_ENTER_ROOM
-                }
-            );
+export const entities = combineReducers({
+    friends,
+    rooms,
+});
 
+export function currentRoom(state = null, action) {
+    switch (action.type) {
+        case RECEIVE_ROOM_INFO:
+            return action.room;
         default:
             return state;
     }

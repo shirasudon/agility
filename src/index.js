@@ -7,14 +7,13 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './components/App';
-import {friends, rooms, websocket} from './reducers/reducers';
+import {entities, currentRoom} from './reducers/reducers';
 import registerServiceWorker from './registerServiceWorker';
 
 const rootReducer = combineReducers({
     session,
-    friends,
-    rooms,
-    websocket,
+    entities,
+    currentRoom,
 });
 
 const store = createStore(
@@ -32,5 +31,3 @@ ReactDOM.render(
 );
 
 registerServiceWorker();
-
-console.log(rootReducer(undefined, { type: null }));

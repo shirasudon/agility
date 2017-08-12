@@ -51,8 +51,10 @@ class CreateGroupModal extends Component {
         const {
             showModal, 
             closeModal,
-            friends,
+            entities,
         } = this.props;
+
+        const {friends} = entities;
 
         const {selectedUsers, searchText} = this.state;
 
@@ -120,8 +122,8 @@ class CreateGroupModal extends Component {
     }
 }
 
-const mapStateToProps = ({friends}) => ({
-    friends: friends
+const mapStateToProps = ({entities}) => ({
+    entities: entities
 });
 
 export default connect(mapStateToProps)(CreateGroupModal);

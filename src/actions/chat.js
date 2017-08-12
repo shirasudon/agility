@@ -1,14 +1,12 @@
 import * as chat from "../api/chatApiStub";
-import socket from '../api/socket';
 
 export const RECEIVE_FRIENDS = "RECEIVE_FRIENDS";
 export const REQUEST_FRIENDS = "REQUEST_FRIENDS";
-export const REQUEST_ROOM_INFO = "REQUEST_ROOM_INFO";
+export const REQUEST_ROOM_INFO = "ENTER_ROOM";
 export const RECEIVE_ROOM_INFO = "RECEIVE_ROOM_INFO";
 export const RECEIVE_ROOMS = "RECEIVE_ROOMS";
 export const REQUEST_ROOMS = "REQUEST_ROOMS";
-export const ENTER_ROOM = "ENTER_ROOM";
-export const SENDING_ENTER_ROOM = "SENDING_ENTER_ROOM";
+export const REQUEST_ROOM = "REQUEST_ROOM";
 
 let chatApi = chat;
 
@@ -23,16 +21,24 @@ export function requestRoomInfo(){
 export function receiveRoomInfo(info){
     return {
         type: RECEIVE_ROOM_INFO,
-        ...info
+        room: info
     };
 }
 
 export function fetchRoomInfo(roomId){
     return (dispatch) => {
-        dispatch(requestRoomInfo());
         return chatApi.fetchRoomInfo(roomId).then((info) => {
             dispatch(receiveRoomInfo(info));
         });
+    }
+}
+
+export function enterRoom(roomId, shouldFetch) {
+    return (dispatch) => {
+        dispatch(requestRoomInfo());
+        if(shouldFetch){
+            dispatch(fetchRoomInfo(roomId));
+        }
     }
 }
 
@@ -74,17 +80,5 @@ export function fetchFriends() {
         return chatApi.fetchFriends().then((friends) => {
             dispatch(receiveFriends(friends));
         });
-    };
-}
-
-export function sendEnterRoom(){
-    return {
-        type: SENDING_ENTER_ROOM,
-    };
-}
-
-export function enterRoom() {
-    return (dispatch) => {
-        dispatch(sendEnterRoom());
     };
 }
