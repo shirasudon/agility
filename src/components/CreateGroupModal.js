@@ -1,27 +1,34 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
+import { withStyles, createStyleSheet } from 'material-ui/styles';
 
-// import ChipInput from 'material-ui-chip-input';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
-import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText, } from 'material-ui/List';
 import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
 import CloseIcon from 'material-ui-icons/Close';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
+import Typography from 'material-ui/Typography';
+import Toolbar from 'material-ui/Toolbar';
 
 import ChipsArray from './ChipsArray';
+
+const styleSheet = createStyleSheet({
+    flex: {
+        flex: 1,
+    },
+});
+
 
 class CreateGroupModal extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            selectedUsers: [], 
+            selectedUsers: [],
             searchText: ''
         }
 
@@ -49,9 +56,10 @@ class CreateGroupModal extends Component {
 
     render(){
         const {
-            showModal, 
+            showModal,
             closeModal,
             entities,
+            classes,
         } = this.props;
 
         const {friends} = entities;
@@ -62,7 +70,7 @@ class CreateGroupModal extends Component {
             const friend = friends.byUsername[username];
             const regex = new RegExp(searchText);
             return regex.test(friend.username) && !selectedUsers.includes(username);
-        }); 
+        });
 
         const chipData = selectedUsers.map((username, index) => {
             return {
@@ -76,27 +84,40 @@ class CreateGroupModal extends Component {
                 <ListItem button key={index}>
                     <ListItemText
                         primary={username}
-                        onClick={()=>{this.handleAddChip(username);}} 
+                        onClick={()=>{this.handleAddChip(username);}}
                     />
                 </ListItem>
             );
         });
 
         return (
-            <Dialog 
-                open={showModal} 
-                onRequestClose={closeModal} 
+            <Dialog
+                open={showModal}
+                onRequestClose={closeModal}
                 fullScreen
-                transition={<Slide direction="up" />}     
+                transition={<Slide direction="up" />}
             >
                 <AppBar>
-                    <IconButton color="contrast" onClick={closeModal} aria-label="Close">
-                        <CloseIcon />
-                    </IconButton>
+                    <Toolbar>
+                        <IconButton color="contrast" onClick={closeModal} aria-label="Close">
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography type="title" color="inherit" className={classes.flex}>
+                            Add your friends to a new group!
+                        </Typography>
+                    </Toolbar>
                 </AppBar>
                 <DialogTitle>グループ作成</DialogTitle>
-                <div>
-                        <ChipsArray chipData={chipData} handleRequestDelete={this.handleDeleteChip}/>
+                <Grid container justify="center">
+                    <Grid item xs={6}>
+                        <ChipsArray
+                            chipData={chipData}
+                            handleRequestDelete={this.handleDeleteChip}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container justify="center">
+                    <Grid item xs={5}>
                         <TextField
                             id="search-friend"
                             value={searchText}
@@ -104,19 +125,29 @@ class CreateGroupModal extends Component {
                             onChange={this.handleSearchTextChange}
                             fullWidth
                             margin="normal"
-                       />
-                        <Button onClick={()=>{console.log("request create room");}}>
+                        />
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Button
+                            raised
+                            color="primary"
+                            onClick={()=>{console.log("request create room");}}
+                        >
                             Go!
                         </Button>
-
-                       {matchedUserList.length > 0 ? (
-                            <List>
-                                {matchedUserList}
-                            </List>
-                       ):
+                    </Grid>
+                </Grid>
+                <Grid container justify="center">
+                    <Grid item xs={6}>
+                        {matchedUserList.length > 0 ? (
+                                <List>
+                                    {matchedUserList}
+                                </List>
+                            ):
                             <span>No matched User</span>
-                       }
-                </div>
+                        }
+                    </Grid>
+                </Grid>
             </Dialog>
         );
     }
@@ -126,4 +157,6 @@ const mapStateToProps = ({entities}) => ({
     entities: entities
 });
 
-export default connect(mapStateToProps)(CreateGroupModal);
+const StyledCreateGroupModal = withStyles(styleSheet)(CreateGroupModal);
+
+export default connect(mapStateToProps)(StyledCreateGroupModal);
