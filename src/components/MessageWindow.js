@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import Card, { CardHeader, CardContent,} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
+import Balloon from './Balloon';
 
 class MessageWindow extends Component {
 
@@ -11,11 +12,17 @@ class MessageWindow extends Component {
         return (
             currentRoom === null ?
                 (
+                    <div>
                     <Card>
                         <CardContent>
                             <div>Lets start chatting with your friends!!</div>
+
+                            <Balloon>hello</Balloon>
+                            <Balloon direction="left">hello2</Balloon>
                         </CardContent>
                     </Card>
+
+                    </div>
 
                 ):
                 (
