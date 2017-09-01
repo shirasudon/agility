@@ -9,34 +9,40 @@ class MessageWindow extends Component {
 
     render() {
         const {currentRoom} = this.props;
+        if(currentRoom === null){
+            return (
+                <Card>
+                    <CardContent>
+                        <div>Lets start chatting with your friends!!</div>
+
+                    </CardContent>
+                </Card>
+            );
+        }
+
+        const balloons = currentRoom.messages.map((message, index) => {
+            return (
+                <div key={index}>
+                    <span>{message.postDate}</span>
+                    <Balloon 
+                        direction="left"
+                    >
+                        {message.text}
+                    </Balloon>
+                </div>
+            );
+        });
+
         return (
-            currentRoom === null ?
-                (
-                    <div>
-                    <Card>
-                        <CardContent>
-                            <div>Lets start chatting with your friends!!</div>
-
-                            <Balloon>hello</Balloon>
-                            <Balloon direction="left">hello2</Balloon>
-                        </CardContent>
-                    </Card>
-
-                    </div>
-
-                ):
-                (
-                    <Card>
-                        <CardHeader
-                            title={currentRoom.name}
-                            subheader="September 14, 2016"
-                        />
-                        <Divider/>
-                        <CardContent>
-                            {currentRoom.name}
-                        </CardContent>
-                    </Card>
-                )
+            <Card>
+                <CardHeader
+                    title={currentRoom.name}
+                />
+                <Divider/>
+                <CardContent>
+                    {balloons}
+                </CardContent>
+            </Card>
         );
     }
 }

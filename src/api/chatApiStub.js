@@ -1,3 +1,6 @@
+import { Server } from 'mock-socket';
+
+
 const rooms = {
     "1": {
         id: "1",
@@ -17,7 +20,7 @@ const rooms = {
         members: [
             "23", "25", "28"
         ]
-    }, 
+    },
     "2": {
         id: "2",
         name: "テニス部",
@@ -41,8 +44,8 @@ const rooms = {
 
 export function fetchRooms(){
     return Promise.resolve(
-        [{id: "1", name: "吉野家"}, {id: "2", name: "テニス部"}]     
-    ); 
+        [{id: "1", name: "吉野家"}, {id: "2", name: "テニス部"}]
+    );
 }
 
 export function fetchRoomInfo(roomId){
@@ -106,3 +109,13 @@ export function fetchFriends(){
         ]
     );
 }
+
+export function createRoom(room){
+    /*const mockServer = new Server('ws://localhost:8080');
+    mockServer.on('connection', server => {
+        mockServer.send(room);
+    });*/
+    console.log("createRoom is called");
+    console.log(room);
+}
+

@@ -13,8 +13,10 @@ import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
+import {CircularProgress} from 'material-ui/Progress';
 
 import ChipsArray from './ChipsArray';
+import {createRoom} from '../actions/chat';
 
 const styleSheet = createStyleSheet({
     flex: {
@@ -29,12 +31,15 @@ class CreateGroupModal extends Component {
         super(props);
         this.state = {
             selectedUsers: [],
-            searchText: ''
+            roomName: '',
+            searchText: '',
         }
 
         this.handleAddChip = this.handleAddChip.bind(this);
         this.handleDeleteChip = this.handleDeleteChip.bind(this);
         this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
+        this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
+        this.handleCreateRoomClick = this.handleCreateRoomClick.bind(this);
     }
 
     handleAddChip(username) {
@@ -54,17 +59,29 @@ class CreateGroupModal extends Component {
         this.setState({searchText: event.target.value});
     }
 
+    handleRoomNameChange(event) {
+        this.setState({roomName: event.target.value});
+    }
+
+    handleCreateRoomClick() {
+        const {createRoom} = this.props;
+        const {selectedUsers, roomName} = this.state;
+        createRoom(selectedUsers, roomName);
+    }
+
     render(){
         const {
             showModal,
             closeModal,
             entities,
+            ui,
             classes,
         } = this.props;
 
-        const {friends} = entities;
+        const { friends } = entities;
+        const { isRequesting } = ui;
 
-        const {selectedUsers, searchText} = this.state;
+        const {selectedUsers, searchText, roomName} = this.state;
 
         const matchedUsernames = friends.all.filter((username) => {
             const friend = friends.byUsername[username];
@@ -97,6 +114,7 @@ class CreateGroupModal extends Component {
                 fullScreen
                 transition={<Slide direction="up" />}
             >
+                {isRequesting && <CircularProgress size={80} thickness={5} />}
                 <AppBar>
                     <Toolbar>
                         <IconButton color="contrast" onClick={closeModal} aria-label="Close">
@@ -109,20 +127,12 @@ class CreateGroupModal extends Component {
                 </AppBar>
                 <DialogTitle>グループ作成</DialogTitle>
                 <Grid container justify="center">
-                    <Grid item xs={6}>
-                        <ChipsArray
-                            chipData={chipData}
-                            handleRequestDelete={this.handleDeleteChip}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid container justify="center">
                     <Grid item xs={5}>
                         <TextField
-                            id="search-friend"
-                            value={searchText}
-                            InputProps={{ placeholder: 'Search Your friends!' }}
-                            onChange={this.handleSearchTextChange}
+                            id="roomName"
+                            value={roomName}
+                            InputProps={{ placeholder: 'Type room name here!' }}
+                            onChange={this.handleRoomNameChange}
                             fullWidth
                             margin="normal"
                         />
@@ -131,10 +141,30 @@ class CreateGroupModal extends Component {
                         <Button
                             raised
                             color="primary"
-                            onClick={()=>{console.log("request create room");}}
+                            onClick={()=>{}}
                         >
                             Go!
                         </Button>
+                    </Grid>
+                </Grid>
+                <Grid container justify="center">
+                    <Grid item xs={6}>
+                        <ChipsArray
+                            chipData={chipData}
+                            handleRequestDelete={this.handleDeleteChip}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container justify="center">
+                    <Grid item xs={6}>
+                        <TextField
+                            id="search-friend"
+                            value={searchText}
+                            InputProps={{ placeholder: 'Search Your friends!' }}
+                            onChange={this.handleSearchTextChange}
+                            fullWidth
+                            margin="normal"
+                        />
                     </Grid>
                 </Grid>
                 <Grid container justify="center">
@@ -153,10 +183,21 @@ class CreateGroupModal extends Component {
     }
 }
 
-const mapStateToProps = ({entities}) => ({
-    entities: entities
+const mapStateToProps = ({entities, ui}) => ({
+    entities,
+    ui,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    createRoom: (users, roomName = null) => {
+        const room = {
+            users,
+            roomName,
+        };
+        dispatch(createRoom(room));
+    },
 });
 
 const StyledCreateGroupModal = withStyles(styleSheet)(CreateGroupModal);
 
-export default connect(mapStateToProps)(StyledCreateGroupModal);
+export default connect(mapStateToProps, mapDispatchToProps)(StyledCreateGroupModal);

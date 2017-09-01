@@ -7,13 +7,14 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './components/App';
-import {entities, currentRoom} from './reducers/reducers';
+import {entities, currentRoom, ui} from './reducers/reducers';
 import registerServiceWorker from './registerServiceWorker';
 
 const rootReducer = combineReducers({
     session,
     entities,
     currentRoom,
+    ui,
 });
 
 const store = createStore(

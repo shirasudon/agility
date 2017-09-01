@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 
-import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, } from '../actions/chat';
+import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, REQUEST_CREATE_ROOM,} from '../actions/chat';
 
 const initialFriend = {
     username: "",
@@ -91,6 +91,19 @@ export function currentRoom(state = null, action) {
     switch (action.type) {
         case RECEIVE_ROOM_INFO:
             return action.room;
+        default:
+            return state;
+    }
+}
+
+export function ui(state = {isRequesting: false,}, action) {
+    switch (action.type) {
+        case REQUEST_CREATE_ROOM:
+            return Object.assign(
+                {},
+                state,
+                {isRequesting: true}
+            );
         default:
             return state;
     }
