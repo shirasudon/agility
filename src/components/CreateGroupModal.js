@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withStyles, createStyleSheet } from 'material-ui/styles';
+import { withStyles, } from 'material-ui/styles';
 
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
@@ -18,7 +18,7 @@ import {CircularProgress} from 'material-ui/Progress';
 import ChipsArray from './ChipsArray';
 import {createRoom} from '../actions/chat';
 
-const styleSheet = createStyleSheet({
+const styleSheet = theme => ({
     flex: {
         flex: 1,
     },

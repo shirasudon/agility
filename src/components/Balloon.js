@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { withStyles, createStyleSheet } from 'material-ui/styles';
+import { withStyles, } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 
 const RIGHT = "right";
@@ -38,7 +38,7 @@ const baloonMain = {
     background: "#e0edff",
 }
 
-const styleSheet = createStyleSheet({
+const styleSheet = theme => ({
     balloonLeft: {
         ...baloonMain,
         "&:before": balloonElement[LEFT],

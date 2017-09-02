@@ -2,7 +2,7 @@ import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 
-import { withStyles, createStyleSheet } from 'material-ui/styles';
+import { withStyles, } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -10,7 +10,7 @@ import Button from 'material-ui/Button';
 
 import {logout as logoutAction} from '../actions/AuthActions';
 
-const styleSheet = createStyleSheet({
+const styleSheet = theme => ({
     root: {
         "margin-bottom": '30px',
         width: '100%',

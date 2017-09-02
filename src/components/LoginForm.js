@@ -5,12 +5,12 @@ import {Redirect} from 'react-router';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
-import { withStyles, createStyleSheet } from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
 
 import {login as loginAction} from '../actions/AuthActions';
 
 
-const styleSheet = createStyleSheet(theme => ({
+const styleSheet = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
@@ -19,7 +19,7 @@ const styleSheet = createStyleSheet(theme => ({
     loginButton: {
         marginTop: theme.spacing.unit,
     },
-})); 
+}); 
 
 class LoginForm extends Component {
 
