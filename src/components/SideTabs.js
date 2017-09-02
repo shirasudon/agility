@@ -68,7 +68,7 @@ class SideTabs extends Component {
 
         return (
             <div>
-                <Tabs index={this.state.activeTab} onChange={this.onChange}>
+                <Tabs value={this.state.activeTab} onChange={this.onChange}>
                     <Tab label="友達"/>
                     <Tab label="ルーム"/>
                 </Tabs>

@@ -21,6 +21,7 @@ class MessageWindow extends Component {
         }
 
         const balloons = currentRoom.messages.map((message, index) => {
+            console.log(message);
             return (
                 <div key={index}>
                     <span>{message.postDate}</span>

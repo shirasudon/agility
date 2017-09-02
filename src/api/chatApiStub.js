@@ -1,113 +1,23 @@
 import { Server } from 'mock-socket';
+import { UserTable, RoomTable }from "./repositoryStub";
 
-
-const rooms = {
-    "1": {
-        id: "1",
-        name: "吉野家",
-        messages: [
-            {
-                sender_id: "23",
-                text: "こんにちは！",
-                postDate: "2017/08/05",
-            },
-            {
-                sender_id: "25",
-                text: "はじめまして！",
-                postDate: "2017/08/05",
-            }
-        ],
-        members: [
-            "23", "25", "28"
-        ]
-    },
-    "2": {
-        id: "2",
-        name: "テニス部",
-        messages: [
-            {
-                sender_id: "232",
-                text: "hey",
-                postDate: "2017/08/05",
-            },
-            {
-                sender_id: "123",
-                text: "hello",
-                postDate: "2017/08/05",
-            }
-        ],
-        members: [
-            "232", "123"
-        ]
-    }
-};
 
 export function fetchRooms(){
-    return Promise.resolve(
-        [{id: "1", name: "吉野家"}, {id: "2", name: "テニス部"}]
-    );
+    return Promise.resolve(RoomTable.getAllRooms());
 }
 
 export function fetchRoomInfo(roomId){
-    if(roomId in rooms){
-        return Promise.resolve(rooms[roomId]);
+    const room = RoomTable.getRoomById(roomId);
+    if(room == null){
+        return Promise.reject();
     }
     else {
-        return Promise.reject();
+        return Promise.resolve(room);
     }
 }
 
 export function fetchFriends(){
-    return Promise.resolve(
-        [
-            {
-                username: "hitochan",
-                lastName: "Hitoshi",
-                firstName: "Otsuki"
-            },
-            {
-                username: "tasaki",
-                lastName: "Tsukuru",
-                firstName: "Tasaki"
-            },
-            {
-                username: "furugura",
-                lastName: "Calbee",
-                firstName: "Fruit"
-            },
-            {
-                username: "senjo",
-                lastName: "Senjogahara",
-                firstName: "Misaki"
-            },
-            {
-                username: "shinjo",
-                lastName: "Shinjo",
-                firstName: "Tsuyoshi"
-            },
-            {
-                username: "pokemon",
-                lastName: "Pokemon",
-                firstName: "Go"
-            },
-            {
-                username: "aka",
-                lastName: "Akagi",
-                firstName: "Taro",
-            },
-            {
-                username: "mike",
-                lastName: "Michael",
-                firstName: "Jackson",
-            },
-            {
-                username: "aeron",
-                lastName: "Aeron",
-                firstName: "Davichi",
-            },
-
-        ]
-    );
+    return Promise.resolve(UserTable.getAllUsers());
 }
 
 export function createRoom(room){

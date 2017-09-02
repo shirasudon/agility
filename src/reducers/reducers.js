@@ -2,31 +2,12 @@ import {combineReducers} from 'redux';
 
 import {RECEIVE_FRIENDS, RECEIVE_ROOMS, RECEIVE_ROOM_INFO, REQUEST_CREATE_ROOM,} from '../actions/chat';
 
-const initialFriend = {
-    username: "",
-    lastName: "",
-    firstName: ""
-};
-
-function friend(state = initialFriend, action) {
-    switch(action.type) {
-        case RECEIVE_FRIENDS:
-            return Object.assign({}, state, {
-                username: action.username,
-                lastName: action.lastName,
-                firstName: action.firstName,
-            });
-        default:
-            return state;
-    }
-}
-
 function friends(state = {byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_FRIENDS:
             let newState = {byUsername: {}, all: []};
             action.friends.forEach((f, index) => {
-                newState["byUsername"][f.username] = friend(undefined, {type: action.type, ...f});
+                newState["byUsername"][f.username] = Object.assign({}, f);
                 newState.all.push(f.username);
             });
             return newState;

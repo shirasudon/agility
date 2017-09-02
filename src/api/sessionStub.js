@@ -1,14 +1,11 @@
+import { UserTable }from "./repositoryStub";
 
 export default class SessionApiStub {
     static login(user){
-        const users = [
-            {username: "john", password: "pass", firstName: "john", lastName: "perry"},
-            {username: "kary", password: "hey", firstName: "kary", lastName: "huston"},
-        ];
-
-        const match = users.find(u => u.username === user.username && u.password === user.password);
+        const match = UserTable.getUserByUserName(user.username);
         let response;
-        if (match === undefined) {
+
+        if (match === null || match.password !== user.password) {
             response = {
                 ok: false,
             }
@@ -18,7 +15,7 @@ export default class SessionApiStub {
                 ok: true,
                 token: '82jf3td9h',
                 data: {
-                    email: user.username,
+                    username: user.username,
                     firstName: match.firstName,
                     lastName: match.lastName,
                 }
@@ -33,3 +30,4 @@ export default class SessionApiStub {
         return new Promise(resolve => setTimeout(resolve, 1000));
     }
 }
+
