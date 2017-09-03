@@ -54,12 +54,11 @@ class SideTabs extends Component {
         const roomList = rooms.all.map(
             (roomId, index) => {
                 const room = rooms.byId[roomId];
-                const shouldFetch = !room.initialFetch;
                 return (
                     <ListItem button key={index}>
                         <ListItemText
                             primary={room.name}
-                            onClick={() => {this.props.enterRoom(roomId, shouldFetch);}}
+                            onClick={() => {this.props.enterRoom(roomId);}}
                         />
                     </ListItem>
                 );
@@ -94,8 +93,8 @@ const mapStateToProps = ({entities}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    enterRoom: (roomId, shouldFetch) => {
-        dispatch(enterRoom(roomId, shouldFetch));
+    enterRoom: (roomId) => {
+        dispatch(enterRoom(roomId));
     },
 });
 

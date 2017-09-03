@@ -4,7 +4,12 @@ import {connect} from 'react-redux';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 
-import {fetchRoomInfo, fetchRooms, fetchFriends, } from '../actions/chat';
+import {
+    fetchMessagesByRoomId,
+    fetchRoomInfo,
+    fetchRooms,
+    fetchFriends,
+} from '../actions/chat';
 import CreateGroupModal from './CreateGroupModal';
 import SideTabs from './SideTabs';
 import MessageWindow from './MessageWindow';
@@ -18,7 +23,6 @@ class Chat extends Component {
             showModal: false,
         };
 
-        this.showRoom = this.showRoom.bind(this);
         this.openCreateGroupModal = this.openCreateGroupModal.bind(this);
         this.closeCreateGroupModal = this.closeCreateGroupModal.bind(this);
     }
@@ -27,16 +31,6 @@ class Chat extends Component {
         const {fetchRooms, fetchFriends} = this.props;
         fetchRooms();
         fetchFriends();
-    }
-
-    showRoom(roomId){
-        const {fetchRoomInfo, entities} = this.props;
-        const {rooms} = entities;
-        const {initialFetch} = this.props.rooms.byId[roomId];
-        if(!initialFetch){
-            fetchRoomInfo(roomId);
-        }
-        this.setState({room: rooms.byId[roomId]});
     }
 
     openCreateGroupModal() {
@@ -70,6 +64,9 @@ const mapStateToProps = ({entities}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    fetchMessagesByRoomId: (roomId) => {
+        dispatch(fetchMessagesByRoomId(roomId));
+    },
     fetchRoomInfo: (roomId) => {
         dispatch(fetchRoomInfo(roomId));
     },

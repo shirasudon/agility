@@ -6,7 +6,6 @@ class PrivateRoute extends Component {
 
     render() {
         const {exact, path, authenticated, component: Component} = this.props;
-        console.log(authenticated);
         return <Route
             exact={exact}
             path={path}

@@ -1,5 +1,6 @@
-import {sessionService} from 'redux-react-session';
+import { sessionService } from 'redux-react-session';
 import SessionApiStub from '../api/sessionStub';
+import { LOGIN_SUCCESS } from './actionTypes';
 
 let sessionApi = SessionApiStub;
 
@@ -9,16 +10,20 @@ export const setSessionApi = api => {
 
 export const login = (user) => {
     return (dispatch) => {
+        let responseUser;
         return sessionApi.login(user).then(response => {
             if (response.ok) {
-                return sessionService.saveSession(response.token)
-                    .then(() => {
-                        sessionService.saveUser(response.data);
-                        return Promise.resolve(true);
-                    });
-            } else {
+                responseUser = response.data;
+                return sessionService.saveSession(response.token);
+            }
+            else {
                 return Promise.resolve(false);
             }
+        }).then(() => {
+            sessionService.saveUser(responseUser);
+
+                console.log(responseUser);
+            return Promise.resolve(true);
         });
     }
 }
@@ -34,7 +39,6 @@ export const logout = () => {
     }
 }
 
-export const LOGIN_SUCCESS  = "LOGIN_SUCCESS";
 function loginSuccess(){
     return {
         type:  LOGIN_SUCCESS

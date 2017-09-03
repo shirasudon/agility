@@ -8,7 +8,12 @@ import Balloon from './Balloon';
 class MessageWindow extends Component {
 
     render() {
-        const {currentRoom} = this.props;
+
+        const { currentRoom, session, entities } = this.props;
+        const { messages, } = entities;
+        const me = session.user;
+        console.log(session);
+
         if(currentRoom === null){
             return (
                 <Card>
@@ -20,20 +25,23 @@ class MessageWindow extends Component {
             );
         }
 
-        const balloons = currentRoom.messages.map((message, index) => {
-            console.log(message);
-            return (
-                <div key={index}>
-                    <span>{message.postDate}</span>
-                    <Balloon 
-                        direction="left"
-                    >
-                        {message.text}
-                    </Balloon>
-                </div>
-            );
-        });
+        const roomMessages = messages.byRoomId[currentRoom.id];
+        const messagesDOM = roomMessages ? 
+            roomMessages.map((message, index) => {
+                console.log(me);
+                const direction = ( message.userId === me.id ) ? "right" : "left";
 
+                return (
+                    <div key={index}>
+                        <span>{message.postDate}</span>
+                        <Balloon direction={direction} >
+                            {message.text}
+                        </Balloon>
+                    </div>
+                );
+        }):
+        (<span>There is no conversation yet</span>);
+        
         return (
             <Card>
                 <CardHeader
@@ -41,15 +49,17 @@ class MessageWindow extends Component {
                 />
                 <Divider/>
                 <CardContent>
-                    {balloons}
+                    {messagesDOM}
                 </CardContent>
             </Card>
         );
     }
 }
 
-const mapStateToProps = ({currentRoom}) => ({
-    currentRoom: currentRoom,
+const mapStateToProps = ({currentRoom, session, entities}) => ({
+    currentRoom,
+    session,
+    entities,
 });
 
 export default connect(mapStateToProps, null)(MessageWindow);

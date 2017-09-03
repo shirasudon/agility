@@ -1,5 +1,4 @@
-import { Server } from 'mock-socket';
-import { UserTable, RoomTable }from "./repositoryStub";
+import { UserTable, RoomTable, MessageTable }from "./repositoryStub";
 
 
 export function fetchRooms(){
@@ -20,11 +19,12 @@ export function fetchFriends(){
     return Promise.resolve(UserTable.getAllUsers());
 }
 
+export function fetchMessagesByRoomId(roomId) {
+    const messages = MessageTable.getMessagesByRoomId(roomId);
+    return Promise.resolve(messages);
+}
+
 export function createRoom(room){
-    /*const mockServer = new Server('ws://localhost:8080');
-    mockServer.on('connection', server => {
-        mockServer.send(room);
-    });*/
     console.log("createRoom is called");
     console.log(room);
 }

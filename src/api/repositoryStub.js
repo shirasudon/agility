@@ -81,29 +81,29 @@ const rooms = [
 const messages = [
     {
         "id": 1,
-        "room_id": 1,
-        "user_id": 23,
+        "roomId": 1,
+        "userId": 1,
         "text": "こんにちは！",
         "postDate": "2017/08/05"
     },
     {
         "id": 2,
-        "room_id": 1,
-        "user_id": 25,
+        "roomId": 1,
+        "userId": 2,
         "text": "はじめまして！",
         "postDate": "2017/08/05"
     },
     {
         "id": 3,
-        "room_id": 2,
-        "user_id": 232,
+        "roomId": 2,
+        "userId": 3,
         "text": "hey",
         "postDate": "2017/08/05"
     },
     {
         "id": "4",
-        "room_id": 2,
-        "user_id": 12,
+        "roomId": 2,
+        "userId": 1,
         "text": "hello",
         "postDate": "2017/08/05"
     }
@@ -114,7 +114,7 @@ export class UserTable {
 
     static getUserById(id){
         const user = users.find(user => user.id === id);
-        if (user == undefined) {
+        if (user === undefined) {
             return null;
         }
         return user;
@@ -138,7 +138,7 @@ export class RoomTable {
 
     static getRoomById(id){
         const room = rooms.find(room => room.id === id);
-        if (room == undefined) {
+        if (room === undefined) {
             return null;
         }
         return room;
@@ -146,6 +146,17 @@ export class RoomTable {
 
     static getAllRooms(){
         return rooms.slice();
+    }
+
+}
+
+
+export class MessageTable {
+
+    static getMessagesByRoomId(roomId) {
+        const filteredMessages = messages.filter(message => message.roomId === roomId);
+        console.log(filteredMessages);
+        return filteredMessages;
     }
 
 }
