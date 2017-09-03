@@ -94,6 +94,7 @@ class LoginForm extends Component {
             <Grid container justify="center">
                 <TextField
                     name="password"
+                    type="password"
                     label="パスワード"
                     value={password}
                     className={classes.textField}
