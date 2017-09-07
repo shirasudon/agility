@@ -16,7 +16,7 @@ import Toolbar from 'material-ui/Toolbar';
 import {CircularProgress} from 'material-ui/Progress';
 
 import ChipsArray from './ChipsArray';
-import {createRoom} from '../actions/chat';
+import {chatActionCreator} from '../actions';
 
 const styleSheet = theme => ({
     flex: {
@@ -194,7 +194,7 @@ const mapDispatchToProps = (dispatch) => ({
             users,
             roomName,
         };
-        dispatch(createRoom(room));
+        dispatch(chatActionCreator.createRoom(room));
     },
 });
 

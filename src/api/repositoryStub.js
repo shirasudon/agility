@@ -155,7 +155,6 @@ export class MessageTable {
 
     static getMessagesByRoomId(roomId) {
         const filteredMessages = messages.filter(message => message.roomId === roomId);
-        console.log(filteredMessages);
         return filteredMessages;
     }
 

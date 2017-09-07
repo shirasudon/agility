@@ -4,12 +4,7 @@ import {connect} from 'react-redux';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 
-import {
-    fetchMessagesByRoomId,
-    fetchRoomInfo,
-    fetchRooms,
-    fetchFriends,
-} from '../actions/chat';
+import {chatActionCreator} from '../actions'
 import CreateGroupModal from './CreateGroupModal';
 import SideTabs from './SideTabs';
 import MessageWindow from './MessageWindow';
@@ -65,16 +60,16 @@ const mapStateToProps = ({entities}) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     fetchMessagesByRoomId: (roomId) => {
-        dispatch(fetchMessagesByRoomId(roomId));
+        dispatch(chatActionCreator.fetchMessagesByRoomId(roomId));
     },
     fetchRoomInfo: (roomId) => {
-        dispatch(fetchRoomInfo(roomId));
+        dispatch(chatActionCreator.fetchRoomInfo(roomId));
     },
     fetchRooms: () => {
-        dispatch(fetchRooms());
+        dispatch(chatActionCreator.fetchRooms());
     },
     fetchFriends: () => {
-        dispatch(fetchFriends());
+        dispatch(chatActionCreator.fetchFriends());
     },
 });
 

@@ -1,5 +1,3 @@
-import * as chat from "../api/chatApiStub";
-
 import {
     RECEIVE_FRIENDS,
     REQUEST_FRIENDS,
@@ -12,129 +10,150 @@ import {
     RECEIVE_CREATE_ROOM,
     REQUEST_MESSAGES,
     RECEIVE_MESSAGE,
+    CHANGE_ROOM,
 } from './actionTypes'
 
-let chatApi = chat;
 
-export function setChatApi(api) {
-    chatApi = api; 
-}
-
-export function requestRoomInfo(){
-    return {type: REQUEST_ROOM_INFO};
-}
-
-export function receiveRoomInfo(room){
-    return {
-        type: RECEIVE_ROOM_INFO,
-        room,
-    };
-}
-
-export function fetchRoomInfo(roomId){
-    return (dispatch) => {
-        chatApi.fetchRoomInfo(roomId).then((room) => {
-            dispatch(receiveRoomInfo(room));
-        });
+export default class ChatActionCreator {
+    constructor(chatApi) {
+        this.setChatApi(chatApi);
     }
-}
 
-export function enterRoom(roomId) {
-    return (dispatch) => {
-        const roomPromise = new Promise((resolve, reject) => {
-            dispatch(requestRoomInfo());
-            dispatch(fetchRoomInfo(roomId));
-        });
-        const messagePromise = new Promise((resolve, reject) => {
-            dispatch(requestMessages());
-            dispatch(fetchMessagesByRoomId(roomId));
-        });
-        Promise.all([roomPromise, messagePromise]).then( () => {
-            console.log("Enter room done");
-        });
+    setChatApi(newApi) {
+        this.chatApi = newApi;
     }
-}
 
-export function requestRooms(){
-    return {type: REQUEST_ROOMS};
-}
+    requestRoomInfo(){
+        return {type: REQUEST_ROOM_INFO};
+    }
 
-export function receiveRooms(rooms = {}){
-    return {
-        type: RECEIVE_ROOMS,
-        rooms 
-    };
-}
+    receiveRoomInfo(room){
+        return {
+            type: RECEIVE_ROOM_INFO,
+            room,
+        };
+    }
 
-export function fetchRooms() {
-    return (dispatch) => {
-        dispatch(requestRooms());
-        return chatApi.fetchRooms().then((rooms) => {
-            dispatch(receiveRooms(rooms));
-        });
-    };
-}
-
-export function requestFriends(){
-    return {type: REQUEST_FRIENDS};
-}
-
-export function receiveFriends(friends = {}){
-    return {
-        type: RECEIVE_FRIENDS,
-        friends
-    };
-}
-
-export function fetchFriends() {
-    return (dispatch) => {
-        dispatch(requestFriends());
-        return chatApi.fetchFriends().then((friends) => {
-            dispatch(receiveFriends(friends));
-        });
-    };
-}
-
-export function requestCreateRoom() {
-    return {
-        type: REQUEST_CREATE_ROOM,
-    };
-}
-
-export function receiveCreateRoom(room = {}) {
-    return {
-        type: RECEIVE_CREATE_ROOM,
-        room,
-    };
-}
-
-export function requestMessages() {
-    return {
-        type: REQUEST_MESSAGES,
-    };
-}
-
-export function receiveMessage(message) {
-    return {
-        type: RECEIVE_MESSAGE,
-        message,
-    };
-}
-
-export function fetchMessagesByRoomId(roomId) {
-    return (dispatch) => {
-        dispatch(requestMessages());
-        return chatApi.fetchMessagesByRoomId(roomId).then((messages) => {
-            messages.forEach( message => {
-                dispatch(receiveMessage(message));
+    fetchRoomInfo(roomId){
+        return (dispatch) => {
+            dispatch(this.requestRoomInfo());
+            return this.chatApi.fetchRoomInfo(roomId).then((room) => {
+                dispatch(this.receiveRoomInfo(room));
             });
-        });
-    };
+        }
+    }
+
+    changeRoom(roomId) {
+        return {
+            type: CHANGE_ROOM,
+            roomId,
+        };
+    }
+
+    enterRoom(roomId) {
+        return (dispatch) => {
+            const p1 = new Promise((resolve, reject) => {
+                dispatch(this.fetchRoomInfo(roomId)).then( () => {
+                    resolve();
+                });
+            });
+
+            const p2 = new Promise((resolve, reject) => {
+                dispatch(this.fetchMessagesByRoomId(roomId)).then( () => {
+                    resolve();
+                })
+            });
+
+            return Promise.all([p1, p2]).then( () => {
+                dispatch(this.changeRoom(roomId));
+                console.log("Enter room done");
+            });
+        }
+    }
+
+    requestRooms(){
+        return {type: REQUEST_ROOMS};
+    }
+
+    receiveRooms(rooms = {}){
+        return {
+            type: RECEIVE_ROOMS,
+            rooms 
+        };
+    }
+
+    fetchRooms() {
+        return (dispatch) => {
+            dispatch(this.requestRooms());
+            return this.chatApi.fetchRooms().then((rooms) => {
+                dispatch(this.receiveRooms(rooms));
+            });
+        };
+    }
+
+    requestFriends(){
+        return {type: REQUEST_FRIENDS};
+    }
+
+    receiveFriends(friends = {}){
+        return {
+            type: RECEIVE_FRIENDS,
+            friends
+        };
+    }
+
+    fetchFriends() {
+        return (dispatch) => {
+            dispatch(this.requestFriends());
+            return this.chatApi.fetchFriends().then((friends) => {
+                dispatch(this.receiveFriends(friends));
+            });
+        };
+    }
+
+    requestCreateRoom() {
+        return {
+            type: REQUEST_CREATE_ROOM,
+        };
+    }
+
+    receiveCreateRoom(room = {}) {
+        return {
+            type: RECEIVE_CREATE_ROOM,
+            room,
+        };
+    }
+
+    requestMessages() {
+        return {
+            type: REQUEST_MESSAGES,
+        };
+    }
+
+    receiveMessage(message) {
+        return {
+            type: RECEIVE_MESSAGE,
+            message,
+        };
+    }
+
+    fetchMessagesByRoomId(roomId) {
+        return (dispatch) => {
+            dispatch(this.requestMessages());
+            return this.chatApi.fetchMessagesByRoomId(roomId).then((messages) => {
+                messages.forEach( message => {
+                    dispatch(this.receiveMessage(message));
+                });
+            });
+        };
+    }
+
+    createRoom(room) {
+        return (dispatch) => {
+            dispatch(this.requestCreateRoom());
+            this.chatApi.createRoom(room);
+        };
+    }
+
 }
 
-export function createRoom(room) {
-    return (dispatch) => {
-        dispatch(requestCreateRoom());
-        chatApi.createRoom(room);
-    };
-}

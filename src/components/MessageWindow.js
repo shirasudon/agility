@@ -9,12 +9,12 @@ class MessageWindow extends Component {
 
     render() {
 
-        const { currentRoom, session, entities } = this.props;
-        const { messages, } = entities;
+        const { currentRoomId, session, entities } = this.props;
+        const { messages, rooms } = entities;
+        const currentRoom = rooms.byId[currentRoomId]; 
         const me = session.user;
-        console.log(session);
 
-        if(currentRoom === null){
+        if(currentRoomId === null){
             return (
                 <Card>
                     <CardContent>
@@ -25,19 +25,15 @@ class MessageWindow extends Component {
             );
         }
 
-        const roomMessages = messages.byRoomId[currentRoom.id];
+        const roomMessages = messages.byRoomId[currentRoomId];
         const messagesDOM = roomMessages ? 
             roomMessages.map((message, index) => {
-                console.log(me);
                 const direction = ( message.userId === me.id ) ? "right" : "left";
 
                 return (
-                    <div key={index}>
-                        <span>{message.postDate}</span>
-                        <Balloon direction={direction} >
+                        <Balloon key={index} direction={direction} postDate={message.postDate}>
                             {message.text}
                         </Balloon>
-                    </div>
                 );
         }):
         (<span>There is no conversation yet</span>);
@@ -56,8 +52,8 @@ class MessageWindow extends Component {
     }
 }
 
-const mapStateToProps = ({currentRoom, session, entities}) => ({
-    currentRoom,
+const mapStateToProps = ({currentRoomId, session, entities}) => ({
+    currentRoomId,
     session,
     entities,
 });

@@ -53,7 +53,7 @@ const styleSheet = theme => ({
 class Balloon extends Component {
 
     render() {
-        const {classes, children} = this.props;
+        const {classes, children, postDate} = this.props;
         let {direction} = this.props;
         if(!direction){
             direction = RIGHT;
@@ -63,6 +63,7 @@ class Balloon extends Component {
         return (
             <Grid container justify={justify}>
                 <Grid item xs={6}>
+                    <span>{postDate}</span>
                     <div className={balloonStyle}>
                         {children}
                     </div>

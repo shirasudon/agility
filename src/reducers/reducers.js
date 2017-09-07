@@ -6,12 +6,13 @@ import {
     RECEIVE_ROOM_INFO, 
     REQUEST_CREATE_ROOM,
     RECEIVE_MESSAGE, 
+    CHANGE_ROOM,
 } from '../actions/actionTypes';
 
-export function currentRoom(state = null, action) {
+export function currentRoomId(state = null, action) {
     switch (action.type) {
-        case RECEIVE_ROOM_INFO:
-            return action.room;
+        case CHANGE_ROOM:
+            return action.roomId;
         default:
             return state;
     }
@@ -22,7 +23,7 @@ function friends(state = {byUsername: {}, all: []}, action){
         case RECEIVE_FRIENDS:
             let newState = {byUsername: {}, all: []};
             action.friends.forEach((f, index) => {
-                newState["byUsername"][f.username] = Object.assign({}, f);
+                newState.byUsername[f.username] = Object.assign({}, f);
                 newState.all.push(f.username);
             });
             return newState;
@@ -31,17 +32,19 @@ function friends(state = {byUsername: {}, all: []}, action){
     }
 }
 
-function room(state = {id: null, name: null, members: []}, action){
+function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             return Object.assign({}, state, {
                 members: action.members,
+                initialFetch: true,
             });
 
         case RECEIVE_ROOMS:
             return Object.assign({}, state, {
                 id: action.id,
                 name: action.name,
+                initialFetch: false,
             });
 
         default:

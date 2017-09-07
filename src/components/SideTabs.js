@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { ListItem, ListItemText } from 'material-ui/List';
 
-import {enterRoom} from "../actions/chat";
+import {chatActionCreator} from "../actions";
 
 
 const TabContainer = props => (
@@ -54,6 +54,7 @@ class SideTabs extends Component {
         const roomList = rooms.all.map(
             (roomId, index) => {
                 const room = rooms.byId[roomId];
+                const shouldFetch = room.initialFetch;
                 return (
                     <ListItem button key={index}>
                         <ListItemText
@@ -94,7 +95,7 @@ const mapStateToProps = ({entities}) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     enterRoom: (roomId) => {
-        dispatch(enterRoom(roomId));
+        dispatch(chatActionCreator.enterRoom(roomId));
     },
 });
 
