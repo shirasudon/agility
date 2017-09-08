@@ -33,6 +33,10 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
         
-      # run tests!
-      - run: yarn test -- --coverage
+      - run:
+          name: Run test
+          command: yarn test -- --coverage
+      - run:
+          name: Upload coverage to codecov
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
