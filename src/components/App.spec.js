@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { shallow } from 'enzyme'
 
-xit('renders without crashing', () => {
+it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<App />, div);
+    shallow(<App />, div);
 });
+
+// TODO: do render test
