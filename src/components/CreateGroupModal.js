@@ -2,25 +2,31 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withStyles, } from 'material-ui/styles';
 
-import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import Dialog, { DialogContent } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import List, { ListItem, ListItemText, } from 'material-ui/List';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from 'material-ui-icons/Close';
 import Slide from 'material-ui/transitions/Slide';
-import Button from 'material-ui/Button';
+// import Button from 'material-ui/Button';
+import CircularProgressButton from './CircularProgressButton';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
-import {CircularProgress} from 'material-ui/Progress';
 
 import ChipsArray from './ChipsArray';
 import {chatActionCreator} from '../actions';
 
 const styleSheet = theme => ({
+    appBar: {
+        position: 'relative',
+    },
     flex: {
         flex: 1,
+    },
+    dialogContent: {
+        marginTop: '50px',
     },
 });
 
@@ -33,6 +39,7 @@ class CreateGroupModal extends Component {
             selectedUsers: [],
             roomName: '',
             searchText: '',
+            status: "normal",
         }
 
         this.handleAddChip = this.handleAddChip.bind(this);
@@ -66,6 +73,7 @@ class CreateGroupModal extends Component {
     handleCreateRoomClick() {
         const {createRoom} = this.props;
         const {selectedUsers, roomName} = this.state;
+        this.setState( {status: "loading"} )
         createRoom(selectedUsers, roomName);
     }
 
@@ -114,8 +122,7 @@ class CreateGroupModal extends Component {
                 fullScreen
                 transition={<Slide direction="up" />}
             >
-                {isRequesting && <CircularProgress size={80} thickness={5} />}
-                <AppBar>
+                <AppBar className={classes.appBar}>
                     <Toolbar>
                         <IconButton color="contrast" onClick={closeModal} aria-label="Close">
                             <CloseIcon />
@@ -125,59 +132,61 @@ class CreateGroupModal extends Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <DialogTitle>グループ作成</DialogTitle>
-                <Grid container justify="center">
-                    <Grid item xs={5}>
-                        <TextField
-                            id="roomName"
-                            value={roomName}
-                            InputProps={{ placeholder: 'Type room name here!' }}
-                            onChange={this.handleRoomNameChange}
-                            fullWidth
-                            margin="normal"
-                        />
+                <DialogContent className={classes.dialogContent}>
+                    <Grid container justify="center">
+                        <Grid item xs={5}>
+                            <TextField
+                                id="roomName"
+                                value={roomName}
+                                InputProps={{ placeholder: 'Type room name here!' }}
+                                onChange={this.handleRoomNameChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={1}>
+                            <CircularProgressButton
+                                raised
+                                color="primary"
+                                onClick={() => {this.handleCreateRoomClick()}}
+                                status={ this.state.status }
+                            >
+                                Go
+                            </CircularProgressButton>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={1}>
-                        <Button
-                            raised
-                            color="primary"
-                            onClick={()=>{}}
-                        >
-                            Go!
-                        </Button>
+                    <Grid container justify="center">
+                        <Grid item xs={6}>
+                            <ChipsArray
+                                chipData={chipData}
+                                handleRequestDelete={this.handleDeleteChip}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid container justify="center">
-                    <Grid item xs={6}>
-                        <ChipsArray
-                            chipData={chipData}
-                            handleRequestDelete={this.handleDeleteChip}
-                        />
+                    <Grid container justify="center">
+                        <Grid item xs={6}>
+                            <TextField
+                                id="search-friend"
+                                value={searchText}
+                                InputProps={{ placeholder: 'Search Your friends!' }}
+                                onChange={this.handleSearchTextChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid container justify="center">
-                    <Grid item xs={6}>
-                        <TextField
-                            id="search-friend"
-                            value={searchText}
-                            InputProps={{ placeholder: 'Search Your friends!' }}
-                            onChange={this.handleSearchTextChange}
-                            fullWidth
-                            margin="normal"
-                        />
+                    <Grid container justify="center">
+                        <Grid item xs={6}>
+                            {matchedUserList.length > 0 ? (
+                                    <List>
+                                        {matchedUserList}
+                                    </List>
+                                ):
+                                <span>No matched User</span>
+                            }
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid container justify="center">
-                    <Grid item xs={6}>
-                        {matchedUserList.length > 0 ? (
-                                <List>
-                                    {matchedUserList}
-                                </List>
-                            ):
-                            <span>No matched User</span>
-                        }
-                    </Grid>
-                </Grid>
+                </DialogContent>
             </Dialog>
         );
     }
@@ -194,6 +203,7 @@ const mapDispatchToProps = (dispatch) => ({
             users,
             roomName,
         };
+        console.log(room);
         dispatch(chatActionCreator.createRoom(room));
     },
 });
