@@ -2,8 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import CircularProgressButton from './CircularProgressButton'
 import Button from 'material-ui/Button'
+import { createShallow } from 'material-ui/test-utils'
 
-import { mount, shallow, render } from 'enzyme'
+let shallow;
+
+beforeAll(() => {
+    shallow = createShallow({ dive: true });
+});
 
 it('renders without crashing', () => {
     const div = document.createElement('div');
@@ -12,7 +17,7 @@ it('renders without crashing', () => {
 
 it('calls onClick method when loading is off and onClick is passed to the component', () => {
     const onClick = jest.fn()
-    const wrapper = mount(<CircularProgressButton onClick={onClick}/>)
+    const wrapper = shallow(<CircularProgressButton onClick={onClick}/>)
     const button = wrapper.find(Button)
     expect(button.length).toBe(1)
     button.simulate('click')
@@ -21,7 +26,7 @@ it('calls onClick method when loading is off and onClick is passed to the compon
 
 it('does not call onClick method when loading is on', () => {
     const onClick = jest.fn()
-    const wrapper = mount(<CircularProgressButton status='loading' onClick={onClick}/>)
+    const wrapper = shallow(<CircularProgressButton status='loading' onClick={onClick}/>)
     const button = wrapper.find(Button)
     expect(button.length).toBe(1)
     button.simulate('click')
@@ -30,7 +35,7 @@ it('does not call onClick method when loading is on', () => {
 
 it('does not call onClick method when onClick is undefined', () => {
     const onClick = jest.fn()
-    const wrapper = mount(<CircularProgressButton status='loading'/>)
+    const wrapper = shallow(<CircularProgressButton status='loading'/>)
     const button = wrapper.find(Button)
     expect(button.length).toBe(1)
     button.simulate('click')
