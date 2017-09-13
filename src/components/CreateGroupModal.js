@@ -9,7 +9,6 @@ import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from 'material-ui-icons/Close';
 import Slide from 'material-ui/transitions/Slide';
-// import Button from 'material-ui/Button';
 import CircularProgressButton from './CircularProgressButton';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
@@ -77,23 +76,17 @@ class CreateGroupModal extends Component {
         createRoom(selectedUsers, roomName);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        const currentStatus = this.state.status;
-        const prevStatus = prevState.status;
-        // if (currentStatus == ""
-    }
-
     render(){
         const {
-            showModal,
+            ui,
             closeModal,
             entities,
-            ui,
             classes,
         } = this.props;
 
+        const { showModal } = ui.createGroup;
+
         const { friends } = entities;
-        const { isRequesting } = ui;
 
         const {selectedUsers, searchText, roomName} = this.state;
 
@@ -124,7 +117,7 @@ class CreateGroupModal extends Component {
         return (
             <Dialog
                 open={showModal}
-                onRequestClose={closeModal}
+                onRequestClose={ closeModal }
                 fullScreen
                 transition={<Slide direction="up" />}
             >
@@ -155,7 +148,6 @@ class CreateGroupModal extends Component {
                                 raised
                                 color="primary"
                                 onClick={() => {this.handleCreateRoomClick()}}
-                                status={ this.state.status }
                             >
                                 Go
                             </CircularProgressButton>
@@ -211,6 +203,9 @@ const mapDispatchToProps = (dispatch) => ({
         };
         dispatch(chatActionCreator.createRoom(room));
     },
+    closeModal: () => {
+        dispatch(chatActionCreator.closeCreateGroupModal())
+    }
 });
 
 const StyledCreateGroupModal = withStyles(styleSheet)(CreateGroupModal);

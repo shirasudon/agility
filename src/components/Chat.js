@@ -11,37 +11,19 @@ import MessageWindow from './MessageWindow';
 
 class Chat extends Component {
 
-    constructor(props){
-        super(props);
-
-        this.state = {
-            showModal: false,
-        };
-
-        this.openCreateGroupModal = this.openCreateGroupModal.bind(this);
-        this.closeCreateGroupModal = this.closeCreateGroupModal.bind(this);
-    }
-
     componentDidMount(){
         const {fetchRooms, fetchFriends} = this.props;
         fetchRooms();
         fetchFriends();
     }
 
-    openCreateGroupModal() {
-        this.setState({ showModal: true }); 
-    }
-
-    closeCreateGroupModal() {
-        this.setState({ showModal: false });
-    }
-
     render() {
+        const openModal = this.props.openCreateGroupModal;
         return (
             <Grid container justify="center">
                 <Grid item xs={3}>
-                    <CreateGroupModal showModal={this.state.showModal} closeModal={this.closeCreateGroupModal} />
-                    <Button onClick={this.openCreateGroupModal} >
+                    <CreateGroupModal />
+                    <Button onClick={openModal} >
                     グループ作成
                     </Button>
                     <SideTabs/>
@@ -71,6 +53,13 @@ const mapDispatchToProps = (dispatch) => ({
     fetchFriends: () => {
         dispatch(chatActionCreator.fetchFriends());
     },
+    openCreateGroupModal: () => {
+        dispatch(chatActionCreator.openCreateGroupModal());
+    },
+    closeCreateGroupModal: () => {
+        dispatch(chatActionCreator.closeCreateGroupModal());
+    }
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

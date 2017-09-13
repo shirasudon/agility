@@ -5,12 +5,13 @@ import {
     RECEIVE_ROOM_INFO,
     RECEIVE_ROOMS,
     REQUEST_ROOMS,
-    REQUEST_ROOM,
     REQUEST_CREATE_ROOM,
     RECEIVE_CREATE_ROOM,
     REQUEST_MESSAGES,
     RECEIVE_MESSAGE,
     CHANGE_ROOM,
+    OPEN_CREATE_GROUP_MODAL,
+    CLOSE_CREATE_GROUP_MODAL,
 } from './actionTypes'
 
 
@@ -156,5 +157,16 @@ export default class ChatActionCreator {
         };
     }
 
+    openCreateGroupModal() {
+        return {
+            type: OPEN_CREATE_GROUP_MODAL,
+        }
+    }
+
+    closeCreateGroupModal() {
+        return {
+            type: CLOSE_CREATE_GROUP_MODAL,
+        }
+    }
 }
 

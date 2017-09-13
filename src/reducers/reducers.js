@@ -4,10 +4,10 @@ import {
     RECEIVE_FRIENDS,
     RECEIVE_ROOMS,
     RECEIVE_ROOM_INFO,
-    REQUEST_CREATE_ROOM,
     RECEIVE_MESSAGE,
     CHANGE_ROOM, RECEIVE_CREATE_ROOM,
 } from '../actions/actionTypes';
+
 
 export function currentRoomId(state = null, action) {
     switch (action.type) {
@@ -115,23 +115,6 @@ export function messages(
             return state;
     }
 }
-
-
-const uiCreateGroup = (state = {isRequesting: false}, action) => {
-    switch (action.type) {
-        case "TODO":
-            return Object.assign({}, state, {
-                isRequesting: true,
-            });
-        case RECEIVE_ROOMS:
-        default:
-            return state;
-    }
-}
-
-export const ui = combineReducers({
-    uiCreateGroup,
-})
 
 export const entities = combineReducers({
     friends,

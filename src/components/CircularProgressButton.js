@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import green from 'material-ui/colors/green';
 import Button from 'material-ui/Button';
-import CheckIcon from 'material-ui-icons/Check';
-import AddIcon from 'material-ui-icons/Add';
+
 
 const styles = {
     wrapper: {
@@ -26,7 +26,7 @@ const styles = {
     },
 };
 
-class CircularProgressButton extends Component {
+export class CircularProgressButton extends Component {
 
     constructor(props) {
         super(props)
@@ -34,19 +34,18 @@ class CircularProgressButton extends Component {
     }
 
     handleButtonClick() {
-        const { status, onClick } = this.props;
-        if ( status !== 'loading' && onClick ) { // if not loading and onClick is callable
+        const { onClick, ui } = this.props;
+        console.log(ui.createGroup.isRequesting)
+        if ( !ui.createGroup.isRequesting && onClick ) { // if not loading and onClick is callable
             onClick()
         }
     }
 
     render() {
-        const { children, classes, status } = this.props;
-        let buttonClass = '';
+        const { children, classes, ui } = this.props;
+        const { isRequesting } = ui.createGroup;
 
-        // if ( status === 'success') {
-        //     buttonClass = classes.successButton + ' successButton';
-        // }
+        let buttonClass = '';
 
         return (
             <div className={classes.wrapper}>
@@ -56,9 +55,9 @@ class CircularProgressButton extends Component {
                     onClick={this.handleButtonClick}
                     raised={this.props.raised}
                     color={this.props.color} >
-                    { status === "success" ? <CheckIcon /> : <AddIcon />} {children}
+                    {children}
                 </Button>
-                { status === "loading" && <CircularProgress size={60} className={classes.progress} />}
+                { isRequesting && <CircularProgress size={60} className={classes.progress} />}
             </div>
         );
     }
@@ -67,7 +66,16 @@ class CircularProgressButton extends Component {
 CircularProgressButton.propTypes = {
     classes: PropTypes.object.isRequired,
     onClick: PropTypes.func,
-    status: PropTypes.string,
 };
 
-export default withStyles(styles)(CircularProgressButton);
+const mapStateToProps = ({ ui }) => ({
+    ui,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+});
+
+
+const StyledCircularProgressButton = withStyles(styles)(CircularProgressButton);
+
+export default connect(mapStateToProps, mapDispatchToProps)(StyledCircularProgressButton);

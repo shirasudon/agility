@@ -32,6 +32,11 @@
     "mock-socket": "^7.0.0"
   },
   "jest": {
-    "collectCoverageFrom" : ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**", "!**/*Stub.{js,jsx}"]
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**",
+      "!**/*Stub.{js,jsx}"
+    ]
   }
 }

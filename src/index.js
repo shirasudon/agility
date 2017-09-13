@@ -1,24 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {combineReducers, createStore, applyMiddleware} from 'redux';
-import {sessionService, sessionReducer as session} from 'redux-react-session';
+import { createStore, applyMiddleware } from 'redux';
+import { sessionService } from 'redux-react-session';
 import thunk from 'redux-thunk';
 
+import reducer from './reducers'
 import './index.css';
 import App from './components/App';
-import {entities, currentRoomId, ui} from './reducers/reducers';
 import registerServiceWorker from './registerServiceWorker';
 
-const rootReducer = combineReducers({
-    session,
-    entities,
-    currentRoomId,
-    ui,
-});
-
 const store = createStore(
-    rootReducer,
+    reducer,
     applyMiddleware(thunk)
 );
 
