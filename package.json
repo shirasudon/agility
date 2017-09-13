@@ -30,5 +30,8 @@
   "devDependencies": {
     "jest": "^20.0.4",
     "mock-socket": "^7.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom" : ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**", "!**/*Stub.{js,jsx}"]
   }
 }
