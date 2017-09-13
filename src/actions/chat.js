@@ -66,7 +66,6 @@ export default class ChatActionCreator {
 
             return Promise.all([p1, p2]).then( () => {
                 dispatch(this.changeRoom(roomId));
-                console.log("Enter room done");
             });
         }
     }
@@ -117,7 +116,7 @@ export default class ChatActionCreator {
         };
     }
 
-    receiveCreateRoom(room = {}) {
+    receiveCreateRoom(room) {
         return {
             type: RECEIVE_CREATE_ROOM,
             room,
@@ -151,7 +150,9 @@ export default class ChatActionCreator {
     createRoom(room) {
         return (dispatch) => {
             dispatch(this.requestCreateRoom());
-            this.chatApi.createRoom(room);
+            return this.chatApi.createRoom(room).then( room => {
+                dispatch(this.receiveCreateRoom(room));
+            });
         };
     }
 

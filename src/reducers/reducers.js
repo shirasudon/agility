@@ -1,12 +1,12 @@
 import {combineReducers} from 'redux';
 
 import {
-    RECEIVE_FRIENDS, 
+    RECEIVE_FRIENDS,
     RECEIVE_ROOMS,
-    RECEIVE_ROOM_INFO, 
+    RECEIVE_ROOM_INFO,
     REQUEST_CREATE_ROOM,
-    RECEIVE_MESSAGE, 
-    CHANGE_ROOM,
+    RECEIVE_MESSAGE,
+    CHANGE_ROOM, RECEIVE_CREATE_ROOM,
 } from '../actions/actionTypes';
 
 export function currentRoomId(state = null, action) {
@@ -35,12 +35,14 @@ function friends(state = {byUsername: {}, all: []}, action){
 function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
+            const r = action.room;
             return Object.assign({}, state, {
-                members: action.members,
+                members: r.members,
                 initialFetch: true,
             });
 
         case RECEIVE_ROOMS:
+        case RECEIVE_CREATE_ROOM:
             return Object.assign({}, state, {
                 id: action.id,
                 name: action.name,
@@ -56,23 +58,32 @@ function room(state = {id: null, name: null, members: [], initialFetch: false}, 
 function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_ROOMS: {
-            let newState = {byId: {}, all: []};
-            action.rooms.forEach((r, index) => {
-                newState.byId[r.id] = room(state.byId[action.id], {type: action.type, ...r});
+            let newState = Object.assign({}, state)
+            action.rooms.forEach( r => {
+                newState.byId[r.id] = room(state.byId[r.id], {type: action.type, ...r});
                 newState.all.push(r.id);
             });
             return newState;
         }
 
         case RECEIVE_ROOM_INFO: {
+            const r = action.room;
             let newState = Object.assign(
                 {},
                 state
             );
-
-            newState.byId[action.id] = room(state.byId[action.id], action);
+            newState.byId[r.id] = room(state.byId[r.id], action);
             return newState;
         }
+
+        case RECEIVE_CREATE_ROOM: {
+            const r = action.room;
+            let newState = Object.assign({}, state);
+            newState.byId[r.id] = room(state.byId[r.id], {type: action.type, ...r} );
+            newState.all.push(r.id);
+            return newState;
+        }
+
         default:
             return state;
     }
@@ -105,18 +116,22 @@ export function messages(
     }
 }
 
-export function ui(state = {isRequesting: false,}, action) {
+
+const uiCreateGroup = (state = {isRequesting: false}, action) => {
     switch (action.type) {
-        case REQUEST_CREATE_ROOM:
-            return Object.assign(
-                {},
-                state,
-                {isRequesting: true}
-            );
+        case "TODO":
+            return Object.assign({}, state, {
+                isRequesting: true,
+            });
+        case RECEIVE_ROOMS:
         default:
             return state;
     }
 }
+
+export const ui = combineReducers({
+    uiCreateGroup,
+})
 
 export const entities = combineReducers({
     friends,

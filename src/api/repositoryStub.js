@@ -69,12 +69,12 @@ const rooms = [
     {
         "id": 1,
         "name": "吉野家",
-        "users": [3, 4, 8]
+        "members": [3, 4, 8]
     },
     {
         "id": 2,
         "name": "テニス部",
-        "users": [1, 3, 7]
+        "members": [1, 3, 7]
     }
 ];
 
@@ -146,6 +146,17 @@ export class RoomTable {
 
     static getAllRooms(){
         return rooms.slice();
+    }
+
+    static addRoom(room) {
+        const ids = rooms.map( room => room.id);
+        const nextId = Math.max(...ids) + 1;
+        const newRoom = {
+            id: nextId,
+            ...room,
+        }
+        rooms.push(newRoom);
+        return newRoom;
     }
 
 }

@@ -8,7 +8,6 @@ import Balloon from './Balloon';
 class MessageWindow extends Component {
 
     render() {
-
         const { currentRoomId, session, entities } = this.props;
         const { messages, rooms } = entities;
         const currentRoom = rooms.byId[currentRoomId]; 

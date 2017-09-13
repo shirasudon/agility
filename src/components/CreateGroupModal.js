@@ -77,6 +77,12 @@ class CreateGroupModal extends Component {
         createRoom(selectedUsers, roomName);
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        const currentStatus = this.state.status;
+        const prevStatus = prevState.status;
+        // if (currentStatus == ""
+    }
+
     render(){
         const {
             showModal,
@@ -200,10 +206,9 @@ const mapStateToProps = ({entities, ui}) => ({
 const mapDispatchToProps = (dispatch) => ({
     createRoom: (users, roomName = null) => {
         const room = {
-            users,
-            roomName,
+            members: users,
+            name: roomName,
         };
-        console.log(room);
         dispatch(chatActionCreator.createRoom(room));
     },
 });

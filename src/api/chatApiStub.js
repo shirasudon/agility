@@ -24,8 +24,13 @@ export function fetchMessagesByRoomId(roomId) {
     return Promise.resolve(messages);
 }
 
-export function createRoom(room){
-    console.log("createRoom is called");
-    console.log(room);
+export function createRoom(room) {
+    const newRoom = RoomTable.addRoom(room);
+    return new Promise( resolve => {
+        setTimeout(
+            () => { resolve(newRoom) }
+            , 1500
+        ) // return after 1.5 second
+    });
 }
 

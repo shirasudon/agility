@@ -216,7 +216,26 @@ it("fetches messages by room ID", () => {
     })
 })
 
-xit("create a room", () => {
-    //TODO: add test
-    fail("Not implemented")
+it("send a request to create a room", () => {
+    const mockApi = {
+        createRoom: (room) => {
+            return Promise.resolve(room)
+        },
+    };
+
+    const cac = new ChatActionCreator(mockApi)
+
+    const room = {
+        id: 2,
+        name: "room"
+    };
+    const expectedActions = [
+        { type: 'REQUEST_CREATE_ROOM' },
+        { type: 'RECEIVE_CREATE_ROOM', room}
+    ]
+    const store = mockStore({})
+
+    store.dispatch(cac.createRoom(room)).then( () => {
+        expect(store.getActions()).toEqual(expectedActions)
+    })
 })

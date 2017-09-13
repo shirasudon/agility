@@ -18,7 +18,7 @@ class App extends Component {
                     <Navbar />
                     <Switch>
                         <Route exact={true} path="/" component={Home} />
-                        <PrivateRoute exact={true} path="/chat" component={Chat} />
+                        <PrivateRoute path="/chat" component={Chat} />
                         <Route exact={true} path="/login" component={LoginForm} />
                         <Route component={NoMatch} />
                     </Switch>
