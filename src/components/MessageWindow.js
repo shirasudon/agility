@@ -3,9 +3,32 @@ import {connect} from 'react-redux';
 
 import Card, { CardHeader, CardContent,} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
 import Balloon from './Balloon';
+import { KEY_ENTER } from '../keyCodes.js';
+
 
 class MessageWindow extends Component {
+
+    constructor(props) {
+        super(props); 
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.state = {
+            curText: '',
+        }
+    }
+
+    handleKeyDown(e) {
+        switch (e.keyCode){
+        case KEY_ENTER: 
+            console.log("ENTER is pressed");
+            break;
+        default:
+            const newText = this.state.curText + e.key;
+            this.setState({curText: newText});
+            break;
+        }
+    }
 
     render() {
         const { currentRoomId, session, entities } = this.props;
@@ -38,15 +61,27 @@ class MessageWindow extends Component {
         (<span>There is no conversation yet</span>);
         
         return (
-            <Card>
-                <CardHeader
-                    title={currentRoom.name}
-                />
-                <Divider/>
-                <CardContent>
-                    {messagesDOM}
-                </CardContent>
-            </Card>
+            <div>
+                <Card>
+                    <CardHeader
+                        title={currentRoom.name}
+                    />
+                    <Divider/>
+                    <CardContent>
+                        {messagesDOM}
+                        <TextField
+                            id="post-text-field"
+                            InputProps={{ placeholder: 'Press enter to send message!' }}
+                            fullWidth
+                            autoFocus={true}
+                            onKeyDown={this.handleKeyDown}
+                            value={this.state.curText}
+                            margin="normal"
+                        />
+                    </CardContent>
+                </Card>
+
+            </div>
         );
     }
 }
