@@ -45,28 +45,20 @@ export class CircularProgressButton extends Component {
         const { children, classes, ui } = this.props;
         const { isRequesting } = ui.createGroup;
 
-        let buttonClass = '';
-
         return (
             <div className={classes.wrapper}>
                 <Button 
                     fab
-                    className={buttonClass} 
                     onClick={this.handleButtonClick}
                     raised={this.props.raised}
                     color={this.props.color} >
-                    {children}
+                    {children || ''} // if no children is found simply assign empty string
                 </Button>
                 { isRequesting && <CircularProgress size={60} className={classes.progress} />}
             </div>
         );
     }
 }
-
-CircularProgressButton.propTypes = {
-    classes: PropTypes.object.isRequired,
-    onClick: PropTypes.func,
-};
 
 const mapStateToProps = ({ ui }) => ({
     ui,
