@@ -36,7 +36,8 @@
       "**/*.{js,jsx}",
       "!**/node_modules/**",
       "!**/vendor/**",
-      "!**/*Stub.{js,jsx}"
+      "!**/*Stub.{js,jsx}",
+      "!**/mock/*.{js,jsx}"
     ]
   }
 }
