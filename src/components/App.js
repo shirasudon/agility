@@ -9,7 +9,15 @@ import Chat from './Chat';
 import Navbar from './Navbar';
 import PrivateRoute from './PrivateRoute';
 
+import { WebSocketClient } from '../api/socket'
+
+import { WebSocket } from 'mock-socket' // TODO: this line should be deleted when the real socket connection is ready
+
 class App extends Component {
+
+    constructor(props) {
+        super(props); 
+    }
 
     render() {
         return (

@@ -34,3 +34,6 @@ export function createRoom(room) {
     });
 }
 
+export function sendMessage(message) {
+     
+}

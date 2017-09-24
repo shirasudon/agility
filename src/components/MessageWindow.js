@@ -6,28 +6,33 @@ import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Balloon from './Balloon';
 import { KEY_ENTER } from '../keyCodes.js';
-
+import { chatActionCreator } from '../actions'
 
 class MessageWindow extends Component {
 
     constructor(props) {
         super(props); 
-        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.state = {
             curText: '',
         }
     }
 
-    handleKeyDown(e) {
-        switch (e.keyCode){
-        case KEY_ENTER: 
-            console.log("ENTER is pressed");
-            break;
-        default:
-            const newText = this.state.curText + e.key;
-            this.setState({curText: newText});
-            break;
-        }
+    handleKeyPress(e) {
+        switch  (e.which) {
+            case KEY_ENTER:
+                this.props.sendMessage({
+                    body: this.state.curText,
+                })
+                
+            default:
+                break;
+        } 
+    }
+
+    handleChange(e) {
+        this.setState({curText: e.target.value});
     }
 
     render() {
@@ -74,7 +79,8 @@ class MessageWindow extends Component {
                             InputProps={{ placeholder: 'Press enter to send message!' }}
                             fullWidth
                             autoFocus={true}
-                            onKeyDown={this.handleKeyDown}
+                            onChange={this.handleChange}
+                            onKeyPress={this.handleKeyPress}
                             value={this.state.curText}
                             margin="normal"
                         />
@@ -92,4 +98,10 @@ const mapStateToProps = ({currentRoomId, session, entities}) => ({
     entities,
 });
 
-export default connect(mapStateToProps, null)(MessageWindow);
+const mapDispatchToProps = (dispatch) => ({
+    sendMessage: (message) => {
+        dispatch(chatActionCreator.sendMessage(message));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessageWindow);

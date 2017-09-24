@@ -12,6 +12,7 @@ import {
     CHANGE_ROOM,
     OPEN_CREATE_GROUP_MODAL,
     CLOSE_CREATE_GROUP_MODAL,
+    SEND_CHAT_MESSAGE,
 } from './actionTypes'
 
 
@@ -166,6 +167,13 @@ export default class ChatActionCreator {
     closeCreateGroupModal() {
         return {
             type: CLOSE_CREATE_GROUP_MODAL,
+        }
+    }
+
+    sendMessage(message) {
+        return {
+            type: SEND_CHAT_MESSAGE,
+            data: message,
         }
     }
 }

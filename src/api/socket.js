@@ -6,9 +6,10 @@ const INIT_AUTO_RECONNECT_INTERVAL = 5 * 1000; // 5 sec
  *
  * Reference: https://github.com/websockets/ws/wiki/Websocket-client-implementation-for-auto-reconnect 
  */ 
-class WebSocketClient {
-    constructor(){
+export class WebSocketClient {
+    constructor(socketClass: WebSocket){
         this.init();
+        this.socketClass = socketClass;
     } 
 
     init() {
@@ -17,7 +18,7 @@ class WebSocketClient {
 
     open(url) {
         this.url = url;
-        this.socket = new WebSocket(this.url);
+        this.socket = new this.socketClass(this.url);
         this.socket.onopen = (e) => {
             this.init();
             this.onOpen(e);
@@ -63,9 +64,12 @@ class WebSocketClient {
             this.open(this.url);
         }, this.autoReconnectInterval);
     }
+
+    send(data, option) {
+        try {
+            this.socket.send(data,option);
+        } catch (e){
+            this.socket.emit('error',e);
+        }
+    }
 }
-
-const socket = new WebSocketClient();
-socket.open("ws://localhost:8080");
-
-export default socket;
