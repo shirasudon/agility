@@ -14,7 +14,7 @@ const styleSheet = theme => ({
     },
 });
 
-class ChipsArray extends Component {
+export class ChipsArray extends Component {
 
     styles = {
         chip: {
