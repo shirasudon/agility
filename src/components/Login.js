@@ -5,6 +5,7 @@ import {Redirect} from 'react-router';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
+import GridList from 'material-ui/GridList';
 import { withStyles } from 'material-ui/styles';
 
 import {login as loginAction} from '../actions/AuthActions';
