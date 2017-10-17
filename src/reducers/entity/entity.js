@@ -1,24 +1,14 @@
-import {combineReducers} from 'redux';
-
 import {
     RECEIVE_FRIENDS,
     RECEIVE_ROOMS,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
-    CHANGE_ROOM, RECEIVE_CREATE_ROOM,
-} from '../actions/actionTypes';
+    CHANGE_ROOM, 
+    RECEIVE_CREATE_ROOM,
+} from '../../actions/actionTypes';
 
 
-export function currentRoomId(state = null, action) {
-    switch (action.type) {
-        case CHANGE_ROOM:
-            return action.roomId;
-        default:
-            return state;
-    }
-}
-
-function friends(state = {byUsername: {}, all: []}, action){
+export function friends(state = {byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_FRIENDS:
             let newState = {byUsername: {}, all: []};
@@ -32,7 +22,7 @@ function friends(state = {byUsername: {}, all: []}, action){
     }
 }
 
-function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
+export function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             const r = action.room;
@@ -55,7 +45,7 @@ function room(state = {id: null, name: null, members: [], initialFetch: false}, 
 }
 
 
-function rooms(state = {byId: {}, all: []}, action){
+export function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_ROOMS: {
             let newState = Object.assign({}, state)
@@ -89,7 +79,7 @@ function rooms(state = {byId: {}, all: []}, action){
     }
 }
 
-function addMessage(currentMessages = [], message) {
+export function addMessage(currentMessages = [], message) {
     let newMessages = currentMessages.slice();
     newMessages.push(message);
     return newMessages;
@@ -115,10 +105,3 @@ export function messages(
             return state;
     }
 }
-
-export const entities = combineReducers({
-    friends,
-    rooms,
-    messages
-});
-

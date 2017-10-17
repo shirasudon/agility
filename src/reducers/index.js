@@ -1,14 +1,15 @@
 import { combineReducers } from 'redux';
 
-import { ui } from './ui';
+import * as ui from './ui';
 import { sessionReducer as session } from 'redux-react-session';
-import { entities, currentRoomId, } from './reducers';
+import * as entity from './entity';
+import * as domain from './domain'
 
 const rootReducer = combineReducers({
     session,
-    entities,
-    currentRoomId,
-    ui,
+    ...entity,
+    ...domain,
+    ...ui,
 });
 
 export default rootReducer;

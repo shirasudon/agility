@@ -1,17 +1,15 @@
-import {combineReducers} from 'redux';
-
 import {
     CLOSE_CREATE_GROUP_MODAL,
     OPEN_CREATE_GROUP_MODAL,
     RECEIVE_CREATE_ROOM,
     REQUEST_CREATE_ROOM
-} from "../actions/actionTypes";
+} from "../../actions/actionTypes";
 
-export const createGroup = (state =
+export function createGroup(state =
                          {isRequesting: false,
                              showModal: false
                          },
-                     action) => {
+                     action) {
 
     switch (action.type) {
         case OPEN_CREATE_GROUP_MODAL:
@@ -35,10 +33,3 @@ export const createGroup = (state =
             return state;
     }
 }
-
-export const ui = combineReducers({
-    createGroup,
-})
-
-export default ui;
-

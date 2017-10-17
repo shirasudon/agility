@@ -52,7 +52,7 @@ export class CircularProgressButton extends Component {
                     onClick={this.handleButtonClick}
                     raised={this.props.raised}
                     color={this.props.color} >
-                    {children || ''} // if no children is found simply assign empty string
+                    {children || ''} { /* if no children is found simply assign empty string */ }
                 </Button>
                 { isRequesting && <CircularProgress size={60} className={classes.progress} />}
             </div>

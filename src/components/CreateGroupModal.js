@@ -38,7 +38,6 @@ class CreateGroupModal extends Component {
             selectedUsers: [],
             roomName: '',
             searchText: '',
-            status: "normal",
         }
 
         this.handleAddChip = this.handleAddChip.bind(this);
@@ -72,7 +71,6 @@ class CreateGroupModal extends Component {
     handleCreateRoomClick() {
         const {createRoom} = this.props;
         const {selectedUsers, roomName} = this.state;
-        this.setState( {status: "loading"} )
         createRoom(selectedUsers, roomName);
     }
 

@@ -1,5 +1,5 @@
-import { createGroup } from './ui'
-import { chatActionCreator} from "../actions";
+import { createGroup } from './createGroup'
+import { chatActionCreator} from "../../actions";
 
 it('returns initialized state when no state is given', () => {
     expect(createGroup(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(
