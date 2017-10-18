@@ -25,9 +25,8 @@ export function friends(state = {byUsername: {}, all: []}, action){
 export function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
-            const r = action.room;
             return Object.assign({}, state, {
-                members: r.members,
+                members: action.members,
                 initialFetch: true,
             });
 
@@ -62,7 +61,7 @@ export function rooms(state = {byId: {}, all: []}, action){
                 {},
                 state
             );
-            newState.byId[r.id] = room(state.byId[r.id], action);
+            newState.byId[r.id] = room(state.byId[r.id], { type: action.type, ...r } );
             return newState;
         }
 
