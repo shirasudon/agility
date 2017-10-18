@@ -52,15 +52,21 @@ export default class ChatActionCreator {
         };
     }
 
-    enterRoom(roomId) {
+    enterRoom(roomId, initialFetch=false) {
         return (dispatch) => {
             const p1 = new Promise((resolve, reject) => {
+                if (!initialFetch) {
+                   return resolve();
+                }
                 dispatch(this.fetchRoomInfo(roomId)).then( () => {
                     resolve();
                 });
             });
 
             const p2 = new Promise((resolve, reject) => {
+                if (!initialFetch) {
+                    return resolve();
+                }
                 dispatch(this.fetchMessagesByRoomId(roomId)).then( () => {
                     resolve();
                 })

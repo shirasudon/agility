@@ -22,13 +22,16 @@ class MessageWindow extends Component {
     handleKeyPress(e) {
         switch  (e.which) {
             case KEY_ENTER:
+                const { currentRoomId } = this.props;
                 this.props.sendMessage({
+                    userId: this.props.session.user.id,
+                    roomId: currentRoomId,
                     body: this.state.curText,
                 })
-                
+                this.setState({curText: ""});
             default:
                 break;
-        } 
+        }
     }
 
     handleChange(e) {

@@ -1,4 +1,5 @@
 import { Server } from 'mock-socket'
+import * as moment from 'moment'
 
 let mockServer;
 
@@ -13,11 +14,19 @@ export default function startMockServer(url) {
         const message = JSON.parse(data)
         console.log(message);
         mockServer.send({
-            "id": 1,
-            "roomId": 1,
-            "userId": 3,
-            "text": "echoing " + message.data.body,
-            "postDate": "2017/08/05"
+            "id": Math.floor((Math.random() * 100) + 1),
+            "roomId": message.data.roomId,
+            "userId": message.data.userId,
+            "text": message.data.body,
+            "postDate": moment().format("YYYY/MM/DD")
+        });
+
+        mockServer.send({
+            "id": Math.floor((Math.random() * 100) + 1),
+            "roomId": message.data.roomId,
+            "userId": message.data.userId + Math.floor((Math.random() * 10) + 1),
+            "text": `echoing "${message.data.body}"`,
+            "postDate": moment().format("YYYY/MM/DD")
         });
     });
 }

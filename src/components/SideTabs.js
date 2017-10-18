@@ -23,6 +23,7 @@ class SideTabs extends Component {
         }
 
         this.onChange = this.onChange.bind(this);
+        this.enterRoom = this.enterRoom.bind(this);
     }
 
     onChange(event, index){
@@ -31,6 +32,11 @@ class SideTabs extends Component {
                 activeTab: index
             }
         );
+    }
+
+    enterRoom(roomId) {
+        const { rooms } = this.props.entities;
+        this.props.enterRoom(roomId, !rooms.byId[roomId].initialFetch)
     }
 
     render(){
@@ -54,12 +60,11 @@ class SideTabs extends Component {
         const roomList = rooms.all.map(
             (roomId, index) => {
                 const room = rooms.byId[roomId];
-                const shouldFetch = room.initialFetch;
                 return (
                     <ListItem button key={index}>
                         <ListItemText
                             primary={room.name}
-                            onClick={() => {this.props.enterRoom(roomId);}}
+                            onClick={() => {this.enterRoom(roomId);}}
                         />
                     </ListItem>
                 );
@@ -89,13 +94,14 @@ class SideTabs extends Component {
     }
 }
 
-const mapStateToProps = ({entities}) => ({
-    entities: entities,
+const mapStateToProps = ({entities, currentRoomId}) => ({
+    entities,
+    currentRoomId,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    enterRoom: (roomId) => {
-        dispatch(chatActionCreator.enterRoom(roomId));
+    enterRoom: (roomId, shouldFetch=false) => {
+        dispatch(chatActionCreator.enterRoom(roomId, shouldFetch));
     },
 });
 

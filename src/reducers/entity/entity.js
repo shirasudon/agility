@@ -90,7 +90,7 @@ export function messages(
         byId: {},
         byRoomId: {},
         all: [],
-    }, 
+    },
         action
 ) {
     switch (action.type) {
