@@ -92,8 +92,9 @@ it('dispatch enter room', () => {
         { type: "CHANGE_ROOM", roomId}
     ] // TODO: this test might fail depending on the execution order
     const store = mockStore({})
+    const initialFetch = true;
 
-    return store.dispatch(cac.enterRoom(roomId)).then(() => {
+    return store.dispatch(cac.enterRoom(roomId, initialFetch)).then(() => {
         expect(store.getActions()).toEqual(expectedActions)
     })
 })
