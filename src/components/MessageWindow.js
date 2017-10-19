@@ -55,7 +55,7 @@ class MessageWindow extends Component {
             );
         }
 
-        const roomMessages = messages.byRoomId[currentRoomId];
+        const roomMessages = messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
         const messagesDOM = roomMessages ? 
             roomMessages.map((message, index) => {
                 const direction = ( message.userId === me.id ) ? "right" : "left";
