@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, } from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
 import Chip from 'material-ui/Chip';
 
 const styleSheet = theme => ({
@@ -14,36 +14,24 @@ const styleSheet = theme => ({
     },
 });
 
-export class ChipsArray extends Component {
+export function ChipsArray(props) {
 
-    styles = {
-        chip: {
-            margin: 4,
-        },
-        wrapper: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-    };
+    const {classes, chipData, handleRequestDelete} = props;
 
-    render() {
-        const {classes, chipData, handleRequestDelete} = this.props;
-
-        return (
-            <div className={classes.row}>
-                {chipData.map(data => {
-                    return (
-                        <Chip
-                            label={data.label}
-                            key={data.key}
-                            onRequestDelete={()=>{handleRequestDelete(data);}}
-                            className={classes.chip}
-                        />
-                    );
-                })}
-                </div>
-        );
-    }
+    return (
+        <div className={classes.row}>
+            {chipData.map(data => {
+                return (
+                    <Chip
+                        label={data.label}
+                        key={data.key}
+                        onRequestDelete={()=>{handleRequestDelete(data);}}
+                        className={classes.chip}
+                    />
+                );
+            })}
+            </div>
+    );
 }
 
 ChipsArray.propTypes = {

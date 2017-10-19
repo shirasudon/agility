@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import { withStyles, } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
@@ -50,27 +50,24 @@ const styleSheet = theme => ({
 
 });
 
-class Balloon extends Component {
-
-    render() {
-        const {classes, children, postDate} = this.props;
-        let {direction} = this.props;
-        if(!direction){
-            direction = RIGHT;
-        }
-        const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft);
-        const justify = (direction === RIGHT ? "flex-end": "flex-start");
-        return (
-            <Grid container justify={justify}>
-                <Grid item xs={6}>
-                    <span>{postDate}</span>
-                    <div className={balloonStyle}>
-                        {children}
-                    </div>
-                </Grid>
-            </Grid>
-        );
+export function Balloon(props) {
+    const {classes, children, postDate} = props;
+    let {direction} = props;
+    if(!direction){
+        direction = RIGHT;
     }
+    const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft);
+    const justify = (direction === RIGHT ? "flex-end": "flex-start");
+    return (
+        <Grid container justify={justify}>
+            <Grid item xs={6}>
+                <span>{postDate}</span>
+                <div className={balloonStyle}>
+                    {children}
+                </div>
+            </Grid>
+        </Grid>
+    );
 }
 
 const mapStateToProps = () => ({

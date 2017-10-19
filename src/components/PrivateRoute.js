@@ -1,25 +1,23 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 
-class PrivateRoute extends Component {
+export function PrivateRoute(props) {
 
-    render() {
-        const {exact, path, authenticated, component: Component} = this.props;
-        return <Route
-            exact={exact}
-            path={path}
-            render={
-                props => (
-                    authenticated ?
-                        (<Component {...props} />) :
-                        (<Redirect to={{
-                            pathname: '/login',
-                        }}/>)
-                )
-            }
-        />;
-    }
+    const {exact, path, authenticated, component: Component} = props;
+    return <Route
+        exact={exact}
+        path={path}
+        render={
+            props => (
+                authenticated ?
+                    (<Component {...props} />) :
+                    (<Redirect to={{
+                        pathname: '/login',
+                    }}/>)
+            )
+        }
+    />;
 }
 
 const mapStateToProps = ({session}) => ({

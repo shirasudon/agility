@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import React, {Component} from 'react';
+import React from 'react';
 
 import { withStyles, } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -20,30 +20,23 @@ const styleSheet = theme => ({
     },
 });
 
-class Navbar extends Component {
-
-    render(){
-        const {authenticated, logout, classes} = this.props;
-        return(
-            <div className={classes.root}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography type="title" color="inherit" className={classes.flex}>
-                            Chat
-                        </Typography>
-                        {authenticated ?
-                            (
-                                <Button onClick={logout} color="contrast">Logout</Button>
-                            ):
-                            (
-                                <Button component={Link} to="/login" color="contrast">Login</Button>
-                            )
-                        }
-                    </Toolbar>
-                </AppBar>
-            </div>
-        );
-    }
+export function Navbar(props) {
+    const {authenticated, logout, classes} = props;
+    return(
+        <div className={classes.root}>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography type="title" color="inherit" className={classes.flex}>
+                        Chat
+                    </Typography>
+                    {authenticated ?
+                        ( <Button onClick={logout} color="contrast">Logout</Button>):
+                        ( <Button component={Link} to="/login" color="contrast">Login</Button>)
+                    }
+                </Toolbar>
+            </AppBar>
+        </div>
+    )
 }
 
 const mapDispatchToProps = (dispatch) => {
