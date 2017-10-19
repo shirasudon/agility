@@ -1,6 +1,6 @@
 import { sessionService } from 'redux-react-session';
 import SessionApiStub from '../api/sessionStub';
-import { LOGIN_SUCCESS } from './actionTypes';
+
 
 let sessionApi = SessionApiStub;
 
@@ -39,8 +39,3 @@ export const logout = () => {
     }
 }
 
-function loginSuccess(){
-    return {
-        type:  LOGIN_SUCCESS
-    }
-}

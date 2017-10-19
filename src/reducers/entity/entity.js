@@ -3,7 +3,6 @@ import {
     RECEIVE_ROOMS,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
-    CHANGE_ROOM, 
     RECEIVE_CREATE_ROOM,
 } from '../../actions/actionTypes';
 

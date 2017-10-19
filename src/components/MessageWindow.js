@@ -29,6 +29,7 @@ class MessageWindow extends Component {
                     body: this.state.curText,
                 })
                 this.setState({curText: ""});
+                break;
             default:
                 break;
         }
