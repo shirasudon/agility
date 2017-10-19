@@ -1,4 +1,4 @@
-import { friends, room, rooms } from './entity'
+import { friends, room, rooms, messages } from './entity'
 import {
     RECEIVE_FRIENDS,
     RECEIVE_ROOMS,
@@ -279,3 +279,39 @@ describe("rooms", () => {
 
 })
 
+describe("messages", () => {
+    it('returns initial state when undefined is given as state', () => {
+        const expected = {
+            byId: {},
+            byRoomId: {},
+            all: [],
+        }
+        expect(messages(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
+    })
+
+    it('add room on receiving RECEIVE_MESSAGE', () => {
+
+        const expected = {
+            byId: {
+                "5": {
+                    id: "5",
+                    roomId: "3"
+                }
+            },
+            byRoomId: {
+                "3": ["5"]
+            },
+            all: ["5"]
+        }
+
+        const action = {
+            type: RECEIVE_MESSAGE,
+            message: {
+                id: "5",
+                roomId: "3",
+            }
+        }
+        expect(messages(undefined, action)).toEqual(expected)
+    })
+
+})

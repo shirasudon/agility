@@ -94,10 +94,10 @@ export function messages(
 ) {
     switch (action.type) {
         case RECEIVE_MESSAGE:
-            const {id, roomId, } = action.message;
+            const { id, roomId, } = action.message;
             let newState = Object.assign({}, state);
             newState.all.push(id);
-            newState.byRoomId[roomId] = addMessage(newState.byRoomId[roomId], action.message);
+            newState.byRoomId[roomId] = addMessage(newState.byRoomId[roomId], action.message.id);
             newState.byId[id] = action.message;
             return newState;
         default:
