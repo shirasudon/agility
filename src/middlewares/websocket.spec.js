@@ -1,4 +1,5 @@
-import { initializeWebSocket, createWebSocketMiddleware } from './websocket'
+import { setupConnection, initializeWebSocket, createWebSocketMiddleware } from './websocket'
+import { Server as MockServer } from 'mock-socket';
 
 const create = () => {
     const store = {
@@ -15,8 +16,21 @@ const create = () => {
     return { store, setupFunc, connection, next, }
 }
 
-
 const endpoint = "ws://endpoint.com"
+
+describe("setupConnection", () => {
+    it("sets lister methods and connects to the websocket server at the end", () => {
+        const { store } = create()
+        const mockServer = new MockServer(endpoint);
+        mockServer.on('connection', server => {
+            mockServer.send(JSON.stringify({data: "dummy message"}))
+        })
+        const connection = setupConnection(endpoint, store)
+        setTimeout(() => {
+            expect(store.dispatch).toHaveBeenCalled()
+        }, 10)
+    })
+})
 
 describe("createWebSocketMiddleware", () => {
     describe("store handler", () => {
@@ -82,4 +96,3 @@ describe("initializeWebSocket", () => {
         expect(() => { initializeWebSocket("non existent mode") }).toThrowError(Error)
     })
 })
-

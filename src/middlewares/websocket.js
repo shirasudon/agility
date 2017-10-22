@@ -3,12 +3,14 @@ import { chatActionCreator } from '../actions'
 import { WebSocketClient } from './WebSocketClient'
 import startMockServer from '../mock/mockServer'
 
-function setupConnection(endpoint, store, socketClass = WebSocket) {
+const onMessage = store => event => {
+    store.dispatch(chatActionCreator.receiveMessage(event.data));
+    console.log("Received:", event.data);
+}
+
+export function setupConnection(endpoint, store, socketClass = WebSocket) {
     const connection = new WebSocketClient(socketClass)
-    connection.onMessage = (event) => {
-        store.dispatch(chatActionCreator.receiveMessage(event.data));
-        console.log("Received:", event.data);
-    }
+    connection.onMessage = onMessage(store)
     connection.onClose = () => { }
     connection.onOpen = () => { } 
 
