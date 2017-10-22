@@ -16,7 +16,7 @@ const store = createStore(
     reducer,
     applyMiddleware(
         thunk,
-        createWebSocketMiddleware(initializeWebSocket())
+        createWebSocketMiddleware(initializeWebSocket(process.env.NODE_ENV))
     )
 );
 

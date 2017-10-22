@@ -3,8 +3,8 @@ import { chatActionCreator } from '../actions'
 import { WebSocketClient } from './WebSocketClient'
 import startMockServer from '../mock/mockServer'
 
-function setupConnection(endpoint, store) {
-    const connection = new WebSocketClient(WebSocket)
+function setupConnection(endpoint, store, socketClass = WebSocket) {
+    const connection = new WebSocketClient(socketClass)
     connection.onMessage = (event) => {
         store.dispatch(chatActionCreator.receiveMessage(event.data));
         console.log("Received:", event.data);
@@ -16,8 +16,8 @@ function setupConnection(endpoint, store) {
     return connection
 }
 
-export function initializeWebSocket() {
-    switch (process.env.NODE_ENV) {
+export function initializeWebSocket(mode) {
+    switch (mode) {
         case "development":
             const socketURI = "ws://localhost:8080/chat/ws"
             startMockServer(socketURI)
@@ -37,11 +37,12 @@ export function initializeWebSocket() {
     }
 }
 
-export const createWebSocketMiddleware = endpoint => {
-    let connection = null;
+export const createWebSocketMiddleware = (endpoint, options = { connection: null, setupConnection: setupConnection } ) => {
+    let connection = options.connection || null
+    const setup = options.setupConnection
     return store => {
         if (connection == null) {
-            connection = setupConnection(endpoint, store)    
+            connection = setup(endpoint, store)
         }
         return next => action => {
             if(action.type === SEND_CHAT_MESSAGE) {
@@ -50,7 +51,6 @@ export const createWebSocketMiddleware = endpoint => {
                     data: action.data
                 }))
             }
-
             next(action)
         }
     }
