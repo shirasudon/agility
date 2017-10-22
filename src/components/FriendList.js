@@ -4,7 +4,11 @@ import { ListItem, ListItemText } from 'material-ui/List'
 
 
 export const FriendList = ({ friends }) => {
-    return friends.all.map(
+    if (!friends.all) {
+        return null
+    }
+
+    const friendComponentList = friends.all.map(
         (username, index) => {
             const friend = friends.byUsername[username];
             return (
@@ -14,9 +18,10 @@ export const FriendList = ({ friends }) => {
                         secondary={friend.username}
                     />
                 </ListItem>
-            );
+            )
         }
-    );
+    )
+    return (<div> { friendComponentList } </div>)
 }
 
 const mapStateToProps = ( { entities } ) => ({

@@ -5,7 +5,10 @@ import { ListItem, ListItemText } from 'material-ui/List'
 import { chatActionCreator } from "../actions"
 
 export const RoomList = ( { rooms, enterRoom } ) => {
-    return rooms.all.map(
+    if (!rooms.all) {
+        return null
+    }
+    const roomComponentList =  rooms.all.map(
         (roomId, index) => {
             const room = rooms.byId[roomId];
             return (
@@ -17,6 +20,11 @@ export const RoomList = ( { rooms, enterRoom } ) => {
                 </ListItem>
             );
         }
+    )
+    return (
+        <div>
+            {roomComponentList}
+        </div>
     )
 }
 
