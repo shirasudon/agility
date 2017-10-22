@@ -6,6 +6,7 @@ import {
     RECEIVE_MESSAGE,
     CHANGE_ROOM, 
     RECEIVE_CREATE_ROOM,
+    RECEIVE_DELETE_ROOM,
 } from '../../actions/actionTypes';
 
 
@@ -274,6 +275,46 @@ describe("rooms", () => {
                 name: "room5",
             }
         }
+        expect(rooms(initialState, action)).toEqual(expected)
+    })
+
+
+    it('delete room on receiving RECEIVE_DELETE_ROOM', () => {
+        const expected = {
+            byId: {
+                "1": {
+                    id: "1",
+                    name: "room1",
+                    members: [5, 9, 10],
+                    initialFetch: true,
+                }
+            },
+            all: ["1"]
+        }
+
+        const initialState = {
+            byId: {
+                "1": {
+                    id: "1",
+                    name: "room1",
+                    members: [5, 9, 10],
+                    initialFetch: true,
+                },
+                "5": {
+                    id: "5",
+                    name: "room5",
+                    members: [],
+                    initialFetch: false,
+                }
+            },
+            all: ["1", "5"]
+        }
+
+        const action = {
+            type: RECEIVE_DELETE_ROOM,
+            roomId: "5"
+        }
+
         expect(rooms(initialState, action)).toEqual(expected)
     })
 

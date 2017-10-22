@@ -240,3 +240,48 @@ it("send a request to create a room", () => {
         expect(store.getActions()).toEqual(expectedActions)
     })
 })
+
+it("create action SEND_CHAT_MESSAGE", () => {
+    const message = {
+        "id": 1,
+        "roomId": 1,
+        "userId": 1,
+        "text": "こんにちは！",
+        "postDate": "2017/08/05"
+    }
+    const cac = new ChatActionCreator({}); 
+    expect(cac.sendMessage(message)).toEqual({type: "SEND_CHAT_MESSAGE", data: message})
+})
+
+it("send a request to delete a room", () => {
+    const mockApi = {
+        deleteRoom: (room) => {
+            return Promise.resolve(true)
+        },
+    };
+
+    const cac = new ChatActionCreator(mockApi)
+
+    const roomId = 2;
+    const expectedActions = [
+        { type: 'REQUEST_DELETE_ROOM' },
+        { type: 'RECEIVE_DELETE_ROOM', roomId}
+    ]
+    const store = mockStore({})
+
+    store.dispatch(cac.deleteRoom(roomId)).then( () => {
+        expect(store.getActions()).toEqual(expectedActions)
+    })
+})
+
+it("create action REQUEST_DELETE_ROOM", () => {
+    const cac = new ChatActionCreator({}); 
+    expect(cac.requestDeleteRoom()).toEqual({type: "REQUEST_DELETE_ROOM"})
+})
+
+it("create action RECEIVE_DELETE_ROOM", () => {
+    const roomId = 3;
+    const cac = new ChatActionCreator({}); 
+    expect(cac.receiveDeleteRoom(roomId)).toEqual({type: "RECEIVE_DELETE_ROOM", roomId})
+})
+

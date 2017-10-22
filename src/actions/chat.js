@@ -13,6 +13,8 @@ import {
     OPEN_CREATE_GROUP_MODAL,
     CLOSE_CREATE_GROUP_MODAL,
     SEND_CHAT_MESSAGE,
+    REQUEST_DELETE_ROOM,
+    RECEIVE_DELETE_ROOM,
 } from './actionTypes'
 
 
@@ -182,5 +184,30 @@ export default class ChatActionCreator {
             data: message,
         }
     }
+
+    deleteRoom(roomId) {
+        return (dispatch) => {
+            dispatch(this.requestDeleteRoom())
+            return this.chatApi.deleteRoom(roomId).then( ok => {
+                if (ok) {
+                    dispatch(this.receiveDeleteRoom(roomId));
+                }
+            })
+        }
+    }
+
+    requestDeleteRoom(roomId) {
+        return {
+            type: REQUEST_DELETE_ROOM 
+        }
+    }
+
+    receiveDeleteRoom(roomId) {
+        return {
+            type: RECEIVE_DELETE_ROOM,
+            roomId,
+        }
+    }
+
 }
 

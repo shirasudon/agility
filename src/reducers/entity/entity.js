@@ -4,6 +4,7 @@ import {
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
     RECEIVE_CREATE_ROOM,
+    RECEIVE_DELETE_ROOM,
 } from '../../actions/actionTypes';
 
 
@@ -70,6 +71,19 @@ export function rooms(state = {byId: {}, all: []}, action){
             newState.byId[r.id] = room(state.byId[r.id], {type: action.type, ...r} );
             newState.all.push(r.id);
             return newState;
+        }
+
+        case RECEIVE_DELETE_ROOM: {
+            let newState = Object.assign({}, state)
+            const { roomId } = action
+            const index = newState.all.indexOf(roomId)
+
+            // If the room is found, delete from array "all"
+            if (index > -1) {
+                newState.all.splice(index, 1)
+            }
+            delete newState.byId[roomId]
+            return newState
         }
 
         default:
