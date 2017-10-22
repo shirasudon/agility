@@ -73,3 +73,5 @@ export class WebSocketClient {
         }
     }
 }
+
+export default WebSocketClient
