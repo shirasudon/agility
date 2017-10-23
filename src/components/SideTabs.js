@@ -3,17 +3,17 @@ import { withState } from 'recompose'
 
 import Tabs, { Tab } from 'material-ui/Tabs'
 
-import RoomList from './RoomList'
-import FriendList from './FriendList'
+import ConnectedRoomList from './RoomList'
+import ConnectedFriendList from './FriendList'
 
 
-const TabContainer = ( { children } ) => (
+export const TabContainer = ( { children } ) => (
     <div style={{ padding: 20 }}>
         {children}
     </div>
 )
 
-const SideTabs = ( { activeTab, setActiveTab } ) => (
+export const createSideTabs = (FriendList, RoomList) => ( { activeTab, setActiveTab } ) => (
     <div>
         <Tabs value={activeTab} onChange={(event, index) => {setActiveTab(index)}}>
             <Tab label="友達"/>
@@ -25,6 +25,8 @@ const SideTabs = ( { activeTab, setActiveTab } ) => (
         </TabContainer>
     </div>
 )
+
+export const SideTabs = createSideTabs(ConnectedFriendList, ConnectedRoomList)
 
 export default withState('activeTab', 'setActiveTab', 0)(SideTabs)
 
