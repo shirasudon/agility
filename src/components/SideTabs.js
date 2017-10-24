@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import { withState } from 'recompose'
 
 import Tabs, { Tab } from 'material-ui/Tabs'
