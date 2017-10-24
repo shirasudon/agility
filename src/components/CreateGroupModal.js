@@ -16,7 +16,7 @@ import Toolbar from 'material-ui/Toolbar'
 import { withState, compose, withHandlers } from 'recompose'
 
 import ChipsArray from './ChipsArray'
-import {chatActionCreator} from '../actions'
+import { chatActionCreator } from '../actions'
 
 const styleSheet = theme => ({
     appBar: {
@@ -34,6 +34,7 @@ export const withSelectedUsers = withState('selectedUsers', 'setSelectedUsers', 
 export const withSearchText = withState('searchText', 'setSearchText', '')
 export const withRoomName = withState('roomName', 'setRoomName', '')
 export const withModalHandlers = withHandlers({
+
     handleDeleteChip: ( {selectedUsers, setSelectedUsers}) => data => {
         const newSelectedUsers = selectedUsers.filter((u, index) => {
             return u !== data.label
@@ -55,25 +56,20 @@ export const withModalHandlers = withHandlers({
         console.log(selectedUsers, roomName)
         createRoom(selectedUsers, roomName)
     }
+
 })
- 
 
-export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip} ) => {
+export const mapSelectedUsersToChipData = (users) => (
+    users.map(
+        (username, index) => ({ label: username, key: index, })
+    )
+)
 
-    const { showModal } = ui.createGroup;
-    const { friends } = entities;
-
-    const matchedUsernames = friends.all.filter((username) => {
-        const friend = friends.byUsername[username];
+export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers}) => {
+    const matchedUsernames = users.all.filter((username) => {
+        const user = users.byUsername[username];
         const regex = new RegExp(searchText);
-        return regex.test(friend.username) && !selectedUsers.includes(username);
-    });
-    
-    const chipData = selectedUsers.map((username, index) => {
-        return {
-            label: username,
-            key: index,
-        }
+        return regex.test(user.username) && !selectedUsers.includes(username);
     });
 
     const matchedUserList = matchedUsernames.map((username, index) => {
@@ -86,6 +82,15 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
             </ListItem>
         );
     });
+
+    return matchedUserList.length > 0 ? <List> { matchedUserList } </List> : <span>No matching users</span>
+}
+ 
+
+export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
+
+    const { showModal } = ui.createGroup;
+    const { friends } = entities;
 
     return (
         <Dialog
@@ -126,7 +131,7 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
                     </Grid>
                     <Grid item xs={12}>
                         <ChipsArray
-                            chipData={chipData}
+                            chipData={mapSelectedUsersToChipData(selectedUsers)}
                             handleRequestDelete={handleDeleteChip}
                         />
                     </Grid>
@@ -135,19 +140,18 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
                             id="search-friend"
                             value={searchText}
                             InputProps={{ placeholder: 'Search Your friends!' }}
-                            onChange={this.handleSearchTextChange}
+                            onChange={handleSearchTextChange}
                             fullWidth
                             margin="normal"
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        {matchedUserList.length > 0 ? (
-                                <List>
-                                    {matchedUserList}
-                                </List>
-                            ):
-                            <span>No matched User</span>
-                        }
+                        <MatchedUserList 
+                            users={friends} 
+                            searchText={searchText}
+                            handleAddChip={handleAddChip}
+                            selectedUsers={selectedUsers} 
+                        />
                     </Grid>
                 </Grid>
             </DialogContent>
