@@ -14,25 +14,22 @@ const styleSheet = theme => ({
     },
 });
 
-export function ChipsArray(props) {
-
-    const {classes, chipData, handleRequestDelete} = props;
-
-    return (
-        <div className={classes.row}>
-            {chipData.map(data => {
-                return (
+export const ChipsArray = ({ classes, chipData, handleRequestDelete }) => (
+    <div className={classes.row}>
+        {
+            chipData.map(
+                data => (
                     <Chip
                         label={data.label}
                         key={data.key}
                         onRequestDelete={()=>{handleRequestDelete(data);}}
                         className={classes.chip}
                     />
-                );
-            })}
-            </div>
-    );
-}
+                )
+            )
+        }
+    </div>
+)
 
 ChipsArray.propTypes = {
     classes: PropTypes.object.isRequired,
