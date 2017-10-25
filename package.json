@@ -40,7 +40,9 @@
       "!**/node_modules/**",
       "!**/vendor/**",
       "!**/*Stub.{js,jsx}",
-      "!**/mock/*.{js,jsx}"
+      "!**/mock/*.{js,jsx}",
+      "!src/registerServiceWorker.js",
+      "!coverage/**"
     ]
   }
 }
