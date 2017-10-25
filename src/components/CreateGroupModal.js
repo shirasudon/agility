@@ -165,12 +165,8 @@ const mapStateToProps = ({entities, ui}) => ({
 })
 
 export const mapDispatchToProps = (dispatch) => ({
-    createRoom: (users, roomName = null) => {
-        const room = {
-            members: users,
-            name: roomName,
-        };
-        dispatch(chatActionCreator.createRoom(room));
+    createRoom: (users, name) => {
+        dispatch(chatActionCreator.createRoom(users, name));
     },
     closeModal: () => {
         dispatch(chatActionCreator.closeCreateGroupModal())

@@ -8,7 +8,6 @@ import {
     mapSelectedUsersToChipData,
     withModalHandlers,
     MatchedUserList,
-    mapDispatchToProps,
 } from './CreateGroupModal'
 import { chatActionCreator } from '../actions'
 
@@ -208,15 +207,3 @@ describe("CreateGroupModal", () => {
         render(<CreateGroupModal {...props}/>);
     })
 })
-
-// describe("mapDispatchToProps", () => {
-//     it("createRoom", () => {
-//         const dispatch = jest.fn()
-//         const { createRoom } = mapDispatchToProps(dispatch)
-//         createRoom(["satosi", "akiko"], "room!!")
-//         expect(dispatch).toHaveBeenCalledWith(chatActionCreator.createRoom({
-//             members: ["satoshi", "akiko"],
-//             roomName: "room!!",
-//         }))
-//     })
-// })
