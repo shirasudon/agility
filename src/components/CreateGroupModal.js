@@ -124,7 +124,7 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
                         <CircularProgressButton
                             raised
                             color="primary"
-                            onClick={() => {handleCreateRoomClick()}}
+                            onClick={handleCreateRoomClick}
                         >
                             Go
                         </CircularProgressButton>
@@ -164,7 +164,7 @@ const mapStateToProps = ({entities, ui}) => ({
     ui,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = (dispatch) => ({
     createRoom: (users, roomName = null) => {
         const room = {
             members: users,
@@ -178,7 +178,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 export const enhancer = compose(
-    connect(mapStateToProps, mapDispatchToProps), 
+    connect(mapStateToProps, mapDispatchToProps),
     withStyles(styleSheet),
     withSelectedUsers,
     withRoomName,

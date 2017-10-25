@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { shallow, mount } from 'enzyme'
+import { shallow, mount, render } from 'enzyme'
 import { ListItem, ListItemText } from 'material-ui/List'
 
 import { 
@@ -8,7 +8,9 @@ import {
     mapSelectedUsersToChipData,
     withModalHandlers,
     MatchedUserList,
+    mapDispatchToProps,
 } from './CreateGroupModal'
+import { chatActionCreator } from '../actions'
 
 describe("mapSelectedUsersToChipData", () => {
 
@@ -144,10 +146,77 @@ describe("MatchedUserList", () => {
     it("return all users if the search text is empty", () => {
         const wrapper = shallow(<MatchedUserList users={users} searchText={''} handleAddChip={()=>{}} selectedUsers={[]}/>) 
         expect(wrapper.find(ListItem)).toHaveLength(2)
-        expect(wrapper.find(ListItem).find(ListItemText)).toHaveLength(2)
+        expect(wrapper.find(ListItemText)).toHaveLength(2)
         expect(wrapper.find(ListItem).first().find(ListItemText).prop("primary")).toBe("john")
         expect(wrapper.find(ListItem).at(1).find(ListItemText).prop("primary")).toBe("mary")
     })
 
+    it("calls handleAddChip when ListItem is clicked", () => {
+        const handleAddChip = jest.fn()
+        const wrapper = shallow(<MatchedUserList users={users} searchText={'jo'} handleAddChip={handleAddChip} selectedUsers={[]}/>)
+        expect(wrapper.find(ListItem)).toHaveLength(1)
+        expect(wrapper.find(ListItem).find(ListItemText)).toHaveLength(1)
+        wrapper.find(ListItem).first().find(ListItemText).simulate('click')
+        expect(handleAddChip).toHaveBeenCalledWith('john')
+
+    })
+
 })
 
+describe("CreateGroupModal", () => {
+    let props
+
+    beforeEach( () => 
+        props = {
+            ui: {
+                createGroup: true,
+            },
+            entities: {
+                friends: {
+                    byUsername: {
+                        "john": {
+                            username: "john",
+                        },
+                    },
+                    all: ["john"],
+                } ,
+            },
+            closeModal: jest.fn(),
+            classes: {
+                appBar: {
+                    position: 'relative',
+                },
+                flex: {
+                    flex: 1,
+                },
+                dialogContent: {
+                    marginTop: '50px',
+                },
+            },
+            selectedUsers: ["ken"],
+            searchText: "hoge", 
+            roomName: "this is a room!",
+            handleAddChip: jest.fn(),
+            handleRoomNameChange: jest.fn(), 
+            handleCreateRoomClick: jest.fn(),
+            handleDeleteChip: jest.fn(),
+            handleSearchTextChange: jest.fn(),
+        }
+    )
+
+    it("renders without crashing", () => {
+        render(<CreateGroupModal {...props}/>);
+    })
+})
+
+// describe("mapDispatchToProps", () => {
+//     it("createRoom", () => {
+//         const dispatch = jest.fn()
+//         const { createRoom } = mapDispatchToProps(dispatch)
+//         createRoom(["satosi", "akiko"], "room!!")
+//         expect(dispatch).toHaveBeenCalledWith(chatActionCreator.createRoom({
+//             members: ["satoshi", "akiko"],
+//             roomName: "room!!",
+//         }))
+//     })
+// })
