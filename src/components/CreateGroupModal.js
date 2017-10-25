@@ -53,7 +53,6 @@ export const withModalHandlers = withHandlers({
         setRoomName(event.target.value)
     },
     handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => () => {
-        console.log(selectedUsers, roomName)
         createRoom(selectedUsers, roomName)
     }
 
@@ -65,7 +64,8 @@ export const mapSelectedUsersToChipData = (users) => (
     )
 )
 
-export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers}) => {
+export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers } ) => {
+
     const matchedUsernames = users.all.filter((username) => {
         const user = users.byUsername[username];
         const regex = new RegExp(searchText);
