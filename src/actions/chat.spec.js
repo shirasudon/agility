@@ -220,23 +220,22 @@ it("fetches messages by room ID", () => {
 it("send a request to create a room", () => {
     const mockApi = {
         createRoom: (room) => {
+            room.id = "2"
             return Promise.resolve(room)
         },
     };
 
     const cac = new ChatActionCreator(mockApi)
+    const members = ["satoshi", "akiko"]
+    const roomName = "room!"
 
-    const room = {
-        id: 2,
-        name: "room"
-    };
     const expectedActions = [
         { type: 'REQUEST_CREATE_ROOM' },
-        { type: 'RECEIVE_CREATE_ROOM', room}
+        { type: 'RECEIVE_CREATE_ROOM', room: { members, name: roomName, id: "2"}}
     ]
     const store = mockStore({})
 
-    store.dispatch(cac.createRoom(room)).then( () => {
+    store.dispatch(cac.createRoom(members, roomName)).then( () => {
         expect(store.getActions()).toEqual(expectedActions)
     })
 })

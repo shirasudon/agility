@@ -157,10 +157,15 @@ export default class ChatActionCreator {
         };
     }
 
-    createRoom(room) {
+    createRoom(members, name) {
+        const r = {
+            members,
+            name,
+        }
+
         return (dispatch) => {
             dispatch(this.requestCreateRoom());
-            return this.chatApi.createRoom(room).then( room => {
+            return this.chatApi.createRoom(r).then( room => {
                 dispatch(this.receiveCreateRoom(room));
             });
         };
