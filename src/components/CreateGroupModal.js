@@ -41,9 +41,9 @@ export const withModalHandlers = withHandlers({
         });
         setSelectedUsers(newSelectedUsers)
     },
-    handleAddChip: ({selectedUsers, setSelectedUsers}) => username => {
+    handleAddChip: ({selectedUsers, setSelectedUsers}) => userId => {
         const newSelectedUsers = selectedUsers.slice();
-        newSelectedUsers.push(username)
+        newSelectedUsers.push(userId)
         setSelectedUsers(newSelectedUsers)
     },
     handleSearchTextChange: ({setSearchText}) => event => {
@@ -52,8 +52,8 @@ export const withModalHandlers = withHandlers({
     handleRoomNameChange: ({setRoomName}) => event =>{
         setRoomName(event.target.value)
     },
-    handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => () => {
-        createRoom(selectedUsers, roomName)
+    handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => (creatorId) => {
+        createRoom(creatorId, selectedUsers, roomName)
     }
 
 })
@@ -66,18 +66,19 @@ export const mapSelectedUsersToChipData = (users) => (
 
 export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers } ) => {
 
-    const matchedUsernames = users.all.filter((username) => {
-        const user = users.byUsername[username];
+    const matchedUserIds = users.all.filter( id => {
+        const user = users.byId[id]
         const regex = new RegExp(searchText);
-        return regex.test(user.username) && !selectedUsers.includes(username);
+        return regex.test(user.username) && !selectedUsers.includes(id);
     });
 
-    const matchedUserList = matchedUsernames.map((username, index) => {
+    const matchedUserList = matchedUserIds.map((userId, index) => {
+        const user = users.byId[userId]
         return (
             <ListItem button key={index}>
                 <ListItemText
-                    primary={username}
-                    onClick={()=>{handleAddChip(username);}}
+                    primary={user.username}
+                    onClick={()=>{handleAddChip(userId)}}
                 />
             </ListItem>
         );
@@ -87,10 +88,11 @@ export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUse
 }
  
 
-export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
+export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
 
-    const { showModal } = ui.createGroup;
-    const { friends } = entities;
+    const { showModal } = ui.createGroup
+    const { friends } = entities
+    const me = session.user
 
     return (
         <Dialog
@@ -124,14 +126,14 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
                         <CircularProgressButton
                             raised
                             color="primary"
-                            onClick={handleCreateRoomClick}
+                            onClick={() => { handleCreateRoomClick(me.id) } }
                         >
                             Go
                         </CircularProgressButton>
                     </Grid>
                     <Grid item xs={12}>
                         <ChipsArray
-                            chipData={mapSelectedUsersToChipData(selectedUsers)}
+                            chipData={mapSelectedUsersToChipData(selectedUsers.map( userId => friends.byId[userId].username))}
                             handleRequestDelete={handleDeleteChip}
                         />
                     </Grid>
@@ -159,14 +161,15 @@ export const CreateGroupModal = ( {ui, closeModal, entities, classes, selectedUs
     )
 }
 
-const mapStateToProps = ({entities, ui}) => ({
+const mapStateToProps = ({entities, ui, session}) => ({
     entities,
     ui,
+    session,
 })
 
 export const mapDispatchToProps = (dispatch) => ({
-    createRoom: (users, name) => {
-        dispatch(chatActionCreator.createRoom(users, name));
+    createRoom: (creatorId, users, name) => {
+        dispatch(chatActionCreator.createRoom(creatorId, users, name));
     },
     closeModal: () => {
         dispatch(chatActionCreator.closeCreateGroupModal())

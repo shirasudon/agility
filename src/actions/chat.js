@@ -157,9 +157,10 @@ export default class ChatActionCreator {
         };
     }
 
-    createRoom(members, name) {
+    createRoom(creatorId, memberIds, name) {
         const r = {
-            members,
+            creatorId,
+            memberIds,
             name,
         }
 

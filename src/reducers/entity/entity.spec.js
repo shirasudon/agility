@@ -14,6 +14,7 @@ import {
 describe("friends", () => {
     it('returns initial state when undefined is given as state', () => {
         const expected = {
+            byId: {},
             byUsername: {}, 
             all: [] ,
         }
@@ -25,27 +26,43 @@ describe("friends", () => {
             type: "RECEIVE_FRIENDS",
             friends: [
                 {
+                    id: 1, 
                     username: "user1",
                     first: "hoge"
                 },
                 {
+                    id: 2,
                     username: "user2",
                     first: "bar"
                 }
             ]
         }
         const expected = {
+            byId: {
+                '1': {
+                    id: 1,
+                    username: "user1",
+                    first: "hoge",
+                },
+                '2': {
+                    id: 2,
+                    username: "user2",
+                    first: "bar",
+                },
+            },
             byUsername: {
                 user1: {
+                    id: 1,
                     username: "user1",
                     first: "hoge",
                 },
                 user2: {
+                    id: 2,
                     username: "user2",
                     first: "bar",
                 },
             }, 
-            all: ["user1", "user2"] ,
+            all: [1, 2] ,
         }
         expect(friends(undefined, action)).toEqual(expected)
     })

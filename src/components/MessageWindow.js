@@ -1,11 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
 
-import Card, { CardHeader, CardContent,} from 'material-ui/Card';
-import Divider from 'material-ui/Divider';
-import TextField from 'material-ui/TextField';
-import Balloon from './Balloon';
-import { KEY_ENTER } from '../keyCodes.js';
+import Card, { CardHeader, CardContent,} from 'material-ui/Card'
+import IconButton from 'material-ui/IconButton'
+import DeleteIcon from 'material-ui-icons/Delete'
+import Divider from 'material-ui/Divider'
+import TextField from 'material-ui/TextField'
+import Balloon from './Balloon'
+
+import { KEY_ENTER } from '../keyCodes.js'
 import { chatActionCreator } from '../actions'
 
 class MessageWindow extends Component {
@@ -65,7 +68,7 @@ class MessageWindow extends Component {
                         <Balloon key={index} direction={direction} postDate={message.postDate}>
                             {message.text}
                         </Balloon>
-                );
+                )
         }):
         (<span>There is no conversation yet</span>);
         
@@ -73,7 +76,15 @@ class MessageWindow extends Component {
             <div>
                 <Card>
                     <CardHeader
-                        title={currentRoom.name}
+                        title={
+                                <div>
+                                {currentRoom.name}
+                                 
+                                <IconButton aria-label="Delete">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </div>
+                        }
                     />
                     <Divider/>
                     <CardContent>

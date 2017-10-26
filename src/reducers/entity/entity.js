@@ -8,13 +8,15 @@ import {
 } from '../../actions/actionTypes';
 
 
-export function friends(state = {byUsername: {}, all: []}, action){
+export function friends(state = {byId: {}, byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_FRIENDS:
-            let newState = {byUsername: {}, all: []};
+            let newState = {byId: {}, byUsername: {}, all: []};
             action.friends.forEach((f, index) => {
+                newState.byId[f.id] = Object.assign({}, f);
                 newState.byUsername[f.username] = Object.assign({}, f);
-                newState.all.push(f.username);
+                newState.all.push(f.id);
+                console.log(f.id)
             });
             return newState;
         default:

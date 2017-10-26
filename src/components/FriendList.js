@@ -9,8 +9,8 @@ export const FriendList = ({ friends }) => {
     }
 
     const friendComponentList = friends.all.map(
-        (username, index) => {
-            const friend = friends.byUsername[username];
+        (userId, index) => {
+            const friend = friends.byId[userId];
             return (
                 <ListItem button key={index}>
                     <ListItemText

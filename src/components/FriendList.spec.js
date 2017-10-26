@@ -12,19 +12,36 @@ describe("RoomList", () => {
 
     it("returns list of ListItem if rooms.all is an array", () => {
         const friends = {
+            byId: {
+                "1": {
+                    id: 1,
+                    username: "user1",
+                    firstName: "first1",
+                    lastName: "lastName1",
+                },
+                "5": {
+                    id: 5, 
+                    username: "user5",
+                    firstName: "first5",
+                    lastName: "lastName5",
+                },
+
+            },
             byUsername: {
                 "user1": {
+                    id: 1,
                     username: "user1",
                     firstName: "first1",
                     lastName: "lastName1",
                 },
                 "user5": {
+                    id: 5, 
                     username: "user5",
                     firstName: "first5",
                     lastName: "lastName5",
                 },
             },
-            all: ["user1", "user5"],
+            all: [1, 5],
         }
         const wrapper = shallow(<FriendList friends={friends} />)
         expect(wrapper.find(ListItem)).toHaveLength(2)
