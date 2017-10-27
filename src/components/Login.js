@@ -65,7 +65,7 @@ class Login extends Component {
                 const newState = Object.assign({}, this.state, {loginFail: true});
                 this.setState(newState);
             }
-        });
+        })
     }
 
     render() {
