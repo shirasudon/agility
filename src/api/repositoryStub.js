@@ -63,8 +63,8 @@ const users = [
         "firstName": "Davichi",
         "password": "user9"
     }
-];
- 
+]
+
 const rooms = [
     {
         "id": 1,
@@ -107,7 +107,19 @@ const messages = [
         "text": "hello",
         "postDate": "2017/08/05"
     }
-];
+]
+
+const friendGraph = {
+    "1": [3, 4],
+    "2": [1, 3],
+    "3": [5, 6, 7],
+    "4": [1, 6, 8],
+    "5": [],
+    "6": [9],
+    "7": [8, 9],
+    "8": [1, 2, 3, 4, 5, 6, 7, 9],
+    "9": [4, 7, 8],
+}
 
 
 export class UserTable {
@@ -126,6 +138,10 @@ export class UserTable {
             return null;
         }
         return user;
+    }
+
+    static getAllFriendIdsOfUserById(id) {
+        return friendGraph[id]
     }
 
     static getAllUsers(){

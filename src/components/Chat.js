@@ -12,9 +12,10 @@ import MessageWindow from './MessageWindow';
 class Chat extends Component {
 
     componentDidMount(){
-        const {fetchRooms, fetchFriends} = this.props;
-        fetchRooms();
-        fetchFriends();
+        const {fetchRooms, fetchFriends, session} = this.props;
+        fetchRooms()
+        console.log(session)
+        fetchFriends(session.user.id)
     }
 
     render() {
@@ -36,8 +37,9 @@ class Chat extends Component {
     }
 }
 
-const mapStateToProps = ({entities}) => ({
+const mapStateToProps = ({entities, session}) => ({
     entities,
+    session,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,8 +52,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchRooms: () => {
         dispatch(chatActionCreator.fetchRooms());
     },
-    fetchFriends: () => {
-        dispatch(chatActionCreator.fetchFriends());
+    fetchFriends: (userId) => {
+        dispatch(chatActionCreator.fetchFriends(userId))
     },
     openCreateGroupModal: () => {
         dispatch(chatActionCreator.openCreateGroupModal());

@@ -1,5 +1,5 @@
 import {
-    RECEIVE_FRIENDS,
+    RECEIVE_USER,
     RECEIVE_ROOMS,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
@@ -8,16 +8,14 @@ import {
 } from '../../actions/actionTypes';
 
 
-export function friends(state = {byId: {}, byUsername: {}, all: []}, action){
+export function users(state = {byId: {}, byUsername: {}, all: []}, action){
     switch(action.type){
-        case RECEIVE_FRIENDS:
+        case RECEIVE_USER:
             let newState = {byId: {}, byUsername: {}, all: []};
-            action.friends.forEach((f, index) => {
-                newState.byId[f.id] = Object.assign({}, f);
-                newState.byUsername[f.username] = Object.assign({}, f);
-                newState.all.push(f.id);
-                console.log(f.id)
-            });
+            const u = action.user
+            newState.byId[u.id] = Object.assign({}, u);
+            newState.byUsername[u.username] = Object.assign({}, u);
+            newState.all.push(u.id);
             return newState;
         default:
             return state;

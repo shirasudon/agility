@@ -15,8 +15,8 @@ export function fetchRoomInfo(roomId){
     }
 }
 
-export function fetchFriends(){
-    return Promise.resolve(UserTable.getAllUsers());
+export function fetchFriendIds(userId){
+    return Promise.resolve(UserTable.getAllFriendIdsOfUserById(userId));
 }
 
 export function fetchMessagesByRoomId(roomId) {

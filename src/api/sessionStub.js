@@ -2,8 +2,8 @@ import { UserTable }from "./repositoryStub";
 
 export default class SessionApiStub {
     static login(user){
-        const match = UserTable.getUserByUserName(user.username);
-        let response;
+        const match = UserTable.getUserByUserName(user.username)
+        let response
 
         if (match === null || match.password !== user.password) {
             response = {

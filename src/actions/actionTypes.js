@@ -3,8 +3,9 @@
  * No action types should be defined in other files by convention.
  *
 */
-export const RECEIVE_FRIENDS = "RECEIVE_FRIENDS"
+export const RECEIVE_USER = "RECEIVE_USER"
 export const REQUEST_FRIENDS = "REQUEST_FRIENDS"
+export const RECEIVE_FRIEND_IDS = "RECEIVE_FRIEND_IDS"
 export const REQUEST_ROOM_INFO = "REQUEST_ROOM_INFO"
 export const RECEIVE_ROOM_INFO = "RECEIVE_ROOM_INFO"
 export const RECEIVE_ROOMS = "RECEIVE_ROOMS"

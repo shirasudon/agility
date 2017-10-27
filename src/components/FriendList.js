@@ -24,8 +24,8 @@ export const FriendList = ({ friends }) => {
     return (<div> { friendComponentList } </div>)
 }
 
-const mapStateToProps = ( { entities } ) => ({
-    friends: entities.friends,
+const mapStateToProps = ( { friendIds, entities } ) => ({
+    friends: friendIds.map( id => entities.users.byId[id] ),
 });
 
 export default connect(mapStateToProps, null)(FriendList)

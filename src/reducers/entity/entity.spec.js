@@ -1,6 +1,6 @@
-import { friends, room, rooms, messages } from './entity'
+import { users, room, rooms, messages } from './entity'
 import {
-    RECEIVE_FRIENDS,
+    RECEIVE_USER,
     RECEIVE_ROOMS,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
@@ -11,60 +11,46 @@ import {
 
 
 
-describe("friends", () => {
+describe("users", () => {
     it('returns initial state when undefined is given as state', () => {
         const expected = {
             byId: {},
             byUsername: {}, 
             all: [] ,
         }
-        expect(friends(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
+        expect(users(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
     })
 
-    it('returns the state with friends added', () => {
+    it('returns the state with user added', () => {
         const action = {
-            type: "RECEIVE_FRIENDS",
-            friends: [
-                {
-                    id: 1, 
-                    username: "user1",
-                    first: "hoge"
-                },
-                {
-                    id: 2,
-                    username: "user2",
-                    first: "bar"
-                }
-            ]
+            type: "RECEIVE_USER",
+            user: {
+                id: 3,
+                username: "user3",
+                firstName: "first3",
+                lastName: "last3",
+            },
         }
         const expected = {
             byId: {
-                '1': {
-                    id: 1,
-                    username: "user1",
-                    first: "hoge",
-                },
-                '2': {
-                    id: 2,
-                    username: "user2",
-                    first: "bar",
+                '3': {
+                    id: 3,
+                    username: "user3",
+                    firstName: "first3",
+                    lastName: "last3",
                 },
             },
             byUsername: {
-                user1: {
-                    id: 1,
-                    username: "user1",
-                    first: "hoge",
-                },
-                user2: {
-                    id: 2,
-                    username: "user2",
-                    first: "bar",
+                user3: {
+                    id: 3,
+                    username: "user3",
+                    firstName: "first3",
+                    lastName: "last3",
                 },
             }, 
-            all: [1, 2] ,
+            all: [3] ,
         }
-        expect(friends(undefined, action)).toEqual(expected)
+        expect(users(undefined, action)).toEqual(expected)
     })
 })
 

@@ -128,23 +128,54 @@ it("dispatch REQUEST_FRIENDS", () => {
     expect(cac.requestFriends()).toEqual({type: "REQUEST_FRIENDS"}) 
 })
 
-it("dispatch RECEIVE_FRIENDS", () => {
-    const friends = [1, 2, 3];
+it("dispatch RECEIVE_USER", () => {
+    const user = {
+        "id": 1,
+        "username": "hitochan",
+        "lastName": "Hitoshi",
+        "firstName": "Otsuki",
+    }
+
     const cac = new ChatActionCreator({}); 
-    expect(cac.receiveFriends(friends)).toEqual(
-        {type: "RECEIVE_FRIENDS", friends}
+    expect(cac.receiveUser(user)).toEqual(
+        {type: "RECEIVE_USER", user}
     ) 
 })
 
 it("fetches friends", () => {
-    const friends = [1, 2, 3];
+    const friendIds = [1, 2, 3];
+    const users = {
+        "1": {
+            "id": 1,
+            "username": "user1",
+            "lastName": "last1",
+            "firstName": "first1",
+        },
+        "2": {
+            "id": 2,
+            "username": "user2",
+            "lastName": "last2",
+            "firstName": "first2",
+        },
+        "3": {
+            "id": 3,
+            "username": "user3",
+            "lastName": "last3",
+            "firstName": "first3",
+        },
+    }
      const mockApi = {
-        fetchFriends: () => {return Promise.resolve(friends);},
+        fetchFriendIds: () => {return Promise.resolve(friendIds);},
+        fetchUser: (id) => {
+            return Promise.resolve(users[id]) 
+        }
     };
-    const cac = new ChatActionCreator(mockApi); 
+    const cac = new ChatActionCreator(mockApi)
     const expectedActions = [
         { type: "REQUEST_FRIENDS"},
-        { type: "RECEIVE_FRIENDS", friends},
+        { type: "RECEIVE_USER", user: users[1]},
+        { type: "RECEIVE_USER", user: users[2]},
+        { type: "RECEIVE_USER", user: users[3]},
     ] // TODO: this test might fail depending on the execution order
     const store = mockStore({})
 

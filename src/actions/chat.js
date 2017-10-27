@@ -1,5 +1,5 @@
 import {
-    RECEIVE_FRIENDS,
+    RECEIVE_USER,
     REQUEST_FRIENDS,
     REQUEST_ROOM_INFO,
     RECEIVE_ROOM_INFO,
@@ -100,24 +100,34 @@ export default class ChatActionCreator {
         };
     }
 
-    requestFriends(){
-        return {type: REQUEST_FRIENDS};
-    }
-
-    receiveFriends(friends = {}){
+    receiveUser(user = {}){
         return {
-            type: RECEIVE_FRIENDS,
-            friends
+            type: RECEIVE_USER,
+            user
         };
     }
 
-    fetchFriends() {
+    fetchUser(userId) {
         return (dispatch) => {
-            dispatch(this.requestFriends());
-            return this.chatApi.fetchFriends().then((friends) => {
-                dispatch(this.receiveFriends(friends));
-            });
-        };
+            return this.chatApi.fetchUser(userId).then( user => {
+                dispatch(this.receiveUser(user))
+            })
+        }
+    }
+
+    requestFriends() {
+        return {
+            type: REQUEST_FRIENDS,
+        }
+    }
+
+    fetchFriends(userId) {
+        return (dispatch) => {
+            dispatch(this.requestFriends())
+            return this.chatApi.fetchFriendIds(userId).then( friendIds => {
+                return friendIds.forEach( friendId => dispatch(this.fetchUser(friendId)))
+            })
+        }
     }
 
     requestCreateRoom() {
