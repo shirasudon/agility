@@ -92,10 +92,10 @@ export default class ChatActionCreator {
         };
     }
 
-    fetchRooms() {
+    fetchRooms(userId) {
         return (dispatch) => {
             dispatch(this.requestRooms());
-            return this.chatApi.fetchRooms().then((rooms) => {
+            return this.chatApi.fetchRooms(userId).then((rooms) => {
                 dispatch(this.receiveRooms(rooms));
             });
         };

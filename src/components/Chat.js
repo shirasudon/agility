@@ -13,8 +13,10 @@ class Chat extends Component {
 
     componentDidMount(){
         const {fetchRooms, fetchFriends, session} = this.props;
-        fetchRooms()
-        fetchFriends(session.user.id)
+        if (Object.keys(session.user).length > 0) {
+            fetchRooms(session.user.id)
+            fetchFriends(session.user.id)
+        }
     }
 
     render() {
@@ -48,8 +50,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchRoomInfo: (roomId) => {
         dispatch(chatActionCreator.fetchRoomInfo(roomId));
     },
-    fetchRooms: () => {
-        dispatch(chatActionCreator.fetchRooms());
+    fetchRooms: (userId) => {
+        dispatch(chatActionCreator.fetchRooms(userId));
     },
     fetchFriends: (userId) => {
         dispatch(chatActionCreator.fetchFriends(userId))

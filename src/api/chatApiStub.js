@@ -1,8 +1,8 @@
 import { UserTable, RoomTable, MessageTable }from "./repositoryStub";
 
 
-export function fetchRooms(){
-    return Promise.resolve(RoomTable.getAllRooms());
+export function fetchRooms(userId){
+    return Promise.resolve(RoomTable.getAllRoomsByUserId(userId));
 }
 
 export function fetchRoomInfo(roomId){

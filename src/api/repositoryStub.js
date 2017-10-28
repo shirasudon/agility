@@ -75,7 +75,13 @@ const rooms = [
         "id": 2,
         "name": "テニス部",
         "members": [1, 3, 7]
+    },
+    {
+        "id": 3,
+        "name": "React",
+        "members": [1, 3, 7]
     }
+
 ];
 
 const messages = [
@@ -162,6 +168,10 @@ export class RoomTable {
 
     static getAllRooms(){
         return rooms.slice();
+    }
+
+    static getAllRoomsByUserId(userId){
+        return rooms.filter( room => room.members.includes(userId))
     }
 
     static addRoom(room) {
