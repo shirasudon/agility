@@ -20,13 +20,15 @@ const store = createStore(
     )
 )
 
-sessionService.initSessionService(store, {driver: 'COOKIES'} )
+sessionService.initSessionService(store, {driver: 'COOKIES'} ).then( () => {
+    render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        document.getElementById('root')
+    )
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')
-);
+})
 
 registerServiceWorker();
+

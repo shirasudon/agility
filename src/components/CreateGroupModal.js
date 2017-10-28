@@ -35,9 +35,9 @@ export const withSearchText = withState('searchText', 'setSearchText', '')
 export const withRoomName = withState('roomName', 'setRoomName', '')
 export const withModalHandlers = withHandlers({
 
-    handleDeleteChip: ( {selectedUsers, setSelectedUsers}) => data => {
+    handleDeleteChip: ( {selectedUsers, setSelectedUsers}) => user => {
         const newSelectedUsers = selectedUsers.filter((u, index) => {
-            return u !== data.label
+            return u !== user.id
         });
         setSelectedUsers(newSelectedUsers)
     },
@@ -57,12 +57,6 @@ export const withModalHandlers = withHandlers({
     }
 
 })
-
-export const mapSelectedUsersToChipData = (users) => (
-    users.map(
-        (username, index) => ({ label: username, key: index, })
-    )
-)
 
 export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers } ) => {
 
@@ -91,7 +85,7 @@ export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUse
 export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
 
     const { showModal } = ui.createGroup
-    const { friends } = entities
+    const { users } = entities
     const me = session.user
 
     return (
@@ -133,7 +127,7 @@ export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, s
                     </Grid>
                     <Grid item xs={12}>
                         <ChipsArray
-                            chipData={mapSelectedUsersToChipData(selectedUsers.map( userId => friends.byId[userId].username))}
+                            chipData={selectedUsers.map( userId => users.byId[userId])}
                             handleRequestDelete={handleDeleteChip}
                         />
                     </Grid>
@@ -149,7 +143,7 @@ export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, s
                     </Grid>
                     <Grid item xs={12}>
                         <MatchedUserList 
-                            users={friends} 
+                            users={users} 
                             searchText={searchText}
                             handleAddChip={handleAddChip}
                             selectedUsers={selectedUsers} 

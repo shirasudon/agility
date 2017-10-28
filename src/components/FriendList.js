@@ -3,14 +3,13 @@ import {connect} from 'react-redux'
 import { ListItem, ListItemText } from 'material-ui/List'
 
 
-export const FriendList = ({ friends }) => {
-    if (!friends.all) {
-        return null
-    }
-
-    const friendComponentList = friends.all.map(
-        (userId, index) => {
-            const friend = friends.byId[userId];
+export const FriendList = ({ friendIds, users }) => {
+    const friendComponentList = friendIds.map(
+        (friendId, index) => {
+            if (!users.byId.hasOwnProperty(friendId)) {
+                return null
+            }
+            const friend = users.byId[friendId];
             return (
                 <ListItem button key={index}>
                     <ListItemText
@@ -25,7 +24,8 @@ export const FriendList = ({ friends }) => {
 }
 
 const mapStateToProps = ( { friendIds, entities } ) => ({
-    friends: friendIds.map( id => entities.users.byId[id] ),
+    friendIds,
+    users: entities.users,
 });
 
 export default connect(mapStateToProps, null)(FriendList)

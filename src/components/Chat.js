@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 
-import {chatActionCreator} from '../actions'
+import { chatActionCreator } from '../actions'
 import CreateGroupModal from './CreateGroupModal';
 import SideTabs from './SideTabs';
 import MessageWindow from './MessageWindow';

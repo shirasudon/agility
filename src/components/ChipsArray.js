@@ -18,11 +18,11 @@ export const ChipsArray = ({ classes, chipData, handleRequestDelete }) => (
     <div className={classes.row}>
         {
             chipData.map(
-                data => (
+                user => (
                     <Chip
-                        label={data.label}
-                        key={data.key}
-                        onRequestDelete={()=>{handleRequestDelete(data);}}
+                        label={user.username}
+                        key={user.id}
+                        onRequestDelete={()=>{handleRequestDelete(user)}}
                         className={classes.chip}
                     />
                 )

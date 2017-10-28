@@ -134,7 +134,7 @@ export default class ChatActionCreator {
             dispatch(this.requestFriends())
             return this.chatApi.fetchFriendIds(userId).then( friendIds => {
                 dispatch(this.receiveFriendIds(friendIds))
-                return friendIds.forEach( friendId => dispatch(this.fetchUser(friendId)))
+                return friendIds.forEach( friendId => {dispatch(this.fetchUser(friendId)) })
             })
         }
     }

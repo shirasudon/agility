@@ -11,29 +11,6 @@ import {
 } from './CreateGroupModal'
 import { chatActionCreator } from '../actions'
 
-describe("mapSelectedUsersToChipData", () => {
-
-    it("maps list of usernames to data compatible wth Chip", () => {
-        const userIds = [3, 9, 6]
-        const chipData = mapSelectedUsersToChipData(userIds)
-        const expected = [
-            {
-                label: 3,
-                key: 0,
-            },
-            {
-                label: 9,
-                key: 1,
-            },
-            {
-                label: 6,
-                key: 2,
-            }
-        ]
-        expect(chipData).toEqual(expected)
-    })
-
-})
 
 describe("withModalHandlers", () => {
     let props
@@ -51,7 +28,7 @@ describe("withModalHandlers", () => {
     describe("handleDeleteChip", () => {
 
         it("calls setSelectedUsers with the user removed if he/she exists", () => {
-            const DummyComponent = ({handleDeleteChip}) => (<div>{handleDeleteChip({label: 1})}</div>)
+            const DummyComponent = ({handleDeleteChip}) => (<div>{handleDeleteChip({id: 1})}</div>)
             const Component = withModalHandlers(DummyComponent)
             mount(<Component {...props} />)
             expect(props.setSelectedUsers).toHaveBeenCalledWith([3])
@@ -186,7 +163,7 @@ describe("CreateGroupModal", () => {
                 } 
             },
             entities: {
-                friends: {
+                users: {
                     byId: {
                         "3": {
                             id: 3,

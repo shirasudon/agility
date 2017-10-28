@@ -11,7 +11,7 @@ import {
 export function users(state = {byId: {}, byUsername: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_USER:
-            let newState = {byId: {}, byUsername: {}, all: []};
+            let newState = Object.assign({}, state)
             const u = action.user
             newState.byId[u.id] = Object.assign({}, u);
             newState.byUsername[u.username] = Object.assign({}, u);
