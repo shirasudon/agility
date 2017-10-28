@@ -58,9 +58,9 @@ export const withModalHandlers = withHandlers({
 
 })
 
-export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUsers } ) => {
+export const MatchedUserList = ( { friendIds, users, searchText, handleAddChip, selectedUsers } ) => {
 
-    const matchedUserIds = users.all.filter( id => {
+    const matchedUserIds = friendIds.filter( id => {
         const user = users.byId[id]
         const regex = new RegExp(searchText);
         return regex.test(user.username) && !selectedUsers.includes(id);
@@ -82,7 +82,7 @@ export const MatchedUserList = ( { users, searchText, handleAddChip, selectedUse
 }
  
 
-export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
+export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
 
     const { showModal } = ui.createGroup
     const { users } = entities
@@ -143,6 +143,7 @@ export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, s
                     </Grid>
                     <Grid item xs={12}>
                         <MatchedUserList 
+                            friendIds={friendIds}
                             users={users} 
                             searchText={searchText}
                             handleAddChip={handleAddChip}
@@ -155,10 +156,11 @@ export const CreateGroupModal = ( {ui, session, closeModal, entities, classes, s
     )
 }
 
-const mapStateToProps = ({entities, ui, session}) => ({
+const mapStateToProps = ({friendIds, entities, ui, session}) => ({
     entities,
     ui,
     session,
+    friendIds,
 })
 
 export const mapDispatchToProps = (dispatch) => ({

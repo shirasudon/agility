@@ -113,24 +113,24 @@ describe("MatchedUserList", () => {
     }
 
     it("return <span>No matching users</span> if there are no matching users found", () => {
-        const wrapper = shallow(<MatchedUserList users={users} searchText={'this will no match with any user!'} handleAddChip={()=>{}} selectedUsers={[]}/>) 
+        const wrapper = shallow(<MatchedUserList friendIds={[3, 5]} users={users} searchText={'this will no match with any user!'} handleAddChip={()=>{}} selectedUsers={[]}/>) 
         expect(wrapper).toContainReact(<span>No matching users</span>)
     })
 
     it("return <span>No matching users</span> even if there is a matching users found as long as he/she is in the selectedUser list", () => {
-        const wrapper = shallow(<MatchedUserList users={users} searchText={'jo'} handleAddChip={()=>{}} selectedUsers={[3]}/>) 
+        const wrapper = shallow(<MatchedUserList friendIds={[3, 5]} users={users} searchText={'jo'} handleAddChip={()=>{}} selectedUsers={[3]}/>) 
         expect(wrapper).toContainReact(<span>No matching users</span>)
     })
 
     it("return ListItem of john if the search text is jo", () => {
-        const wrapper = shallow(<MatchedUserList users={users} searchText={'jo'} handleAddChip={()=>{}} selectedUsers={[]}/>) 
+        const wrapper = shallow(<MatchedUserList friendIds={[3, 5]} users={users} searchText={'jo'} handleAddChip={()=>{}} selectedUsers={[]}/>) 
         expect(wrapper.find(ListItem)).toHaveLength(1)
         expect(wrapper.find(ListItem).find(ListItemText)).toHaveLength(1)
         expect(wrapper.find(ListItem).find(ListItemText).prop("primary")).toBe("john")
     })
 
     it("return all users if the search text is empty", () => {
-        const wrapper = shallow(<MatchedUserList users={users} searchText={''} handleAddChip={()=>{}} selectedUsers={[]}/>) 
+        const wrapper = shallow(<MatchedUserList friendIds={[3, 5]} users={users} searchText={''} handleAddChip={()=>{}} selectedUsers={[]}/>) 
         expect(wrapper.find(ListItem)).toHaveLength(2)
         expect(wrapper.find(ListItemText)).toHaveLength(2)
         expect(wrapper.find(ListItem).first().find(ListItemText).prop("primary")).toBe("john")
@@ -139,7 +139,7 @@ describe("MatchedUserList", () => {
 
     it("calls handleAddChip when ListItem is clicked", () => {
         const handleAddChip = jest.fn()
-        const wrapper = shallow(<MatchedUserList users={users} searchText={'jo'} handleAddChip={handleAddChip} selectedUsers={[]}/>)
+        const wrapper = shallow(<MatchedUserList friendIds={[3, 5]} users={users} searchText={'jo'} handleAddChip={handleAddChip} selectedUsers={[]}/>)
         expect(wrapper.find(ListItem)).toHaveLength(1)
         expect(wrapper.find(ListItem).find(ListItemText)).toHaveLength(1)
         wrapper.find(ListItem).first().find(ListItemText).simulate('click')
