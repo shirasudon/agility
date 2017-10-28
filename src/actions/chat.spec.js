@@ -173,6 +173,7 @@ it("fetches friends", () => {
     const cac = new ChatActionCreator(mockApi)
     const expectedActions = [
         { type: "REQUEST_FRIENDS"},
+        { type: "RECEIVE_FRIEND_IDS", ids: [1, 2, 3]},
         { type: "RECEIVE_USER", user: users[1]},
         { type: "RECEIVE_USER", user: users[2]},
         { type: "RECEIVE_USER", user: users[3]},

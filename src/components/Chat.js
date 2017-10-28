@@ -14,7 +14,6 @@ class Chat extends Component {
     componentDidMount(){
         const {fetchRooms, fetchFriends, session} = this.props;
         fetchRooms()
-        console.log(session)
         fetchFriends(session.user.id)
     }
 

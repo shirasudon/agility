@@ -22,3 +22,4 @@ export function friendIds(state = [], action) {
             return state
     }
 }
+

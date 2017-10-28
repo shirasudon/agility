@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import {Provider} from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { sessionService } from 'redux-react-session';
@@ -18,11 +18,11 @@ const store = createStore(
         thunk,
         createWebSocketMiddleware(initializeWebSocket(process.env.NODE_ENV))
     )
-);
+)
 
-sessionService.initSessionService(store, {driver: 'COOKIES'} );
+sessionService.initSessionService(store, {driver: 'COOKIES'} )
 
-ReactDOM.render(
+render(
     <Provider store={store}>
         <App />
     </Provider>,

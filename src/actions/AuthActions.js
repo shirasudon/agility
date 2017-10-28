@@ -10,21 +10,21 @@ export const setSessionApi = api => {
 
 export const login = (user) => {
     return (dispatch) => {
-        let responseUser
+        let responseData
         return sessionApi.login(user).then(response => {
             if (response.ok) {
-                responseUser = response.data
+                responseData = response.data
                 return sessionService.saveSession(response.token)
             }
             else {
-                return Promise.resolve(false)
+                throw new Error("authentication failed")
             }
-        }).then((data) => {
-            if (!data) {
-                return Promise.resolve(false)
-            }
-            sessionService.saveUser(responseUser)
+        }).then(() => {
+            return sessionService.saveUser(responseData)
+        }).then(() => {
             return Promise.resolve(true)
+        }).catch( err => {
+            return Promise.resolve(false) 
         })
     }
 }

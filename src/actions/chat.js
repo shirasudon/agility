@@ -15,6 +15,7 @@ import {
     SEND_CHAT_MESSAGE,
     REQUEST_DELETE_ROOM,
     RECEIVE_DELETE_ROOM,
+    RECEIVE_FRIEND_IDS,
 } from './actionTypes'
 
 
@@ -121,10 +122,18 @@ export default class ChatActionCreator {
         }
     }
 
+    receiveFriendIds(friendIds) {
+         return {
+            type: RECEIVE_FRIEND_IDS,
+            ids: friendIds,
+        }
+    }
+
     fetchFriends(userId) {
         return (dispatch) => {
             dispatch(this.requestFriends())
             return this.chatApi.fetchFriendIds(userId).then( friendIds => {
+                dispatch(this.receiveFriendIds(friendIds))
                 return friendIds.forEach( friendId => dispatch(this.fetchUser(friendId)))
             })
         }
