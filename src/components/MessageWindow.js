@@ -48,7 +48,7 @@ class MessageWindow extends Component {
         const currentRoom = rooms.byId[currentRoomId]; 
         const me = session.user;
 
-        if(currentRoomId === null || !messages.byRoomId.hasOwnProperty(currentRoomId)){
+        if(currentRoomId === null){
             return (
                 <Card>
                     <CardContent>
@@ -59,7 +59,7 @@ class MessageWindow extends Component {
             );
         }
 
-        const roomMessages = messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
+        const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
         const messagesDOM = roomMessages ? 
             roomMessages.map((message, index) => {
                 const direction = ( message.userId === me.id ) ? "right" : "left";
