@@ -48,7 +48,7 @@ class MessageWindow extends Component {
         const currentRoom = rooms.byId[currentRoomId]; 
         const me = session.user;
 
-        if(currentRoomId === null){
+        if(currentRoomId === null || !messages.byRoomId.hasOwnProperty(currentRoomId)){
             return (
                 <Card>
                     <CardContent>
