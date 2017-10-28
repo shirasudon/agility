@@ -52,8 +52,8 @@ export const withModalHandlers = withHandlers({
     handleRoomNameChange: ({setRoomName}) => event =>{
         setRoomName(event.target.value)
     },
-    handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => (creatorId) => {
-        createRoom(creatorId, selectedUsers, roomName)
+    handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => (createdBy) => {
+        createRoom(createdBy, selectedUsers, roomName)
     }
 
 })
@@ -164,8 +164,8 @@ const mapStateToProps = ({friendIds, entities, ui, session}) => ({
 })
 
 export const mapDispatchToProps = (dispatch) => ({
-    createRoom: (creatorId, users, name) => {
-        dispatch(chatActionCreator.createRoom(creatorId, users, name));
+    createRoom: (createdBy, users, name) => {
+        dispatch(chatActionCreator.createRoom(createdBy, users, name));
     },
     closeModal: () => {
         dispatch(chatActionCreator.closeCreateGroupModal())

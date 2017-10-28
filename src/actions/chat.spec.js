@@ -259,16 +259,16 @@ it("send a request to create a room", () => {
 
     const cac = new ChatActionCreator(mockApi)
     const memberIds = [1, 5]
-    const creatorId = 1
+    const createdBy = 1
     const roomName = "room!"
 
     const expectedActions = [
         { type: 'REQUEST_CREATE_ROOM' },
-        { type: 'RECEIVE_CREATE_ROOM', room: { creatorId, memberIds, name: roomName, id: "2"}}
+        { type: 'RECEIVE_CREATE_ROOM', room: { createdBy, memberIds, name: roomName, id: "2"}}
     ]
     const store = mockStore({})
 
-    store.dispatch(cac.createRoom(creatorId, memberIds, roomName)).then( () => {
+    store.dispatch(cac.createRoom(createdBy, memberIds, roomName)).then( () => {
         expect(store.getActions()).toEqual(expectedActions)
     })
 })

@@ -22,11 +22,12 @@ export function users(state = {byId: {}, byUsername: {}, all: []}, action){
     }
 }
 
-export function room(state = {id: null, name: null, members: [], initialFetch: false}, action){
+export function room(state = {id: null, name: null, members: [], createdBy: null, initialFetch: false}, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             return Object.assign({}, state, {
                 members: action.members,
+                createdBy: action.createdBy,
                 initialFetch: true,
             });
 

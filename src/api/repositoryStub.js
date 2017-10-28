@@ -69,17 +69,20 @@ const rooms = [
     {
         "id": 1,
         "name": "吉野家",
-        "members": [3, 4, 8]
+        "members": [3, 4, 8],
+        "createdBy": 4,
     },
     {
         "id": 2,
         "name": "テニス部",
-        "members": [1, 3, 7]
+        "members": [1, 3, 7],
+        "createdBy": 3,
     },
     {
         "id": 3,
         "name": "React",
-        "members": [1, 3, 7]
+        "members": [1, 3, 7],
+        "createdBy": 1,
     }
 
 ];

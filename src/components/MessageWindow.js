@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
+import { withState, withHandlers, compose } from 'recompose'
 
 import Card, { CardHeader, CardContent,} from 'material-ui/Card'
 import IconButton from 'material-ui/IconButton'
@@ -11,100 +12,89 @@ import Balloon from './Balloon'
 import { KEY_ENTER } from '../keyCodes.js'
 import { chatActionCreator } from '../actions'
 
-class MessageWindow extends Component {
+export const withCurrentText = withState('curText', 'setCurText', '')
 
-    constructor(props) {
-        super(props); 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
-        this.state = {
-            curText: '',
-        }
-    }
-
-    handleKeyPress(e) {
-        switch  (e.which) {
+export const withMessagWindowHandlers = withHandlers({
+    handleKeyPress: ( { setCurText, curText, currentRoomId, sendMessage, session }) => event => {
+        switch  (event.which) {
             case KEY_ENTER:
-                const { currentRoomId } = this.props;
-                this.props.sendMessage({
-                    userId: this.props.session.user.id,
+                sendMessage({
+                    userId: session.user.id,
                     roomId: currentRoomId,
-                    body: this.state.curText,
+                    body: curText,
                 })
-                this.setState({curText: ""});
-                break;
+                setCurText('')
+                break
             default:
-                break;
+                break
         }
-    }
+    },
+    handleChange: ( {setCurText} ) => event => {
+        setCurText(event.target.value)
+    },
+})
 
-    handleChange(e) {
-        this.setState({curText: e.target.value});
-    }
+export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText } ) => {
+    const { messages, rooms } = entities
+    const currentRoom = rooms.byId[currentRoomId];
+    const me = session.user
 
-    render() {
-        const { currentRoomId, session, entities } = this.props;
-        const { messages, rooms } = entities;
-        const currentRoom = rooms.byId[currentRoomId]; 
-        const me = session.user;
-
-        if(currentRoomId === null){
-            return (
-                <Card>
-                    <CardContent>
-                        <div>Lets start chatting with your friends!!</div>
-
-                    </CardContent>
-                </Card>
-            );
-        }
-
-        const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
-        const messagesDOM = roomMessages ? 
-            roomMessages.map((message, index) => {
-                const direction = ( message.userId === me.id ) ? "right" : "left";
-
-                return (
-                        <Balloon key={index} direction={direction} postDate={message.postDate}>
-                            {message.text}
-                        </Balloon>
-                )
-        }):
-        (<span>There is no conversation yet</span>);
-        
+    if(currentRoomId === null){
         return (
-            <div>
-                <Card>
-                    <CardHeader
-                        title={
-                                <div>
-                                {currentRoom.name}
-                                 
-                                <IconButton aria-label="Delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                            </div>
-                        }
-                    />
-                    <Divider/>
-                    <CardContent>
-                        {messagesDOM}
-                        <TextField
-                            id="post-text-field"
-                            InputProps={{ placeholder: 'Press enter to send message!' }}
-                            fullWidth
-                            autoFocus={true}
-                            onChange={this.handleChange}
-                            onKeyPress={this.handleKeyPress}
-                            value={this.state.curText}
-                            margin="normal"
-                        />
-                    </CardContent>
-                </Card>
+            <Card>
+                <CardContent>
+                    <div>Lets start chatting with your friends!!</div>
 
-            </div>
+                </CardContent>
+            </Card>
         );
     }
+
+    const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
+    const messagesDOM = roomMessages ? 
+        roomMessages.map((message, index) => {
+            const direction = ( message.userId === me.id ) ? "right" : "left";
+
+            return (
+                    <Balloon key={index} direction={direction} postDate={message.postDate}>
+                        {message.text}
+                    </Balloon>
+            )
+    }):
+    (<span>There is no conversation yet</span>);
+    
+    return (
+        <div>
+            <Card>
+                <CardHeader
+                    title={
+                            <div>
+                            {currentRoom.name}
+                            { currentRoom.createdBy === me.id && ( 
+                                <IconButton aria-label="Delete" onClick={()=>{deleteRoom(currentRoomId)}}>
+                                    <DeleteIcon />
+                                </IconButton>) } 
+                        </div>
+                    }
+                />
+                <Divider/>
+                <CardContent>
+                    {messagesDOM}
+                    <TextField
+                        id="post-text-field"
+                        InputProps={{ placeholder: 'Press enter to send message!' }}
+                        fullWidth
+                        autoFocus={true}
+                        onChange={handleChange}
+                        onKeyPress={handleKeyPress}
+                        value={curText}
+                        margin="normal"
+                    />
+                </CardContent>
+            </Card>
+
+        </div>
+    )
 }
 
 const mapStateToProps = ({currentRoomId, session, entities}) => ({
@@ -117,6 +107,15 @@ const mapDispatchToProps = (dispatch) => ({
     sendMessage: (message) => {
         dispatch(chatActionCreator.sendMessage(message));
     },
+    deleteRoom: roomId => {
+        dispatch(chatActionCreator.deleteRoom(roomId))
+    }, 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MessageWindow);
+export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withCurrentText,
+    withMessagWindowHandlers,
+)
+
+export default enhancer(MessageWindow)

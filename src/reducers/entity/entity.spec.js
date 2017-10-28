@@ -16,7 +16,7 @@ describe("users", () => {
         const expected = {
             byId: {},
             byUsername: {}, 
-            all: [] ,
+            all: [],
         }
         expect(users(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
     })
@@ -57,6 +57,7 @@ describe("users", () => {
 describe("room", () => {
     it('returns initial state when undefined is given as state', () => {
         const expected = {
+            createdBy: null,
             id: null,
             name: null,
             members: [],
@@ -67,6 +68,7 @@ describe("room", () => {
 
     it('sets members and initialFetch on receiving RECEIVE_ROOM_INFO', () => {
         const expected = {
+            createdBy: 2,
             id: 2,
             name: "room name", 
             members: [2, 4, 5],
@@ -80,13 +82,15 @@ describe("room", () => {
         }
         const action = {
             type: RECEIVE_ROOM_INFO,
-            members: [2, 4, 5]
+            members: [2, 4, 5],
+            createdBy: 2,
         }
         expect(room(initialState, action)).toEqual(expected)
     })
 
     it('sets id, name, initialFetch on receiving RECEIVE_ROOMS', () => {
         const expected = {
+            createdBy: null,
             id: 3,
             name: "new room", 
             members: [],
@@ -103,12 +107,14 @@ describe("room", () => {
 
     it('sets id, name, initialFetch on receiving RECEIVE_CREATE_ROOM', () => {
         const expected = {
+            createdBy: null,
             id: 3,
             name: "new room", 
             members: [],
             initialFetch: false,
         }
         const action = {
+            createdBy: null,
             type: RECEIVE_CREATE_ROOM,
             id: 3,
             name: "new room",
@@ -135,12 +141,14 @@ describe("rooms", () => {
                     name: "room1",
                     members: [5, 2, 6],
                     initialFetch: true,
+                    createdBy: null,
                 },
                 "2": {
                     id: "2",
                     name: "room2",
                     members: [1, 2, 3],
                     initialFetch: false,
+                    createdBy: null,
                 }
             },
             all: ["1", "2"]
@@ -153,24 +161,28 @@ describe("rooms", () => {
                     name: "room1",
                     members: [5, 2, 6],
                     initialFetch: true,
+                    createdBy: null,
                 },
                 "2": {
                     id: "2",
                     name: "room2",
                     members: [1, 2, 3],
                     initialFetch: false,
+                    createdBy: null,
                 },
                 "5": {
                     id: "5",
                     name: "tennis club",
                     members: [],
                     initialFetch: false,
+                    createdBy: null,
                 },
                 "7": {
                     id: "7",
                     name: "sumo club",
                     members: [],
                     initialFetch: false,
+                    createdBy: null,
                 }
             },
             all: ["1", "2", "5", "7"]
@@ -248,6 +260,7 @@ describe("rooms", () => {
                     name: "room1",
                     members: [5, 9, 10],
                     initialFetch: true,
+                    createdBy: 5,
                 }
             },
             all: ["1"]
@@ -260,12 +273,14 @@ describe("rooms", () => {
                     name: "room1",
                     members: [5, 9, 10],
                     initialFetch: true,
+                    createdBy: 5,
                 },
                 "5": {
                     id: "5",
                     name: "room5",
                     members: [],
                     initialFetch: false,
+                    createdBy: null,
                 }
             },
             all: ["1", "5"]

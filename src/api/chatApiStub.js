@@ -38,6 +38,8 @@ export function createRoom(room) {
     });
 }
 
-export function sendMessage(message) {
-     
+export function deleteRoom(roomId) {
+    console.log(`chatApiStub deleted room {roomId}`) 
+    return Promise.resolve(true)
 }
+
