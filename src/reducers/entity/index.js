@@ -6,4 +6,5 @@ export const entities = combineReducers({
     users,
     rooms,
     messages
-});
+})
+

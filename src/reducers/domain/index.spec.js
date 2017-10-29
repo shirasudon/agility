@@ -14,6 +14,11 @@ describe("currentRoomId", () => {
         const roomId = 3
         expect(currentRoomId(undefined, {type: "CHANGE_ROOM", roomId,})).toEqual(roomId)
     })
+
+    it('returns null on receiving RECEIVE_DELETE_ROOM', () => {
+        const curRoomId = 2
+        expect(currentRoomId(curRoomId, {type: "RECEIVE_DELETE_ROOM"})).toBe(null)
+    }) 
 })
 
 
