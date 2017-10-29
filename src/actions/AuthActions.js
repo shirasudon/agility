@@ -1,12 +1,18 @@
-import { sessionService } from 'redux-react-session'
+import { sessionService as SessionService } from 'redux-react-session'
 import SessionApiStub from '../api/sessionStub'
 
 
 let sessionApi = SessionApiStub
+let sessionService = SessionService
 
 export const setSessionApi = api => {
     sessionApi = api
 }
+
+export const setSessionService = ss => {
+    sessionService = ss
+}
+
 
 export const login = (user) => {
     return (dispatch) => {
