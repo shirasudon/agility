@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { withState, withHandlers, compose } from 'recompose'
 
-import Card, { CardHeader, CardContent,} from 'material-ui/Card'
+import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui-icons/Delete'
 import Divider from 'material-ui/Divider'
@@ -14,7 +14,7 @@ import { chatActionCreator } from '../actions'
 
 export const withCurrentText = withState('curText', 'setCurText', '')
 
-export const withMessagWindowHandlers = withHandlers({
+export const withMessageWindowHandlers = withHandlers({
     handleKeyPress: ( { setCurText, curText, currentRoomId, sendMessage, session }) => event => {
         switch  (event.which) {
             case KEY_ENTER:
@@ -35,20 +35,20 @@ export const withMessagWindowHandlers = withHandlers({
 })
 
 export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText } ) => {
-    const { messages, rooms } = entities
-    const currentRoom = rooms.byId[currentRoomId];
-    const me = session.user
 
     if(currentRoomId === null){
         return (
             <Card>
                 <CardContent>
                     <div>Lets start chatting with your friends!!</div>
-
                 </CardContent>
             </Card>
         );
     }
+
+    const { messages, rooms } = entities
+    const currentRoom = rooms.byId[currentRoomId]
+    const me = session.user
 
     const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
     const messagesDOM = roomMessages ? 
@@ -66,17 +66,7 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
     return (
         <div>
             <Card>
-                <CardHeader
-                    title={
-                            <div>
-                            {currentRoom.name}
-                            { currentRoom.createdBy === me.id && ( 
-                                <IconButton aria-label="Delete" onClick={()=>{deleteRoom(currentRoomId)}}>
-                                    <DeleteIcon />
-                                </IconButton>) } 
-                        </div>
-                    }
-                />
+                <CardHeader title={currentRoom.name} />
                 <Divider/>
                 <CardContent>
                     {messagesDOM}
@@ -91,6 +81,14 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
                         margin="normal"
                     />
                 </CardContent>
+                <CardActions>
+                    { currentRoom.createdBy === me.id && ( 
+                        <IconButton aria-label="Delete" onClick={()=>{deleteRoom(currentRoomId)}}>
+                            <DeleteIcon />
+                        </IconButton>) 
+                    }
+
+                </CardActions>
             </Card>
 
         </div>
@@ -115,7 +113,7 @@ const mapDispatchToProps = (dispatch) => ({
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
     withCurrentText,
-    withMessagWindowHandlers,
+    withMessageWindowHandlers,
 )
 
 export default enhancer(MessageWindow)
