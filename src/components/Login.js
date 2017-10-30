@@ -1,13 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Redirect} from 'react-router';
+import React from 'react'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
+import { compose, withState, withHandlers } from 'recompose'
 
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import Grid from 'material-ui/Grid';
-import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button'
+import TextField from 'material-ui/TextField'
+import Grid from 'material-ui/Grid'
+import { withStyles } from 'material-ui/styles'
 
-import {login as loginAction} from '../actions/AuthActions';
+import { login as loginAction } from '../actions/AuthActions'
 
 
 const styleSheet = theme => ({
@@ -19,58 +20,55 @@ const styleSheet = theme => ({
     loginButton: {
         marginTop: theme.spacing.unit,
     },
-}); 
+})
 
-class Login extends Component {
+export const withLoginFailState = withState('loginFail', 'setLoginFail', false)
+export const withUserState = withState('user', 'setUser', {
+    username: '',
+    password: '',
+})
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loginFail: false,
-            user: {
-                username: '',
-                password: '',
-            }
-        };
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onChange = this.onChange.bind(this);
-    }
+export const handlerFunctions = {
 
     /**
      * This method get called when username or password changes.
      * Internally it synchronizes the values of input boxes with component's state.
      * @param e event object
      */
-    onChange(e) {
-        const {value, name} = e.target;
-        const newState = Object.assign({}, this.state);
-        const {user} = newState;
-        user[name] = value;
-        this.setState(newState);
-    }
-
-
+    handleChange: ( { setUser, user } ) => event => {
+        const { value, name } = event.target
+        const newState = Object.assign({}, user)
+        newState[name] = value
+        setUser(newState)
+    },
     /**
      * This method get called when login button is pressed.
      * It validates the username and password. Upon successful login, user will be redirected to chat page.
      * Otherwise, stuck on the same page.
      * @param e event object
     */
-    onSubmit(e) {
-        e.preventDefault();
-        const {login} = this.props;
-        const {user} = this.state;
-        login(user).then(success => {
+    handleSubmit: ( { login, user, setUser, setLoginFail } ) => event => new Promise( (resolve, reject) => {
+        event.preventDefault()
+        login(user).then( success => {
             if(!success){
-                const newState = Object.assign({}, this.state, {loginFail: true});
-                this.setState(newState);
+                setLoginFail(true)
             }
         })
-    }
+        resolve()
+    })
+    
+}
 
-    render() {
-        const { user: { username, password }, loginFail} = this.state;
-        const {authenticated, classes} = this.props;
+export const withLoginHandlers = withHandlers(handlerFunctions)
+
+export const Login = ( {
+    handleChange, 
+    handleSubmit,
+    user: {username, password}, 
+    loginFail, 
+    authenticated, 
+    classes 
+} ) => {
 
         if (authenticated) {
             return <Redirect to="/chat" />;
@@ -78,53 +76,56 @@ class Login extends Component {
 
         return (
             <div>
-            <Grid container justify="center">
-                {
-                    loginFail && <strong>Wrong username or password! Please try again!</strong>
-                }
-                <TextField
-                    name="username"
-                    label="ユーザー名"
-                    value={username}
-                    className={classes.textField}
-                    onChange={this.onChange}
-                    margin="normal"
-                />
-            </Grid>
-            <Grid container justify="center">
-                <TextField
-                    name="password"
-                    type="password"
-                    label="パスワード"
-                    value={password}
-                    className={classes.textField}
-                    onChange={this.onChange}
-                    margin="normal"
-                />
-            </Grid>
-            <Grid container justify="center">
-                <Button color="primary" raised onClick={this.onSubmit} className={classes.loginButton}>ログイン</Button>
-            </Grid>
+                <Grid container justify="center">
+                    {
+                        loginFail && <strong className="error">Wrong username or password! Please try again!</strong>
+                    }
+                    <TextField
+                        name="username"
+                        label="ユーザー名"
+                        value={username}
+                        className={classes.textField}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid container justify="center">
+                    <TextField
+                        name="password"
+                        type="password"
+                        label="パスワード"
+                        value={password}
+                        className={classes.textField}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid container justify="center">
+                    <Button color="primary" raised onClick={handleSubmit} className={classes.loginButton}>ログイン</Button>
+                </Grid>
             </div>
-        );
+        )
+}
+
+export const mapStateToProps = ( { session } ) => ({
+    authenticated: session.authenticated,
+})
+
+export const mapDispatchToProps = (dispatch) => {
+    return {
+        login: (user, cb) => {
+            return dispatch(loginAction(user, cb))
+        },
     }
 }
 
-const mapStateToProps = ({session}) => ({
-    authenticated: session.authenticated,
-});
+export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withLoginFailState,
+    withUserState,
+    withLoginHandlers,
+    withStyles(styleSheet),
+)
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        login: (user, cb) => {
-            return dispatch(loginAction(user, cb));
-        },
-    };
-};
+export default enhancer(Login)
 
-const StyledLogin = withStyles(styleSheet)(Login);
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(StyledLogin);
