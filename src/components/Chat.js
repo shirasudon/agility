@@ -1,41 +1,44 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
+import { lifecycle, compose } from 'recompose'
 
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid'
+import Button from 'material-ui/Button'
 
 import { chatActionCreator } from '../actions'
-import CreateGroupModal from './CreateGroupModal';
-import SideTabs from './SideTabs';
-import MessageWindow from './MessageWindow';
+import CreateGroupModal from './CreateGroupModal'
+import SideTabs from './SideTabs'
+import MessageWindow from './MessageWindow'
 
-class Chat extends Component {
+let cac = chatActionCreator
 
-    componentDidMount(){
-        const {fetchRooms, fetchFriends, session} = this.props;
+export const withLifecycles = lifecycle({
+    componentDidMount() {
+        const { fetchRooms, fetchFriends, session } = this.props
         if (Object.keys(session.user).length > 0) {
             fetchRooms(session.user.id)
             fetchFriends(session.user.id)
         }
     }
+}) 
 
-    render() {
-        const openModal = this.props.openCreateGroupModal;
-        return (
-            <Grid container justify="center">
-                <Grid item xs={3}>
-                    <CreateGroupModal />
-                    <Button onClick={openModal} >
-                    グループ作成
-                    </Button>
-                    <SideTabs/>
-                </Grid>
-                <Grid item xs={6}>
-                    <MessageWindow/>
-                </Grid>
-            </Grid>
-        );
-    }
+export const Chat = ({openCreateGroupModal: openModal}) => (
+    <Grid container justify="center">
+        <Grid item xs={3}>
+            <CreateGroupModal />
+            <Button onClick={openModal} >
+            グループ作成
+            </Button>
+            <SideTabs/>
+        </Grid>
+        <Grid item xs={6}>
+            <MessageWindow/>
+        </Grid>
+    </Grid>
+)
+
+export function setChatActionCreator(actionCreator) {
+    cac = actionCreator 
 }
 
 const mapStateToProps = ({entities, session}) => ({
@@ -43,26 +46,21 @@ const mapStateToProps = ({entities, session}) => ({
     session,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    fetchMessagesByRoomId: (roomId) => {
-        dispatch(chatActionCreator.fetchMessagesByRoomId(roomId));
-    },
-    fetchRoomInfo: (roomId) => {
-        dispatch(chatActionCreator.fetchRoomInfo(roomId));
-    },
+export const mapDispatchToProps = (dispatch) => ({
     fetchRooms: (userId) => {
-        dispatch(chatActionCreator.fetchRooms(userId));
+        dispatch(cac.fetchRooms(userId));
     },
     fetchFriends: (userId) => {
-        dispatch(chatActionCreator.fetchFriends(userId))
+        dispatch(cac.fetchFriends(userId))
     },
     openCreateGroupModal: () => {
-        dispatch(chatActionCreator.openCreateGroupModal());
+        dispatch(cac.openCreateGroupModal());
     },
-    closeCreateGroupModal: () => {
-        dispatch(chatActionCreator.closeCreateGroupModal());
-    }
+})
 
-});
+export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withLifecycles
+)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default enhancer(Chat)
