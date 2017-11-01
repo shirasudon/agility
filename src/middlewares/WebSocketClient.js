@@ -8,45 +8,54 @@ const INIT_AUTO_RECONNECT_INTERVAL = 5 * 1000; // 5 sec
  */ 
 export class WebSocketClient {
     constructor(socketClass: WebSocket){
-        this.init();
-        this.socketClass = socketClass;
+        this.init()
+        this.socketClass = socketClass
     } 
 
     init() {
         this.autoReconnectInterval = INIT_AUTO_RECONNECT_INTERVAL;
     }
 
+    _onclose(e) {
+        switch(e) {
+            case 1000:
+                break;
+            default:
+                this.reconnect(e)
+                this.autoReconnectInterval *= 2
+        }
+        this.onClose(e)
+    }
+
+    _onerror(e) {
+        switch(e.code){
+            case "ECONNREFUSED":
+                this.reconnect(e)
+                this.autoReconnectInterval *= 2
+                break
+            default:
+                break
+        }
+        this.onError(e)
+    }
+
+    _onopen(e) {
+        this.init()
+        this.onOpen(e)
+    }
+
     open(url) {
         this.url = url;
         this.socket = new this.socketClass(this.url);
-        this.socket.onopen = (e) => {
-            this.init();
-            this.onOpen(e);
-        }
-        this.socket.onmessage = this.onMessage;
+        this.socket.onopen = this._onopen.bind(this)
+        this.socket.onmessage = this.onMessage
+        this.socket.onclose = this._onclose.bind(this)
+        this.socket.onerror = this._onerror.bind(this)
+    }
 
-        this.socket.onclose = (e) => {
-            switch(e) {
-                case 1000:
-                    break;
-                default:
-                    this.reconnect(e)
-                    this.autoReconnectInterval *= 2
-            }
-            this.onClose(e)
-        }
-
-        this.socket.onerror = (e) => {
-            switch(e.code){
-                case "ECONNREFUSED":
-                    this.reconnect(e);
-                    this.autoReconnectInterval *= 2;
-                    break;
-                default:
-                    this.onError(e);
-                    break;
-            }
-        }
+    // to be overriden
+    onMessage(e) {
+        throw new Error("onMessage should be overwritten") 
     }
 
     // to be overriden
@@ -65,17 +74,17 @@ export class WebSocketClient {
     }
 
     reconnect(e) {
-        console.log(`reconnecting in ${this.autoReconnectInterval / 1000} seconds...`);
+        console.log(`reconnecting in ${this.autoReconnectInterval / 1000} seconds...`)
         setTimeout(()=>{
-            this.open(this.url);
-        }, this.autoReconnectInterval);
+            this.open(this.url)
+        }, this.autoReconnectInterval)
     }
 
     send(data, option) {
         try {
-            this.socket.send(data,option);
+            this.socket.send(data, option)
         } catch (e){
-            this.socket.emit('error',e);
+            this.socket.emit('error', e)
         }
     }
 }
