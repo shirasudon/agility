@@ -30,10 +30,10 @@ export class WebSocketClient {
                 case 1000:
                     break;
                 default:
-                    this.reconnect(e);
-                    this.autoReconnectInterval *= 2;
+                    this.reconnect(e)
+                    this.autoReconnectInterval *= 2
             }
-            this.onClose(e);
+            this.onClose(e)
         }
 
         this.socket.onerror = (e) => {
@@ -50,13 +50,19 @@ export class WebSocketClient {
     }
 
     // to be overriden
-    onOpen(e) {}
+    onOpen(e) {
+        throw new Error("onOpen should be overwritten") 
+    }
 
     // to be overriden
-    onClose(e) {}
+    onClose(e) {
+        throw new Error("onClose should be overwritten") 
+    }
 
     // to be overriden
-    onError(e) {}
+    onError(e) {
+        throw new Error("onError should be overwritten")     
+    }
 
     reconnect(e) {
         console.log(`reconnecting in ${this.autoReconnectInterval / 1000} seconds...`);
