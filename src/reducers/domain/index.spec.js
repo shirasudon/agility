@@ -3,7 +3,11 @@ import {
     RECEIVE_FRIEND_IDS,
 } from '../../actions/actionTypes';
 
-import { currentRoomId, friendIds } from './index'
+import {
+    currentRoomId, 
+    friendIds,
+    rooms
+} from './index'
 
 describe("currentRoomId", () => {
     it('has initial state of null', () => {
@@ -33,3 +37,122 @@ describe("friendIds", () => {
 
 })
 
+describe("rooms", () => {
+    it("should return initial state of {}", () => {
+        expect(rooms(undefined, {type: "NON_EXISTENT_TYPE"})).toEqual({})
+    })
+
+    it("should set the indices for the first received message", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 10,
+                roomId: 2,
+            }
+        }
+        expect(rooms(undefined, action)).toEqual(
+            {
+                '2': {
+                    msgStartIndex: 10, 
+                    msgEndIndex: 10
+                }
+            }
+        )
+    })
+
+    it("should not accept incontinuous message id", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 30,
+                roomId: 2,
+            }
+        }
+
+        const initialState = {
+            '2': {
+                msgStartIndex: 10,
+                msgEndIndex: 15
+            }
+        }
+        expect( () => {
+            rooms(initialState, action)
+        }).toThrowError()
+    })
+
+    it("should set msgStartIndex on receiving id which is smaller by one than current msgStartIndex", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 9,
+                roomId: 2,
+            }
+        }
+
+        const initialState = {
+            '2': {
+                msgStartIndex: 10,
+                msgEndIndex: 15
+            }
+        }
+
+        expect(rooms(initialState, action)).toEqual(
+            {
+                '2': {
+                    msgStartIndex: 9, 
+                    msgEndIndex: 15
+                }
+            }
+        )
+
+    })
+
+    it("should set msgEndIndex on receiving id which is bigger by one than current msgStartIndex", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 16,
+                roomId: 2,
+            }
+        }
+
+        const initialState = {
+            '2': {
+                msgStartIndex: 10,
+                msgEndIndex: 15
+            }
+        }
+
+        expect(rooms(initialState, action)).toEqual(
+            {
+                '2': {
+                    msgStartIndex: 10, 
+                    msgEndIndex: 16
+                }
+            }
+        )
+
+    })
+
+    it("should do nothing on receiving message whose id is between msgStartIndex and msgEndIndex", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 12,
+                roomId: 2,
+            }
+        }
+
+        const initialState = {
+            '2': {
+                msgStartIndex: 10,
+                msgEndIndex: 15
+            }
+        }
+
+        // Returned state should be the same as the initial state
+        expect(rooms(initialState, action)).toEqual(initialState)
+
+    })
+
+})

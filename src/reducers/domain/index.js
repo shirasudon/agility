@@ -1,8 +1,12 @@
+import { combineReducers } from 'redux'
+export { rooms } from './rooms'
+
 import {
     CHANGE_ROOM,
     RECEIVE_FRIEND_IDS,
     RECEIVE_DELETE_ROOM,
-} from '../../actions/actionTypes';
+} from '../../actions/actionTypes'
+
 
 export function currentRoomId(state = null, action) {
     switch (action.type) {
