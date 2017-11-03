@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 
 const users = [
     {
@@ -93,28 +95,28 @@ const messages = [
         "roomId": 1,
         "userId": 1,
         "text": "こんにちは！",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-11-03 13:00:00').valueOf()
     },
     {
         "id": 2,
         "roomId": 1,
         "userId": 2,
         "text": "はじめまして！",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-11-03 13:13:00').valueOf()
     },
     {
         "id": 3,
         "roomId": 2,
         "userId": 3,
         "text": "hey",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-10-04 13:00:00').valueOf()
     },
     {
         "id": "4",
         "roomId": 2,
         "userId": 1,
         "text": "hello",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-10-05 13:00:00').valueOf()
     }
 ]
 

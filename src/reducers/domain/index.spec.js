@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { 
     CHANGE_ROOM,
     RECEIVE_FRIEND_IDS,
@@ -42,111 +44,45 @@ describe("rooms", () => {
         expect(rooms(undefined, {type: "NON_EXISTENT_TYPE"})).toEqual({})
     })
 
-    it("should set the indices for the first received message", () => {
+    it("should update oldestMessageTimestamp when the received message is older than the oldest message", () => {
         const action = {
             type: "RECEIVE_MESSAGE",
             message: {
-                id: 10,
+                id: 3,
                 roomId: 2,
-            }
-        }
-        expect(rooms(undefined, action)).toEqual(
-            {
-                '2': {
-                    msgStartIndex: 10, 
-                    msgEndIndex: 10
-                }
-            }
-        )
-    })
-
-    it("should not accept incontinuous message id", () => {
-        const action = {
-            type: "RECEIVE_MESSAGE",
-            message: {
-                id: 30,
-                roomId: 2,
+                createdAt: moment('2017-11-03 13:00:00').valueOf()
             }
         }
 
         const initialState = {
             '2': {
-                msgStartIndex: 10,
-                msgEndIndex: 15
-            }
-        }
-        expect( () => {
-            rooms(initialState, action)
-        }).toThrowError()
-    })
-
-    it("should set msgStartIndex on receiving id which is smaller by one than current msgStartIndex", () => {
-        const action = {
-            type: "RECEIVE_MESSAGE",
-            message: {
-                id: 9,
-                roomId: 2,
-            }
-        }
-
-        const initialState = {
-            '2': {
-                msgStartIndex: 10,
-                msgEndIndex: 15
+                oldestMessageTimestamp: moment('2017-11-03 19:12:00').valueOf()
             }
         }
 
         expect(rooms(initialState, action)).toEqual(
             {
                 '2': {
-                    msgStartIndex: 9, 
-                    msgEndIndex: 15
+                    oldestMessageTimestamp: moment('2017-11-03 13:00:00').valueOf()
                 }
             }
         )
 
     })
 
-    it("should set msgEndIndex on receiving id which is bigger by one than current msgStartIndex", () => {
-        const action = {
-            type: "RECEIVE_MESSAGE",
-            message: {
-                id: 16,
-                roomId: 2,
-            }
-        }
-
-        const initialState = {
-            '2': {
-                msgStartIndex: 10,
-                msgEndIndex: 15
-            }
-        }
-
-        expect(rooms(initialState, action)).toEqual(
-            {
-                '2': {
-                    msgStartIndex: 10, 
-                    msgEndIndex: 16
-                }
-            }
-        )
-
-    })
-
-    it("should do nothing on receiving message whose id is between msgStartIndex and msgEndIndex", () => {
+    it("should do nothing when the received message is newer than the oldest message", () => {
         const action = {
             type: "RECEIVE_MESSAGE",
             message: {
                 id: 12,
                 roomId: 2,
+                createdAt: moment('2017-11-03 13:00:00').valueOf()
             }
         }
 
         const initialState = {
             '2': {
-                msgStartIndex: 10,
-                msgEndIndex: 15
+                oldestMessageTimestamp: moment('2017-11-03 11:12:00').valueOf()
             }
         }
 
@@ -156,3 +92,4 @@ describe("rooms", () => {
     })
 
 })
+

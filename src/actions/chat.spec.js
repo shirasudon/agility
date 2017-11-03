@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ChatActionCreator from './chat'
 import thunk from 'redux-thunk'
+import moment from 'moment'
 
 import configureMockStore from 'redux-mock-store'
 
@@ -60,14 +61,14 @@ it('dispatch enter room', () => {
                     "roomId": 1,
                     "userId": 1,
                     "text": "こんにちは！",
-                    "postDate": "2017/08/05"
+                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
                 },
                 {
                     "id": 2,
                     "roomId": 1,
                     "userId": 2,
                     "text": "はじめまして！",
-                    "postDate": "2017/08/05"
+                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
                 },
     ];
     const roomInfo = [1, 2, 3];
@@ -207,7 +208,7 @@ it("dispatches RECEIVE_MESSAGE", () => {
         "roomId": 1,
         "userId": 1,
         "text": "こんにちは！",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-11-03 13:00:00').valueOf()
     }
     const cac = new ChatActionCreator({}); 
     expect(cac.receiveMessage(message)).toEqual({type: "RECEIVE_MESSAGE", message})
@@ -219,14 +220,14 @@ it("fetches messages by room ID", () => {
                     "roomId": 1,
                     "userId": 1,
                     "text": "こんにちは！",
-                    "postDate": "2017/08/05"
+                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
                 },
                 {
                     "id": 2,
                     "roomId": 1,
                     "userId": 2,
                     "text": "はじめまして！",
-                    "postDate": "2017/08/05"
+                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
                 },
     ];
     const roomId = 2; //whatever is fine!
@@ -279,7 +280,7 @@ it("create action SEND_CHAT_MESSAGE", () => {
         "roomId": 1,
         "userId": 1,
         "text": "こんにちは！",
-        "postDate": "2017/08/05"
+        "createdAt": moment('2017-11-03 13:00:00').valueOf()
     }
     const cac = new ChatActionCreator({}); 
     expect(cac.sendMessage(message)).toEqual({type: "SEND_CHAT_MESSAGE", data: message})

@@ -1,10 +1,10 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import { withStyles, } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
+import React from 'react'
+import { withStyles, } from 'material-ui/styles'
+import Grid from 'material-ui/Grid'
+import moment from 'moment'
 
-const RIGHT = "right";
-const LEFT = "left";
+const RIGHT = "right"
+const LEFT = "left"
 
 const balloonElement = {
     [LEFT]: {
@@ -48,30 +48,23 @@ const styleSheet = theme => ({
         "&:before": balloonElement[RIGHT],
     },
 
-});
+})
 
-export function Balloon(props) {
-    const {classes, children, postDate} = props;
-    let {direction} = props;
-    if(!direction){
-        direction = RIGHT;
-    }
-    const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft);
-    const justify = (direction === RIGHT ? "flex-end": "flex-start");
+export const Balloon = ( { classes, text, username, createdAt, direction=RIGHT } ) => {
+    const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft)
+    const justify = (direction === RIGHT ? "flex-end": "flex-start")
     return (
         <Grid container justify={justify}>
             <Grid item xs={6}>
-                <span>{postDate}</span>
+                <span>{moment(createdAt).format("MMMM Do YYYY, h:mm:ss a")}</span>
+                { username && <span>{username}</span> }
                 <div className={balloonStyle}>
-                    {children}
+                    {text}
                 </div>
             </Grid>
         </Grid>
-    );
+    )
 }
 
-const mapStateToProps = () => ({
+export default withStyles(styleSheet)(Balloon)
 
-});
-
-export default connect(mapStateToProps, null)(withStyles(styleSheet)(Balloon));

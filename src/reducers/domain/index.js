@@ -1,6 +1,4 @@
 import { combineReducers } from 'redux'
-export { rooms } from './rooms'
-
 import {
     CHANGE_ROOM,
     RECEIVE_FRIEND_IDS,
@@ -29,4 +27,6 @@ export function friendIds(state = [], action) {
             return state
     }
 }
+
+export { rooms } from './rooms'
 

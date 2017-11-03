@@ -34,7 +34,7 @@ export const withMessageWindowHandlers = withHandlers({
     },
 })
 
-export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText } ) => {
+export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText, } ) => {
 
     if(currentRoomId === null){
         return (
@@ -46,19 +46,19 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
         );
     }
 
-    const { messages, rooms } = entities
+    const { messages, rooms, users } = entities
     const currentRoom = rooms.byId[currentRoomId]
     const me = session.user
 
     const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
-    const messagesDOM = roomMessages ? 
+    const messagesDOM = roomMessages ?
         roomMessages.map((message, index) => {
-            const direction = ( message.userId === me.id ) ? "right" : "left";
+            const direction = ( message.userId === me.id ) ? "right" : "left"
+            // const username = users.byId[message.userId].username
 
             return (
-                    <Balloon key={index} direction={direction} postDate={message.postDate}>
-                        {message.text}
-                    </Balloon>
+                    <Balloon key={index} text={message.text} username={"私"} direction={direction} createdAt={message.createdAt} />
+                        
             )
     }):
     (<span>There is no conversation yet</span>);
@@ -85,7 +85,7 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
                     { currentRoom.createdBy === me.id && ( 
                         <IconButton aria-label="Delete" onClick={()=>{deleteRoom(currentRoomId)}}>
                             <DeleteIcon />
-                        </IconButton>) 
+                        </IconButton>)
                     }
 
                 </CardActions>
