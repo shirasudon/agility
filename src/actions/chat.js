@@ -43,7 +43,8 @@ export default class ChatActionCreator {
         return (dispatch) => {
             dispatch(this.requestRoomInfo());
             return this.chatApi.fetchRoomInfo(roomId).then((room) => {
-                dispatch(this.receiveRoomInfo(room));
+                dispatch(this.receiveRoomInfo(room))
+                return room
             });
         }
     }
@@ -61,9 +62,15 @@ export default class ChatActionCreator {
                 if (!initialFetch) {
                    return resolve();
                 }
-                dispatch(this.fetchRoomInfo(roomId)).then( () => {
-                    resolve();
-                });
+                dispatch(this.fetchRoomInfo(roomId)).then( (room) => {
+                    return Promise.all(
+                        room.members.map( (member) => {
+                            return dispatch(this.fetchUser(member))
+                        })
+                    )
+                }).then( () => {
+                    resolve()
+                })
             });
 
             const p2 = new Promise((resolve, reject) => {
@@ -134,7 +141,7 @@ export default class ChatActionCreator {
             dispatch(this.requestFriends())
             return this.chatApi.fetchFriendIds(userId).then( friendIds => {
                 dispatch(this.receiveFriendIds(friendIds))
-                return friendIds.forEach( friendId => {dispatch(this.fetchUser(friendId)) })
+                return Promise.all(friendIds.map( friendId => {dispatch(this.fetchUser(friendId)) }))
             })
         }
     }

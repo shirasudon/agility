@@ -116,6 +116,9 @@ describe("MessageWindow", () => {
                         "2": {},
                         "3": {},
                     }
+                },
+                users: {
+                    byId: {}
                 }
             },
             deleteRoom: jest.fn(),
@@ -159,6 +162,9 @@ describe("MessageWindow", () => {
                         "2": {},
                         "3": {},
                     }
+                },
+                users: {
+                    byId: { }
                 }
             },
             deleteRoom: jest.fn(),

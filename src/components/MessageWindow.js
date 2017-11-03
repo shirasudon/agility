@@ -54,10 +54,10 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
     const messagesDOM = roomMessages ?
         roomMessages.map((message, index) => {
             const direction = ( message.userId === me.id ) ? "right" : "left"
-            // const username = users.byId[message.userId].username
+            const username = users.byId.hasOwnProperty(message.userId) ? users.byId[message.userId].username : ""
 
             return (
-                    <Balloon key={index} text={message.text} username={"私"} direction={direction} createdAt={message.createdAt} />
+                    <Balloon key={index} text={message.text} username={username} direction={direction} createdAt={message.createdAt} />
                         
             )
     }):

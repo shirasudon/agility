@@ -29,14 +29,25 @@ it('returns receive room info', () => {
 
 it('returns fetch room info', () => {
     const mockApi = {
-        fetchRoomInfo: (roomId) => {return Promise.resolve([1,2,3]);},
+        fetchRoomInfo: (roomId) => {
+            return Promise.resolve({
+                id: 2,
+                name: "room name!",
+                members: [2, 5, 8],
+            })
+        },
     };
     cac = new ChatActionCreator(mockApi); 
 
     const roomId = 3;
     const expectedActions = [
         { type: "REQUEST_ROOM_INFO" },
-        { type: "RECEIVE_ROOM_INFO" , room: [1,2,3]}
+        { type: "RECEIVE_ROOM_INFO" , room: {
+                id: 2,
+                name: "room name!",
+                members: [2, 5, 8],
+            }
+        }
     ]
     const store = mockStore({})
 
@@ -71,13 +82,35 @@ it('dispatch enter room', () => {
                     "createdAt": moment('2017-11-03 13:00:00').valueOf()
                 },
     ];
-    const roomInfo = [1, 2, 3];
+    const roomInfo = {
+        id: 2,
+        name: "room name!",
+        members: [1, 2, 3],
+    }
+
+    const users = {
+        "1": {
+            id: 1,
+            username: "hajime",
+        },
+        "2": {
+            id: 2,
+            username: "mai",
+        },
+        "3": {
+            id: 3,
+            username: "takeru",
+        },
+    }
 
     const mockApi = {
         fetchRooms: () => {},
         fetchRoomInfo: (roomId) => {return Promise.resolve(roomInfo);},
         fetchMessagesByRoomId: (roomId) => {
             return Promise.resolve(messages);
+        },
+        fetchUser: (userId) => {
+            return Promise.resolve(users[userId])
         },
         createRoom: () => {},
     };
@@ -90,6 +123,9 @@ it('dispatch enter room', () => {
         { type: "RECEIVE_ROOM_INFO", room: roomInfo},
         { type: "RECEIVE_MESSAGE", message: messages[0] },
         { type: "RECEIVE_MESSAGE", message: messages[1] },
+        { type: "RECEIVE_USER", user: users[1] },
+        { type: "RECEIVE_USER", user: users[2] },
+        { type: "RECEIVE_USER", user: users[3]},
         { type: "CHANGE_ROOM", roomId}
     ] // TODO: this test might fail depending on the execution order
     const store = mockStore({})
