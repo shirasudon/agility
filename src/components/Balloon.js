@@ -3,8 +3,8 @@ import { withStyles, } from 'material-ui/styles'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
 
-const RIGHT = "right"
-const LEFT = "left"
+export const RIGHT = "right"
+export const LEFT = "left"
 
 const balloonElement = {
     [LEFT]: {
@@ -47,19 +47,26 @@ const styleSheet = theme => ({
         ...baloonMain,
         "&:before": balloonElement[RIGHT],
     },
-
+    postMetaLeft: {
+        textAlign: "left"
+    },
+    postMetaRight: {
+        textAlign: "right"    
+    }
 })
 
 export const Balloon = ( { classes, text, username, createdAt, direction=RIGHT } ) => {
     const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft)
+    const postMeta = (direction === RIGHT ? classes.postMetaRight: classes.postMetaLeft)
     const justify = (direction === RIGHT ? "flex-end": "flex-start")
     return (
         <Grid container justify={justify}>
             <Grid item xs={6}>
-                <span>{moment(createdAt).format("MMMM Do YYYY, h:mm:ss a")}</span>
-                { username && <span>{username}</span> }
                 <div className={balloonStyle}>
                     {text}
+                </div>
+                <div className={postMeta}>
+                    { username && <span>{username}</span> } : <span>{moment(createdAt).format("MMMM Do YYYY, h:mm a")}</span>
                 </div>
             </Grid>
         </Grid>
