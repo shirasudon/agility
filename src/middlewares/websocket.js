@@ -1,9 +1,15 @@
-import { SEND_CHAT_MESSAGE } from '../actions/actionTypes'
+import { 
+    SEND_CHAT_MESSAGE, 
+    SEND_MESSAGE_READ
+} from '../actions/actionTypes'
 import { chatActionCreator } from '../actions'
 import { WebSocketClient } from './WebSocketClient'
 import startMockServer from '../mock/mockServer'
 
 const onMessage = store => event => {
+    // TODO: dispatch different actions depending on event type 
+    // store.dispatch(chatActionCreator.receiveMessageRead(event.data));
+
     store.dispatch(chatActionCreator.receiveMessage(event.data));
     console.log("Received:", event.data);
 }
@@ -47,11 +53,21 @@ export const createWebSocketMiddleware = (endpoint, options = { connection: null
             connection = setup(endpoint, store)
         }
         return next => action => {
-            if(action.type === SEND_CHAT_MESSAGE) {
-                connection.send(JSON.stringify({
-                    type: SEND_CHAT_MESSAGE,
-                    data: action.data
-                }))
+            switch (action.type) {
+                case SEND_CHAT_MESSAGE:
+                    connection.send(JSON.stringify({
+                        type: SEND_CHAT_MESSAGE,
+                        data: action.data
+                    }))
+                    break
+                case SEND_MESSAGE_READ:
+                    connection.send(JSON.stringify({
+                        type: SEND_MESSAGE_READ,
+                        data: action.data,
+                    }))
+                    break
+                default:
+                    break
             }
             next(action)
         }

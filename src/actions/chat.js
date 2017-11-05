@@ -16,6 +16,7 @@ import {
     REQUEST_DELETE_ROOM,
     RECEIVE_DELETE_ROOM,
     RECEIVE_FRIEND_IDS,
+    RECEIVE_MESSAGE_READ
 } from './actionTypes'
 
 
@@ -60,7 +61,7 @@ export default class ChatActionCreator {
         return (dispatch) => {
             const p1 = new Promise((resolve, reject) => {
                 if (!initialFetch) {
-                   return resolve();
+                    return resolve();
                 }
                 dispatch(this.fetchRoomInfo(roomId)).then( (room) => {
                     return Promise.all(
@@ -130,7 +131,7 @@ export default class ChatActionCreator {
     }
 
     receiveFriendIds(friendIds) {
-         return {
+        return {
             type: RECEIVE_FRIEND_IDS,
             ids: friendIds,
         }
@@ -224,6 +225,9 @@ export default class ChatActionCreator {
                 if (ok) {
                     dispatch(this.receiveDeleteRoom(roomId));
                 }
+                else {
+                    // TODO: error handling
+                }
             })
         }
     }
@@ -238,6 +242,27 @@ export default class ChatActionCreator {
         return {
             type: RECEIVE_DELETE_ROOM,
             roomId,
+        }
+    }
+
+    receiveMessageRead(messageId, userId) {
+        return {
+            type: RECEIVE_MESSAGE_READ,
+            messageId,
+            userId,
+        }
+    }
+
+    sendMessageRead(messageIds, userId) {
+        return (dispatch) => {
+            return this.chatApi.messageRead(messageIds, userId).then( ok => {
+                if (ok) {
+                    dispatch(this.receiveMessageRead(messageIds, userId))
+                }
+                else {
+                    // TODO: error handling 
+                }
+            })
         }
     }
 
