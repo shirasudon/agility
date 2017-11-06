@@ -1,5 +1,5 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { withState, withHandlers, compose } from 'recompose'
 
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card'
@@ -8,9 +8,18 @@ import DeleteIcon from 'material-ui-icons/Delete'
 import Divider from 'material-ui/Divider'
 import TextField from 'material-ui/TextField'
 import Balloon from './Balloon'
+import { withStyles } from 'material-ui/styles'
 
 import { KEY_ENTER } from '../keyCodes.js'
 import { chatActionCreator } from '../actions'
+
+const styleSheet = theme => ({
+    cardContent: {
+        overflowX: "hidden",
+        overflowY: "scroll",
+        height: "50vh" // TODO: make this responsive
+    },
+})
 
 export const withCurrentText = withState('curText', 'setCurText', '')
 
@@ -34,7 +43,7 @@ export const withMessageWindowHandlers = withHandlers({
     },
 })
 
-export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText, } ) => {
+export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, handleChange, handleKeyPress, curText, classes} ) => {
 
     if(currentRoomId === null){
         return (
@@ -68,7 +77,7 @@ export const MessageWindow = ( { currentRoomId, session, entities, deleteRoom, h
             <Card>
                 <CardHeader title={currentRoom.name} />
                 <Divider/>
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                     {messagesDOM}
                     <TextField
                         id="post-text-field"
@@ -111,6 +120,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export const enhancer = compose(
+    withStyles(styleSheet),
     connect(mapStateToProps, mapDispatchToProps),
     withCurrentText,
     withMessageWindowHandlers,
