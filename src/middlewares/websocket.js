@@ -6,12 +6,20 @@ import { chatActionCreator } from '../actions'
 import { WebSocketClient } from './WebSocketClient'
 import startMockServer from '../mock/mockServer'
 
+// returns a function to be called when receiving a message through websocket
 const onMessage = store => event => {
-    // TODO: dispatch different actions depending on event type 
-    // store.dispatch(chatActionCreator.receiveMessageRead(event.data));
-
-    store.dispatch(chatActionCreator.receiveMessage(event.data));
-    console.log("Received:", event.data);
+    console.log("Received:", event.data)
+    const { type, data } = event.data 
+    switch (type) {
+        case SEND_CHAT_MESSAGE:
+            store.dispatch(chatActionCreator.receiveMessage(data))
+            break
+        case SEND_MESSAGE_READ:
+            store.dispatch(chatActionCreator.receiveMessageRead(data))
+            break
+        default:
+            break
+    }
 }
 
 export function setupConnection(endpoint, store, socketClass = WebSocket) {
