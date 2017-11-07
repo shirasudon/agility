@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import {
     CHANGE_ROOM,
     RECEIVE_FRIEND_IDS,

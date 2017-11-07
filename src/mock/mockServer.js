@@ -26,7 +26,7 @@ export default function startMockServer(url) {
     mockServer.on('connection', server => {
         // mockServer.send('test message 1');
         // mockServer.send('test message 2');
-    });
+    })
 
     mockServer.on("message", data => {
         const message = JSON.parse(data)
@@ -40,6 +40,7 @@ export default function startMockServer(url) {
                         `echoing "${message.data.body}"`
                     )
                 )
+                break
 
             case SEND_MESSAGE_READ:
                 // TODO 

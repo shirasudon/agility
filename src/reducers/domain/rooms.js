@@ -11,7 +11,7 @@ import {
 export function room(state = { oldestMessageTimestamp: null }, action) {
     switch (action.type) {
         case RECEIVE_MESSAGE:
-            const { id, roomId, createdAt } = action.message
+            const { createdAt } = action.message
             return Object.assign({}, state, {
                 oldestMessageTimestamp: Math.min(createdAt, state.oldestMessageTimestamp)
             })
