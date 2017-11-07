@@ -1,12 +1,12 @@
-import { withState, withHandlers, compose } from 'recompose'
+import React from 'react'
+import { connect } from 'react-redux'
 
 import Balloon from './Balloon'
 
 
 export const ChatHistory = ( { currentRoomId, session, entities } ) => {
 
-    const { messages, rooms, users } = entities
-    const currentRoom = rooms.byId[currentRoomId]
+    const { messages, users } = entities
     const me = session.user
 
     const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
@@ -24,5 +24,15 @@ export const ChatHistory = ( { currentRoomId, session, entities } ) => {
 
     return <div className="chatHistory"> { messagesDOM } </div>
 }
+
+const mapStateToProps = ( { currentRoomId, session, entities } ) => ({
+    currentRoomId,
+    session,
+    entities,
+})
+
+export const enhancer = connect(mapStateToProps, null)
+
+export default enhancer(ChatHistory)
 
 

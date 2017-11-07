@@ -1,4 +1,7 @@
+import React from 'react'
 import { withState, withHandlers, compose } from 'recompose'
+import { connect } from 'react-redux'
+import TextField from 'material-ui/TextField'
 
 
 import { KEY_ENTER } from '../keyCodes.js'
@@ -57,4 +60,4 @@ export const enhancer = compose(
     withMessageWindowHandlers,
 )
 
-export default enhancer(MessageWindow)
+export default enhancer(ChatInput)
