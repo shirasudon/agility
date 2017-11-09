@@ -6,74 +6,43 @@ const create = () => {
         getState: jest.fn(() => ({})),
         dispatch: jest.fn(),
     };
-    const setupFunc = jest.fn()
-    const connection = {
-        send: jest.fn(),
+    const send = jest.fn()
+    const ws = function() {
+        this.send = send 
     }
 
     const next = jest.fn()
 
-    return { store, setupFunc, connection, next, }
+    return { store, next, ws, send}
 }
 
 const endpoint = "ws://endpoint.com"
 
-describe("setupConnection", () => {
-    it("sets lister methods and connects to the websocket server at the end", () => {
-        const { store } = create()
-        const mockServer = new MockServer(endpoint);
-        mockServer.on('connection', server => {
-            mockServer.send(JSON.stringify({data: "dummy message"}))
-        })
-        const connection = setupConnection(endpoint, store)
-        setTimeout(() => {
-            expect(store.dispatch).toHaveBeenCalled()
-        }, 10)
-    })
-})
-
 describe("createWebSocketMiddleware", () => {
-    describe("store handler", () => {
-
-        it("calls setup function with endpoint and store if connection is null", () => {
-            const { store, setupFunc } = create();
-            const storeHandler = createWebSocketMiddleware(endpoint, {setupConnection: setupFunc})
-
-            storeHandler(store)
-            expect(setupFunc).toHaveBeenCalledWith(endpoint, store)
-        })
-
-        it("does NOT call setup function if connection is NOT null", () => {
-            const { connection, setupFunc } = create();
-            const storeHandler = createWebSocketMiddleware(endpoint, {connection: connection, setupConnection: setupFunc})
-            expect(setupFunc).not.toHaveBeenCalled()
-        })
-
-    })
 
     describe("action handler", () => {
 
         it("calls next with action as its first argument and does not call connection.send", () => {
-            const { connection, setupFunc, next, store} = create();
-            const nextHandler = createWebSocketMiddleware(endpoint, {connection: connection, setupConnection: setupFunc})(store)
+            const { ws, next, store, send } = create()
+            const nextHandler = createWebSocketMiddleware(endpoint, ws)(store)
             const action = {
                 type: "NON_EXISTENT_TYPE",
             }
             nextHandler(next)(action)
             expect(next).toHaveBeenCalledWith(action)
-            expect(connection.send).not.toHaveBeenCalled()
+            expect(send).not.toHaveBeenCalled()
         }) 
 
         it("calls next with action as its first argument and calls connection.send", () => {
-            const { connection, setupFunc, next, store} = create();
-            const nextHandler = createWebSocketMiddleware(endpoint, {connection: connection, setupConnection: setupFunc})(store)
+            const { ws, next, store, send } = create()
+            const nextHandler = createWebSocketMiddleware(endpoint, ws)(store)
             const action = {
                 type: "SEND_CHAT_MESSAGE",
                 data: "this is data"
             }
             nextHandler(next)(action)
             expect(next).toHaveBeenCalledWith(action)
-            expect(connection.send).toHaveBeenCalledWith(JSON.stringify(action))
+            expect(send).toHaveBeenCalledWith(JSON.stringify(action))
         }) 
 
     })

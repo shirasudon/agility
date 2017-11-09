@@ -1,36 +1,12 @@
+import ReconnectingWebSocket from 'reconnecting-websocket'
+
 import { 
     SEND_CHAT_MESSAGE, 
     SEND_MESSAGE_READ
 } from '../actions/actionTypes'
 import { chatActionCreator } from '../actions'
-import { WebSocketClient } from './WebSocketClient'
 import startMockServer from '../mock/mockServer'
 
-// returns a function to be called when receiving a message through websocket
-const onMessage = store => event => {
-    console.log("Received:", event.data)
-    const { type, data } = event.data 
-    switch (type) {
-        case SEND_CHAT_MESSAGE:
-            store.dispatch(chatActionCreator.receiveMessage(data))
-            break
-        case SEND_MESSAGE_READ:
-            store.dispatch(chatActionCreator.receiveMessageRead(data))
-            break
-        default:
-            break
-    }
-}
-
-export function setupConnection(endpoint, store, socketClass = WebSocket) {
-    const connection = new WebSocketClient(socketClass)
-    connection.onMessage = onMessage(store)
-    connection.onClose = () => { }
-    connection.onOpen = () => { } 
-
-    connection.open(endpoint)
-    return connection
-}
 
 export function initializeWebSocket(mode) {
     switch (mode) {
@@ -53,13 +29,36 @@ export function initializeWebSocket(mode) {
     }
 }
 
-export const createWebSocketMiddleware = (endpoint, options = { connection: null, setupConnection: setupConnection } ) => {
-    let connection = options.connection || null
-    const setup = options.setupConnection
+// returns a function to be called when receiving a message through websocket
+export const createOnMessage = store => event => {
+    const { type, data } = event.data 
+    switch (type) {
+        case SEND_CHAT_MESSAGE:
+            store.dispatch(chatActionCreator.receiveMessage(data))
+            break
+        case SEND_MESSAGE_READ:
+            store.dispatch(chatActionCreator.receiveMessageRead(data))
+            break
+        default:
+            break
+    }
+}
+
+export const createOnClose = store => event => {
+    console.error("Websocket connection is lost trying to reconnect.")
+}
+
+export const createWebSocketMiddleware = (endpoint, WebSocketClass = ReconnectingWebSocket) => {
+
     return store => {
-        if (connection == null) {
-            connection = setup(endpoint, store)
+
+        const options = {
+            reconnectionWebSocketFactory: 2,
         }
+        const connection = new WebSocketClass(endpoint, [], options)
+        connection.onmessage = createOnMessage(store)
+        connection.onclose = createOnClose(store)
+
         return next => action => {
             switch (action.type) {
                 case SEND_CHAT_MESSAGE:
