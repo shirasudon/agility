@@ -1,4 +1,5 @@
-import ReconnectingWebSocket from 'reconnecting-websocket'
+// import ReconnectingWebSocket from 'reconnecting-websocket'
+import { WebSocketService } from '../service/WebSocketService'
 
 import { 
     SEND_CHAT_MESSAGE, 
@@ -48,30 +49,36 @@ export const createOnClose = store => event => {
     console.error("Websocket connection is lost trying to reconnect.")
 }
 
-export const createWebSocketMiddleware = (endpoint, WebSocketClass = ReconnectingWebSocket) => {
+export const createOnOpen = store => event => {
+    // TODO: receive updates
+    // TODO: send buffered data
+}
+
+export const createWebSocketMiddleware = (endpoint) => {
 
     return store => {
 
         const options = {
             reconnectionWebSocketFactory: 2,
         }
-        const connection = new WebSocketClass(endpoint, [], options)
-        connection.onmessage = createOnMessage(store)
-        connection.onclose = createOnClose(store)
+        const connection = new WebSocketService(endpoint, options)
+        connection.registerEvent("onmessage", createOnMessage(store))
+        connection.registerEvent("onclose", createOnClose(store))
+        connection.connect()
 
         return next => action => {
             switch (action.type) {
                 case SEND_CHAT_MESSAGE:
-                    connection.send(JSON.stringify({
+                    connection.send({
                         type: SEND_CHAT_MESSAGE,
                         data: action.data
-                    }))
+                    }, true)
                     break
                 case SEND_MESSAGE_READ:
-                    connection.send(JSON.stringify({
+                    connection.send({
                         type: SEND_MESSAGE_READ,
                         data: action.data,
-                    }))
+                    }, true)
                     break
                 default:
                     break
