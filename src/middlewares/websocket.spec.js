@@ -6,14 +6,25 @@ const create = () => {
         getState: jest.fn(() => ({})),
         dispatch: jest.fn(),
     };
-    const send = jest.fn()
-    const ws = function() {
-        this.send = send 
+    const mockSend = jest.fn()
+    const mockConnect = jest.fn()
+    const mockRegisterEvent = jest.fn()
+    const next = jest.fn()
+    class WebSocketService {
+        send(...args) {
+            mockSend(...args) 
+        } 
+
+        registerEvent(event, func) {
+            mockRegisterEvent(event) 
+        }
+
+        connect() {
+            mockConnect()
+        }
     }
 
-    const next = jest.fn()
-
-    return { store, next, ws, send}
+    return { store, next, connect: mockConnect, send: mockSend, registerEvent: mockRegisterEvent, WebSocketService }
 }
 
 const endpoint = "ws://endpoint.com"
@@ -21,10 +32,23 @@ const endpoint = "ws://endpoint.com"
 describe("createWebSocketMiddleware", () => {
 
     describe("action handler", () => {
+        it("initialzes the connection", () => {
+            const { next, store, send, connect, registerEvent, WebSocketService } = create()
+            const nextHandler = createWebSocketMiddleware(endpoint, WebSocketService)(store)
+            const action = {
+                type: "NON_EXISTENT_TYPE",
+            }
+            nextHandler(next)(action)
+            expect(registerEvent).toHaveBeenCalledWith("onopen")
+            expect(registerEvent).toHaveBeenCalledWith("onerror")
+            expect(registerEvent).toHaveBeenCalledWith("onclose")
+            expect(registerEvent).toHaveBeenCalledWith("onmessage")
+            expect(connect).toHaveBeenCalled()
+        })
 
         it("calls next with action as its first argument and does not call connection.send", () => {
-            const { ws, next, store, send } = create()
-            const nextHandler = createWebSocketMiddleware(endpoint, ws)(store)
+            const { next, store, send, connect, registerEvent, WebSocketService } = create()
+            const nextHandler = createWebSocketMiddleware(endpoint, WebSocketService)(store)
             const action = {
                 type: "NON_EXISTENT_TYPE",
             }
@@ -34,15 +58,15 @@ describe("createWebSocketMiddleware", () => {
         }) 
 
         it("calls next with action as its first argument and calls connection.send", () => {
-            const { ws, next, store, send } = create()
-            const nextHandler = createWebSocketMiddleware(endpoint, ws)(store)
+            const { next, store, send, connect, WebSocketService, registerEvent } = create()
+            const nextHandler = createWebSocketMiddleware(endpoint, WebSocketService)(store)
             const action = {
                 type: "SEND_CHAT_MESSAGE",
                 data: "this is data"
             }
             nextHandler(next)(action)
             expect(next).toHaveBeenCalledWith(action)
-            expect(send).toHaveBeenCalledWith(JSON.stringify(action))
+            expect(send).toHaveBeenCalledWith(action, true)
         }) 
 
     })

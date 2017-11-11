@@ -46,7 +46,6 @@ export const createOnMessage = store => event => {
 }
 
 export const createOnClose = store => event => {
-    console.error("Websocket connection is lost trying to reconnect.")
 }
 
 export const createOnOpen = store => event => {
@@ -54,37 +53,39 @@ export const createOnOpen = store => event => {
     // TODO: send buffered data
 }
 
-export const createWebSocketMiddleware = (endpoint) => {
+export const createOnError = store => event => {
+}
 
-    return store => {
+export const createWebSocketMiddleware = (endpoint, wsService = WebSocketService) => store => {
 
-        const options = {
-            reconnectionWebSocketFactory: 2,
+    const options = {
+        reconnectionDelayGrowFactor: 2,
+    }
+    const connection = new wsService(endpoint, options)
+    connection.registerEvent("onopen", createOnOpen(store))
+    connection.registerEvent("onmessage", createOnMessage(store))
+    connection.registerEvent("onclose", createOnClose(store))
+    connection.registerEvent("onerror", createOnError(store))
+    connection.connect()
+
+    return next => action => {
+        switch (action.type) {
+            case SEND_CHAT_MESSAGE:
+                connection.send({
+                    type: SEND_CHAT_MESSAGE,
+                    data: action.data
+                }, true)
+                break
+            case SEND_MESSAGE_READ:
+                connection.send({
+                    type: SEND_MESSAGE_READ,
+                    data: action.data,
+                }, true)
+                break
+            default:
+                break
         }
-        const connection = new WebSocketService(endpoint, options)
-        connection.registerEvent("onmessage", createOnMessage(store))
-        connection.registerEvent("onclose", createOnClose(store))
-        connection.connect()
-
-        return next => action => {
-            switch (action.type) {
-                case SEND_CHAT_MESSAGE:
-                    connection.send({
-                        type: SEND_CHAT_MESSAGE,
-                        data: action.data
-                    }, true)
-                    break
-                case SEND_MESSAGE_READ:
-                    connection.send({
-                        type: SEND_MESSAGE_READ,
-                        data: action.data,
-                    }, true)
-                    break
-                default:
-                    break
-            }
-            next(action)
-        }
+        next(action)
     }
 }
 

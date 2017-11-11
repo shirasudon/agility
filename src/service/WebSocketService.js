@@ -10,23 +10,25 @@ const ALLOWED_EVENT_TYPES = [ONERROR, ONMESSAGE, ONCLOSE, ONOPEN]
 
 export class WebSocketService {
     
-    constructor(endpoint, options = {}) {
+    constructor(endpoint, options = {}, WebSocketClass = ReconnectingWebSocket) {
         this.ws = null
         this.endpoint = endpoint
         this.events = {}
         this.options = options
         this.buffer = [] // buffer the messages to be sent on successful connection
+        this.wsClass = WebSocketClass
     }
 
     connect() {
-        this.ws = new ReconnectingWebSocket(this.endpoint, [], this.options)
+        console.log(this.endpoint, this.options)
+        this.ws = new this.wsClass(this.endpoint, [], this.options)
         this.ws.onopen = (event) => {
             while (true) {
                 const data = this.buffer.shift()
                 if (!data) {
                     break
                 }
-                this.send(data)
+                this.send(data, true)
             }    
             if (this.events[ONOPEN]) {
                 this.events[ONOPEN](event)
@@ -42,21 +44,22 @@ export class WebSocketService {
             this.events[event] = func
             return
         } 
-        throw new Error(`Event type${event} is not supported`)
+        throw new Error(`Event type ${event} is not supported`)
     }
 
     send(data, enableBuffer=false) {
         try {
+            if (this.ws.readyState !== 1) {
+                throw new Error("Socket not opened")
+            }
             this.ws.send(JSON.stringify(data)) 
         }
         catch (err) {
-            console.log(err)
             if (enableBuffer) {
                 this.buffer.push(data)
                 console.log("Buffered: " + JSON.stringify(data))
             }
         }
     }
-
 }
 
