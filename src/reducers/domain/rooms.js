@@ -4,8 +4,7 @@ import {
 
 /*
  * create a domain state about a room.
- * All the messages between msgStartIndex and msgEndIndex (inclusive) should already been received.
- * Initially both indices are -1, meaning no message is received so far.
+ *
  * @param {integer} oldestMessageTimestamp - the unix style timestamp of the oldest message received so far.
  */
 export function room(state = { oldestMessageTimestamp: null }, action) {
@@ -13,7 +12,7 @@ export function room(state = { oldestMessageTimestamp: null }, action) {
         case RECEIVE_MESSAGE:
             const { createdAt } = action.message
             return Object.assign({}, state, {
-                oldestMessageTimestamp: Math.min(createdAt, state.oldestMessageTimestamp)
+                oldestMessageTimestamp: Math.min(createdAt, state.oldestMessageTimestamp),
             })
         default:
             return state

@@ -95,28 +95,32 @@ const messages = [
         "roomId": 1,
         "userId": 1,
         "text": "こんにちは！",
-        "createdAt": moment('2017-11-03 13:00:00').valueOf()
+        "createdAt": moment('2017-11-03 13:00:00').valueOf(),
+        "readBy": [3, 4, 8],
     },
     {
         "id": 2,
         "roomId": 1,
         "userId": 2,
         "text": "はじめまして！",
-        "createdAt": moment('2017-11-03 13:13:00').valueOf()
+        "createdAt": moment('2017-11-03 13:13:00').valueOf(),
+        "readBy": [3, 4, 8],
     },
     {
         "id": 3,
         "roomId": 2,
         "userId": 3,
         "text": "hey",
-        "createdAt": moment('2017-10-04 13:00:00').valueOf()
+        "createdAt": moment('2017-10-04 13:00:00').valueOf(),
+        "readBy": [],
     },
     {
         "id": "4",
         "roomId": 2,
         "userId": 1,
         "text": "hello",
-        "createdAt": moment('2017-10-05 13:00:00').valueOf()
+        "createdAt": moment('2017-10-05 13:00:00').valueOf(),
+        "readBy": [],
     }
 ]
 

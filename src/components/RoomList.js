@@ -30,13 +30,13 @@ export const RoomList = ( { rooms, enterRoom } ) => {
 
 const mapStateToProps = ( { entities } ) => ({
     rooms: entities.rooms,
-});
+})
 
 const mapDispatchToProps = (dispatch) => ({
     enterRoom: (roomId, shouldFetch = false) => {
-        dispatch(chatActionCreator.enterRoom(roomId, shouldFetch));
+        dispatch(chatActionCreator.enterRoom(roomId, shouldFetch))
     },
-});
+})
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomList)

@@ -16,8 +16,7 @@ export const ChatHistory = ( { currentRoomId, session, entities } ) => {
             const username = users.byId.hasOwnProperty(message.userId) ? users.byId[message.userId].username : ""
 
             return (
-                    <Balloon key={index} text={message.text} username={username} direction={direction} createdAt={message.createdAt} />
-                        
+                    <Balloon key={index} text={message.text} username={username} direction={direction} createdAt={message.createdAt} messageId={message.id} userId={message.userId} />
             )
     }):
     (<span>There is no conversation yet</span>)

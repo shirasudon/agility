@@ -5,6 +5,7 @@ import {
     RECEIVE_MESSAGE,
     RECEIVE_CREATE_ROOM,
     RECEIVE_DELETE_ROOM,
+    RECEIVE_MESSAGE_READ,
 } from '../../actions/actionTypes';
 
 
@@ -106,15 +107,26 @@ export function messages(
     },
         action
 ) {
-    switch (action.type) {
-        case RECEIVE_MESSAGE:
-            const { id, roomId, } = action.message;
-            let newState = Object.assign({}, state);
-            newState.all.push(id);
-            newState.byRoomId[roomId] = addMessage(newState.byRoomId[roomId], action.message.id);
-            newState.byId[id] = action.message;
-            return newState;
+    switch (action.type) { 
+        case RECEIVE_MESSAGE: {
+            const { id, roomId, } = action.message
+            let newState = Object.assign({}, state)
+            newState.all.push(id)
+            newState.byRoomId[roomId] = addMessage(newState.byRoomId[roomId], action.message.id)
+            newState.byId[id] = action.message
+            return newState
+        }
+
+        case RECEIVE_MESSAGE_READ: {
+            const { messageId, userId } = action
+            let newState = Object.assign({}, state)
+            if (!newState.byId[messageId].readBy.includes(userId)) {
+                newState.byId[messageId].readBy.push(userId)
+            }
+            return newState
+        }
+
         default:
-            return state;
+            return state
     }
 }

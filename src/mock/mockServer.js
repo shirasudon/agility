@@ -17,6 +17,7 @@ const chatMessageFactory = (roomId, userId, text) => ({
         userId,
         text,
         createdAt: Date.now(),
+        readBy: [],
     }
 })
 

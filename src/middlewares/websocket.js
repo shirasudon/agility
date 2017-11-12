@@ -38,7 +38,7 @@ export const createOnMessage = store => event => {
             store.dispatch(chatActionCreator.receiveMessage(data))
             break
         case SEND_MESSAGE_READ:
-            store.dispatch(chatActionCreator.receiveMessageRead(data))
+            store.dispatch(chatActionCreator.receiveMessageRead(data.messageId, data.userId))
             break
         default:
             break

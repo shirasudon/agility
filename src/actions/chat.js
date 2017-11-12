@@ -57,9 +57,9 @@ export default class ChatActionCreator {
         };
     }
 
-    enterRoom(roomId, initialFetch=false) {
+    enterRoom(roomId, initialFetch=false, lastMessageId = []) {
         return (dispatch) => {
-            const p1 = new Promise((resolve, reject) => {
+            const roomFetchPromise = new Promise((resolve, reject) => {
                 if (!initialFetch) {
                     return resolve();
                 }
@@ -74,7 +74,7 @@ export default class ChatActionCreator {
                 })
             });
 
-            const p2 = new Promise((resolve, reject) => {
+            const messageFetchPromise = new Promise((resolve, reject) => {
                 if (!initialFetch) {
                     return resolve();
                 }
@@ -83,8 +83,8 @@ export default class ChatActionCreator {
                 })
             });
 
-            return Promise.all([p1, p2]).then( () => {
-                dispatch(this.changeRoom(roomId));
+            return Promise.all([roomFetchPromise, messageFetchPromise]).then( () => {
+                dispatch(this.changeRoom(roomId))
             });
         }
     }
@@ -96,7 +96,7 @@ export default class ChatActionCreator {
     receiveRooms(rooms = {}){
         return {
             type: RECEIVE_ROOMS,
-            rooms 
+            rooms
         };
     }
 
@@ -234,7 +234,7 @@ export default class ChatActionCreator {
 
     requestDeleteRoom(roomId) {
         return {
-            type: REQUEST_DELETE_ROOM 
+            type: REQUEST_DELETE_ROOM
         }
     }
 
@@ -260,11 +260,10 @@ export default class ChatActionCreator {
                     dispatch(this.receiveMessageRead(messageIds, userId))
                 }
                 else {
-                    // TODO: error handling 
+                    // TODO: error handling
                 }
             })
         }
     }
 
 }
-

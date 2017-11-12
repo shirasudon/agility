@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { withStyles, } from 'material-ui/styles'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
+import { lifecycle, compose } from 'recompose'
+import { chatActionCreator } from '../actions'
 
 export const RIGHT = "right"
 export const LEFT = "left"
@@ -55,15 +58,31 @@ const styleSheet = theme => ({
     }
 })
 
-export const Balloon = ( { classes, text, username, createdAt, direction=RIGHT } ) => {
+export const withLifecycle = lifecycle({
+    componentDidMount() {
+        // dispatch read notification to the server
+        const { entities, messageId, session, sendRead } = this.props
+        const message = entities.messages.byId[messageId]
+        const me = session.user
+        if ( !message.readBy.includes(me.id) ) { // notify the server that the current user has read the specific message
+            sendRead([messageId], me.id)
+        }
+    }
+})
+
+export const Balloon = ( { messageId, entities, userId, classes, text, username, createdAt, direction=RIGHT } ) => {
     const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft)
     const postMeta = (direction === RIGHT ? classes.postMetaRight: classes.postMetaLeft)
     const justify = (direction === RIGHT ? "flex-end": "flex-start")
+    const readByCount = entities.messages.byId[messageId].readBy.length - 1
     return (
-        <Grid container justify={justify}>
+        <Grid id={messageId} container justify={justify}>
             <Grid item xs={6}>
                 <div className={balloonStyle}>
                     {text}
+                </div>
+                <div>
+                    {readByCount} Read 
                 </div>
                 <div className={postMeta}>
                     { username && <span>{username}</span> } : <span>{moment(createdAt).format("MMMM Do YYYY, h:mm a")}</span>
@@ -73,5 +92,22 @@ export const Balloon = ( { classes, text, username, createdAt, direction=RIGHT }
     )
 }
 
-export default withStyles(styleSheet)(Balloon)
+export const mapStateToProps = ( { entities, session } ) => ({
+    entities,
+    session,
+})
+
+export const mapDispatchToProps = dispatch => ({
+    sendRead: (messageId, userId) => {
+        dispatch(chatActionCreator.sendMessageRead([messageId], userId))
+    }
+})
+
+export const enhancer = compose(
+    withStyles(styleSheet),
+    connect(mapStateToProps, mapDispatchToProps),
+    withLifecycle,
+)
+
+export default enhancer(Balloon)
 
