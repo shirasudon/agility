@@ -64,7 +64,7 @@ export const withLifecycle = lifecycle({
         const { message, session, sendRead } = this.props
         const me = session.user
         if ( !message.readBy.includes(me.id) ) { // notify the server that the current user has read the specific message
-            sendRead([message.id], me.id)
+            sendRead(message.id, me.id)
         }
     }
 })
@@ -75,7 +75,6 @@ export const Balloon = ( { message, classes, session, users } ) => {
     const username = users.byId.hasOwnProperty(message.userId) ? users.byId[message.userId].username : ""
     const postMeta = shouldPutRight ? classes.postMetaRight: classes.postMetaLeft
     const justify = shouldPutRight ? "flex-end": "flex-start"
-    const readByCount = message.readBy.length > 0 ? message.readBy.length : ""
     return (
         <Grid id={message.id} container justify={justify}>
             <Grid item xs={6}>
@@ -95,7 +94,8 @@ export const Balloon = ( { message, classes, session, users } ) => {
 
 export const mapStateToProps = ( { session, entities } ) => ({
     session,
-    users: entities.users
+    users: entities.users,
+    messages: entities.messages
 })
 
 export const mapDispatchToProps = dispatch => ({
