@@ -12,10 +12,25 @@ describe("Balloon", () => {
                 postMetaRight: "postMetaRight",
                 postMetaLeft: "postMetaLeft",
             },
-            text: "this is a text",
-            username: "hitochan", 
-            createdAt: moment("2017-11-04 12:34:55").valueOf(),
-            direction: RIGHT
+            message: {
+                id: 2,
+                userId: 3,
+                text: "this is a text",
+                createdAt: moment("2017-11-04 12:34:55").valueOf(),
+                readBy: [],
+            },
+            users: {
+                byId: {
+                    "3": {
+                        username: "hitochan",
+                    }
+                }   
+            },
+            session: {
+                user: {
+                    id: 3,
+                }
+            }
         }
         const wrapper = mount(<Balloon {...props}/>)
         expect(wrapper.find(".postMetaRight")).toContainReact(
@@ -25,3 +40,4 @@ describe("Balloon", () => {
         )
     })
 })
+

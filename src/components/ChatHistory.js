@@ -6,17 +6,13 @@ import Balloon from './Balloon'
 
 export const ChatHistory = ( { currentRoomId, session, entities } ) => {
 
-    const { messages, users } = entities
-    const me = session.user
+    const { messages } = entities
 
     const roomMessages = !messages.byRoomId.hasOwnProperty(currentRoomId) ? null : messages.byRoomId[currentRoomId].map(messageId => messages.byId[messageId] );
     const messagesDOM = roomMessages ?
         roomMessages.map((message, index) => {
-            const direction = ( message.userId === me.id ) ? "right" : "left"
-            const username = users.byId.hasOwnProperty(message.userId) ? users.byId[message.userId].username : ""
-
             return (
-                    <Balloon key={index} text={message.text} username={username} direction={direction} createdAt={message.createdAt} messageId={message.id} userId={message.userId} />
+                    <Balloon key={index} message={message} />
             )
     }):
     (<span>There is no conversation yet</span>)

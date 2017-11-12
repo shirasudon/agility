@@ -61,40 +61,41 @@ const styleSheet = theme => ({
 export const withLifecycle = lifecycle({
     componentDidMount() {
         // dispatch read notification to the server
-        const { entities, messageId, session, sendRead } = this.props
-        const message = entities.messages.byId[messageId]
+        const { message, session, sendRead } = this.props
         const me = session.user
         if ( !message.readBy.includes(me.id) ) { // notify the server that the current user has read the specific message
-            sendRead([messageId], me.id)
+            sendRead([message.id], me.id)
         }
     }
 })
 
-export const Balloon = ( { messageId, entities, userId, classes, text, username, createdAt, direction=RIGHT } ) => {
-    const balloonStyle = (direction === RIGHT ? classes.balloonRight: classes.balloonLeft)
-    const postMeta = (direction === RIGHT ? classes.postMetaRight: classes.postMetaLeft)
-    const justify = (direction === RIGHT ? "flex-end": "flex-start")
-    const readByCount = entities.messages.byId[messageId].readBy.length - 1
+export const Balloon = ( { message, classes, session, users } ) => {
+    const shouldPutRight = message.userId === session.user.id
+    const balloonStyle = shouldPutRight ? classes.balloonRight: classes.balloonLeft
+    const username = users.byId.hasOwnProperty(message.userId) ? users.byId[message.userId].username : ""
+    const postMeta = shouldPutRight ? classes.postMetaRight: classes.postMetaLeft
+    const justify = shouldPutRight ? "flex-end": "flex-start"
+    const readByCount = message.readBy.length > 0 ? message.readBy.length : ""
     return (
-        <Grid id={messageId} container justify={justify}>
+        <Grid id={message.id} container justify={justify}>
             <Grid item xs={6}>
                 <div className={balloonStyle}>
-                    {text}
+                    {message.text}
                 </div>
-                <div>
-                    {readByCount} Read 
+                <div className="readCount">
+                    { message.readBy.length > 0 && message.readBy.length + " Read" }
                 </div>
                 <div className={postMeta}>
-                    { username && <span>{username}</span> } : <span>{moment(createdAt).format("MMMM Do YYYY, h:mm a")}</span>
+                    { username && <span>{username}</span> } : <span>{moment(message.createdAt).format("MMMM Do YYYY, h:mm a")}</span>
                 </div>
             </Grid>
         </Grid>
     )
 }
 
-export const mapStateToProps = ( { entities, session } ) => ({
-    entities,
+export const mapStateToProps = ( { session, entities } ) => ({
     session,
+    users: entities.users
 })
 
 export const mapDispatchToProps = dispatch => ({
