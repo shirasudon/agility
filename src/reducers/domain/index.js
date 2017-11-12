@@ -20,7 +20,11 @@ export function friendIds(state = [], action) {
     switch (action.type) {
         case RECEIVE_FRIEND_IDS:
             const newState = state.slice()
-            newState.push(...action.ids)
+            action.ids.forEach( id => {
+                if ( !newState.includes(id)) { 
+                    newState.push(id)
+                }
+            })
             return newState
         default:
             return state

@@ -49,8 +49,16 @@ export const createOnClose = store => event => {
 }
 
 export const createOnOpen = store => event => {
-    // TODO: receive updates
-    // TODO: send buffered data
+    // TODO: initialize all entity data
+    const { dispatch} = store
+    const { session } = store.getState()
+    const userId = session.user.id
+
+    if ( userId ) {
+        dispatch(chatActionCreator.fetchRooms(userId))
+        dispatch(chatActionCreator.fetchFriends(userId))
+    }
+
 }
 
 export const createOnError = store => event => {

@@ -20,7 +20,7 @@ export const withLifecycles = lifecycle({
             fetchFriends(session.user.id)
         }
     }
-}) 
+})
 
 export const Chat = ({openCreateGroupModal: openModal}) => (
     <Grid container justify="center">
@@ -48,7 +48,7 @@ const mapStateToProps = ({entities, session}) => ({
 
 export const mapDispatchToProps = (dispatch) => ({
     fetchRooms: (userId) => {
-        dispatch(cac.fetchRooms(userId));
+        dispatch(cac.fetchRooms(userId))
     },
     fetchFriends: (userId) => {
         dispatch(cac.fetchFriends(userId))
