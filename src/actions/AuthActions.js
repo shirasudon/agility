@@ -1,5 +1,6 @@
 import { sessionService as SessionService } from 'redux-react-session'
 import SessionApiStub from '../api/sessionStub'
+import { USER_LOGOUT } from '../actions/actionTypes'
 
 
 let sessionApi = SessionApiStub
@@ -35,11 +36,16 @@ export const login = (user) => {
     }
 }
 
+export const userLogout = () => ({
+    type: USER_LOGOUT,
+})
+
 export const logout = () => {
-    return () => {
+    return (dispatch) => {
         return sessionApi.logout().then(() => {
             sessionService.deleteSession()
             sessionService.deleteUser()
+            dispatch(userLogout())
         }).catch(err => {
             throw (err)
         })
