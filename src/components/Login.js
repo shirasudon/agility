@@ -47,15 +47,14 @@ export const handlerFunctions = {
      * Otherwise, stuck on the same page.
      * @param e event object
     */
-    handleSubmit: ( { login, user, setUser, setLoginFail } ) => event => new Promise( (resolve, reject) => {
+    handleSubmit: ( { login, user, setUser, setLoginFail } ) => event => { 
         event.preventDefault()
         login(user).then( success => {
             if(!success){
                 setLoginFail(true)
             }
         })
-        resolve()
-    })
+    }
     
 }
 
@@ -67,10 +66,10 @@ export const Login = ( {
     user: {username, password}, 
     loginFail, 
     authenticated, 
+    sessionUser,
     classes 
 } ) => {
-
-        if (authenticated) {
+        if (authenticated && Object.keys(sessionUser).length > 0) {
             return <Redirect to="/chat" />;
         }
 
@@ -109,6 +108,7 @@ export const Login = ( {
 
 export const mapStateToProps = ( { session } ) => ({
     authenticated: session.authenticated,
+    sessionUser: session.user,
 })
 
 export const mapDispatchToProps = (dispatch) => {

@@ -15,10 +15,8 @@ let cac = chatActionCreator
 export const withLifecycles = lifecycle({
     componentDidMount() {
         const { fetchRooms, fetchFriends, session } = this.props
-        if (Object.keys(session.user).length > 0) {
-            fetchRooms(session.user.id)
-            fetchFriends(session.user.id)
-        }
+        fetchRooms(session.user.id)
+        fetchFriends(session.user.id)
     }
 })
 
