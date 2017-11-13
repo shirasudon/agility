@@ -20,7 +20,6 @@ export class WebSocketService {
     }
 
     connect() {
-        console.log(this.endpoint, this.options)
         this.ws = new this.wsClass(this.endpoint, [], this.options)
         this.ws.onopen = (event) => {
             while (true) {

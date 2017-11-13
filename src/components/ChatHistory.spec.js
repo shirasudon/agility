@@ -7,7 +7,7 @@ import Balloon from './Balloon'
 
 describe("ChatHistory", () => {
 
-    it("", () => {
+    it("shows chat history given messages in entity", () => {
         const props = {
             currentRoomId: 5,
             entities: {
@@ -63,20 +63,9 @@ describe("ChatHistory", () => {
         const balloons = historyContainer.find(Balloon) 
         expect(balloons).toHaveLength(3)
 
-        expect(balloons.at(0).prop("text")).toBe("first message")
-        expect(balloons.at(0).prop("username")).toBe("user2")
-        expect(balloons.at(0).prop("direction")).toBe("right")
-        expect(balloons.at(0).prop("createdAt")).toBe("date1")
-
-        expect(balloons.at(1).prop("text")).toBe("second message")
-        expect(balloons.at(1).prop("username")).toBe("user3")
-        expect(balloons.at(1).prop("direction")).toBe("left")
-        expect(balloons.at(1).prop("createdAt")).toBe("date2")
-
-        expect(balloons.at(2).prop("text")).toBe("third message")
-        expect(balloons.at(2).prop("username")).toBe("user2")
-        expect(balloons.at(2).prop("direction")).toBe("right")
-        expect(balloons.at(2).prop("createdAt")).toBe("date3")
+        expect(balloons.at(0).prop("message")).toBe(props.entities.messages.byId[1])
+        expect(balloons.at(1).prop("message")).toBe(props.entities.messages.byId[3])
+        expect(balloons.at(2).prop("message")).toBe(props.entities.messages.byId[5])
 
     })
 

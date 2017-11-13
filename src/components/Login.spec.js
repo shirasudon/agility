@@ -58,14 +58,13 @@ describe("handler funcitons", () => {
     })
 
     describe("handleSubmit", () => {
-        it("set loginFail to true when authentication fails", (done) => {
+        it("set loginFail to true when authentication fails", () => {
             const event = {
                 preventDefault: jest.fn(),
             }
             handleSubmit(props)(event).then( () => {
                 expect(event.preventDefault).toHaveBeenCalled()
                 expect(props.setLoginFail).toHaveBeenCalledWith(true)
-                done()
             })
         })
 
@@ -75,10 +74,40 @@ describe("handler funcitons", () => {
 
 describe("Login", () => {
 
-    it("redirects when authenticated", () => {
-        const wrapper = shallow(<Login authenticated={true} user={{username: "hoge", password: "hihi"}}/>)
+    it("redirects when authenticated and session is set to redux store", () => {
+
+        const props = {
+            authenticated: true,
+            user: {
+                username: "hoge", 
+                password: "hihi"
+            },
+            sessionUser: {
+                id: 3,
+            }
+        }
+        const wrapper = shallow(<Login {...props} />)
         expect(wrapper.find(Redirect)).toHaveLength(1)
     })
+
+    it("does not redirect when authenticated but session is NOT set to redux store", () => {
+        const props = {
+            handleChange: jest.fn(), 
+            handleSubmit: jest.fn(),
+            user: {
+                username: "hoge", 
+                password: "hihi"
+            },
+            loginFail: false, 
+            authenticated: true, 
+            classes: {},
+            sessionUser: {},
+        }
+
+        const wrapper = shallow(<Login {...props} />)
+        expect(wrapper.find(Redirect)).toHaveLength(0)
+    })
+
 
     it("shows error message when authentication failed", () => {
         const props = {

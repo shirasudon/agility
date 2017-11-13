@@ -1,6 +1,16 @@
 import React from 'react';
-import { setSessionApi, setSessionService, login, logout } from './AuthActions';
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
+import { 
+    setSessionApi,
+    setSessionService,
+    login,
+    logout
+} from './AuthActions'
+
+const middlewares = [thunk]
+const mockStore = configureMockStore(middlewares)
 
 let SessionApiStub
 let sessionService
@@ -71,11 +81,16 @@ describe("login", () => {
 })
 
 describe("logout", () => {
-    it("", (done) => {
-        logout()().then( () => {
+    it("delete session and initialize redux store on logout", () => {
+        const expectedActions = [
+            { type: 'USER_LOGOUT' },
+        ]
+        const store = mockStore({})
+
+        return store.dispatch(logout()).then( () => {
             expect(sessionService.deleteSession).toHaveBeenCalled()
             expect(sessionService.deleteUser).toHaveBeenCalled()
-            done()
+            expect(store.getActions()).toEqual(expectedActions)
         })
     })
 })

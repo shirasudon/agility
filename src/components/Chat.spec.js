@@ -64,7 +64,7 @@ describe("mapDispatchToProps", () => {
 
 describe("componentDidMount", () => {
 
-    it("calls fetchRooms and fetchFriends when user data is ready", () => {
+    it("calls fetchRooms and fetchFriends", () => {
         const props = {
             fetchRooms: jest.fn(),
             fetchFriends: jest.fn(),
@@ -82,20 +82,5 @@ describe("componentDidMount", () => {
         expect(props.fetchRooms).toHaveBeenCalled()
     })
 
-    it("does not call fetchRooms and fetchFriends when user data is not ready", () => {
-        const props = {
-            fetchRooms: jest.fn(),
-            fetchFriends: jest.fn(),
-            session: {
-                user: {},
-            },
-        }
-
-        const DummyComponent = () => <div>Dummy</div>
-        const Component = withLifecycles(DummyComponent)
-        mount(<Component {...props}/>)
-        expect(props.fetchFriends).not.toHaveBeenCalled()
-        expect(props.fetchRooms).not.toHaveBeenCalled()
-    })
-
 })
+

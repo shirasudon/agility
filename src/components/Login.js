@@ -49,7 +49,7 @@ export const handlerFunctions = {
     */
     handleSubmit: ( { login, user, setUser, setLoginFail } ) => event => { 
         event.preventDefault()
-        login(user).then( success => {
+        return login(user).then( success => {
             if(!success){
                 setLoginFail(true)
             }
