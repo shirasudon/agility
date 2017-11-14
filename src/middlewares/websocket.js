@@ -35,7 +35,13 @@ export const createOnMessage = store => event => {
     const { type, data } = event.data 
     switch (type) {
         case SEND_CHAT_MESSAGE:
-            store.dispatch(chatActionCreator.receiveMessage(data))
+            const { entities, currentRoomId } = store.getState()
+            if (entities.rooms.byId[data.roomId].initialFetch) {
+                store.dispatch(chatActionCreator.receiveMessage(data)) 
+            }
+            if (currentRoomId !== data.roomId) {
+                store.dispatch(chatActionCreator.existUnreadMessage(data.roomId))
+            }
             break
         case SEND_MESSAGE_READ:
             store.dispatch(chatActionCreator.receiveMessageRead(data.messageId, data.userId))

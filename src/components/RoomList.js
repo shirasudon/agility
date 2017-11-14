@@ -4,21 +4,24 @@ import { ListItem, ListItemText } from 'material-ui/List'
 
 import { chatActionCreator } from "../actions"
 
-export const RoomList = ( { rooms, enterRoom } ) => {
+export const RoomList = ( { rooms, enterRoom, domainRooms } ) => {
+
     if (!rooms.all) {
         return null
     }
+
     const roomComponentList =  rooms.all.map(
         (roomId, index) => {
-            const room = rooms.byId[roomId];
+            const room = rooms.byId[roomId]
+            const roomName = domainRooms[roomId] && domainRooms[roomId].hasUnreadMessage ? <b>{room.name}</b> : room.name
             return (
                 <ListItem button key={index}>
                     <ListItemText
-                        primary={room.name}
+                        primary={roomName}
                         onClick={() => {enterRoom(roomId, !rooms.byId[roomId].initialFetch);}}
                     />
                 </ListItem>
-            );
+            )
         }
     )
     return (
@@ -28,8 +31,9 @@ export const RoomList = ( { rooms, enterRoom } ) => {
     )
 }
 
-const mapStateToProps = ( { entities } ) => ({
+const mapStateToProps = ( { entities, rooms } ) => ({
     rooms: entities.rooms,
+    domainRooms: rooms, // TODO: it is better to combine with rooms
 })
 
 const mapDispatchToProps = (dispatch) => ({

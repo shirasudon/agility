@@ -16,7 +16,9 @@ import {
     REQUEST_DELETE_ROOM,
     RECEIVE_DELETE_ROOM,
     RECEIVE_FRIEND_IDS,
-    RECEIVE_MESSAGE_READ
+    RECEIVE_MESSAGE_READ,
+    EXIST_UNREAD_MESSAGE,
+    NO_UNREAD_MESSAGE,
 } from './actionTypes'
 
 
@@ -85,6 +87,7 @@ export default class ChatActionCreator {
 
             return Promise.all([roomFetchPromise, messageFetchPromise]).then( () => {
                 dispatch(this.changeRoom(roomId))
+                dispatch(this.noUnreadMessage(roomId))
             });
         }
     }
@@ -266,4 +269,19 @@ export default class ChatActionCreator {
         }
     }
 
+    existUnreadMessage(roomId) {
+        return {
+            type: EXIST_UNREAD_MESSAGE,
+            roomId,
+        }
+    }
+
+    noUnreadMessage(roomId) {
+        return {
+            type: NO_UNREAD_MESSAGE,
+            roomId,
+        }
+    }
+
 }
+
