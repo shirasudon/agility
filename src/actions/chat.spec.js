@@ -23,7 +23,7 @@ it('returns receive room info', () => {
     const room = {a: 1, b: 2};
     expect(cac.receiveRoomInfo(room)).toEqual({
         type: "RECEIVE_ROOM_INFO",
-        room,
+        ...room,
     });
 });
 
@@ -37,18 +37,18 @@ it('returns fetch room info', () => {
             })
         },
     };
-    cac = new ChatActionCreator(mockApi); 
+    cac = new ChatActionCreator(mockApi)
 
-    const roomId = 3;
+    const roomId = 3
     const expectedActions = [
         { type: "REQUEST_ROOM_INFO" },
-        { type: "RECEIVE_ROOM_INFO" , room: {
-                id: 2,
-                name: "room name!",
-                members: [2, 5, 8],
-            }
+        { type: "RECEIVE_ROOM_INFO",
+            id: 2,
+            name: "room name!",
+            members: [2, 5, 8],
         }
     ]
+
     const store = mockStore({})
 
     return store.dispatch(cac.fetchRoomInfo()).then(() => {
@@ -63,24 +63,24 @@ it('returns change room', () => {
         type: "CHANGE_ROOM",
         roomId,
     });
-   
+
 })
 
 it('dispatch enter room', () => {
     const messages = [{
-                    "id": 1,
-                    "roomId": 1,
-                    "userId": 1,
-                    "text": "こんにちは！",
-                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
-                },
-                {
-                    "id": 2,
-                    "roomId": 1,
-                    "userId": 2,
-                    "text": "はじめまして！",
-                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
-                },
+        "id": 1,
+        "roomId": 1,
+        "userId": 1,
+        "text": "こんにちは！",
+        "createdAt": moment('2017-11-03 13:00:00').valueOf()
+    },
+        {
+            "id": 2,
+            "roomId": 1,
+            "userId": 2,
+            "text": "はじめまして！",
+            "createdAt": moment('2017-11-03 13:00:00').valueOf()
+        },
     ];
     const roomInfo = {
         id: 2,
@@ -120,13 +120,14 @@ it('dispatch enter room', () => {
     const expectedActions = [
         { type: "REQUEST_ROOM_INFO" },
         { type: "REQUEST_MESSAGES" },
-        { type: "RECEIVE_ROOM_INFO", room: roomInfo},
+        { type: "RECEIVE_ROOM_INFO", ...roomInfo},
         { type: "RECEIVE_MESSAGE", message: messages[0] },
         { type: "RECEIVE_MESSAGE", message: messages[1] },
         { type: "RECEIVE_USER", user: users[1] },
         { type: "RECEIVE_USER", user: users[2] },
         { type: "RECEIVE_USER", user: users[3]},
-        { type: "CHANGE_ROOM", roomId}
+        { type: "CHANGE_ROOM", roomId},
+        { type: "NO_UNREAD_MESSAGE", roomId }
     ] // TODO: this test might fail depending on the execution order
     const store = mockStore({})
     const initialFetch = true;
@@ -143,15 +144,25 @@ it("dispatches REQUEST_ROOMS", () => {
 })
 
 it('fetches rooms', () => {
-    const rooms = [1, 2, 3];
-     const mockApi = {
+    const rooms = [
+        {
+            id: 1,
+            name: "room1",
+        },
+        {
+            id: 3,
+            name: "room3",
+        }
+    ]
+    const mockApi = {
         fetchRooms: () => {return Promise.resolve(rooms);},
     };
     const cac = new ChatActionCreator(mockApi); 
     const roomId = 3;
     const expectedActions = [
         { type: "REQUEST_ROOMS"},
-        { type: "RECEIVE_ROOMS", rooms},
+        { type: "RECEIVE_ROOM", ...rooms[0]},
+        { type: "RECEIVE_ROOM", ...rooms[1]},
     ] // TODO: this test might fail depending on the execution order
     const store = mockStore({})
 
@@ -201,7 +212,7 @@ it("fetches friends", () => {
             "firstName": "first3",
         },
     }
-     const mockApi = {
+    const mockApi = {
         fetchFriendIds: () => {return Promise.resolve(friendIds);},
         fetchUser: (id) => {
             return Promise.resolve(users[id]) 
@@ -230,7 +241,7 @@ it("dispatches REQUEST_CREATE_ROOM", () => {
 it("dispatches RECEIVE_CREATE_ROOM", () => {
     const room = {"id": 1, name: "hoge"}
     const cac = new ChatActionCreator({}); 
-    expect(cac.receiveCreateRoom(room)).toEqual({type: "RECEIVE_CREATE_ROOM", room})
+    expect(cac.receiveCreateRoom(room)).toEqual({type: "RECEIVE_CREATE_ROOM", ...room})
 })
 
 it("dispatches REQUEST_MESSAGES", () => {
@@ -252,19 +263,19 @@ it("dispatches RECEIVE_MESSAGE", () => {
 
 it("fetches messages by room ID", () => {
     const messages = [{
-                    "id": 1,
-                    "roomId": 1,
-                    "userId": 1,
-                    "text": "こんにちは！",
-                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
-                },
-                {
-                    "id": 2,
-                    "roomId": 1,
-                    "userId": 2,
-                    "text": "はじめまして！",
-                    "createdAt": moment('2017-11-03 13:00:00').valueOf()
-                },
+        "id": 1,
+        "roomId": 1,
+        "userId": 1,
+        "text": "こんにちは！",
+        "createdAt": moment('2017-11-03 13:00:00').valueOf()
+    },
+        {
+            "id": 2,
+            "roomId": 1,
+            "userId": 2,
+            "text": "はじめまして！",
+            "createdAt": moment('2017-11-03 13:00:00').valueOf()
+        },
     ];
     const roomId = 2; //whatever is fine!
 
@@ -301,7 +312,7 @@ it("send a request to create a room", () => {
 
     const expectedActions = [
         { type: 'REQUEST_CREATE_ROOM' },
-        { type: 'RECEIVE_CREATE_ROOM', room: { createdBy, memberIds, name: roomName, id: "2"}}
+        { type: 'RECEIVE_CREATE_ROOM', createdBy, memberIds, name: roomName, id: "2" }
     ]
     const store = mockStore({})
 

@@ -4,7 +4,7 @@ import { ListItem, ListItemText } from 'material-ui/List'
 
 import { chatActionCreator } from "../actions"
 
-export const RoomList = ( { rooms, enterRoom, domainRooms } ) => {
+export const RoomList = ( { rooms, enterRoom } ) => {
 
     if (!rooms.all) {
         return null
@@ -13,7 +13,7 @@ export const RoomList = ( { rooms, enterRoom, domainRooms } ) => {
     const roomComponentList =  rooms.all.map(
         (roomId, index) => {
             const room = rooms.byId[roomId]
-            const roomName = domainRooms[roomId] && domainRooms[roomId].hasUnreadMessage ? <b>{room.name}</b> : room.name
+            const roomName = room.hasUnreadMessage ? <b>{room.name}</b> : room.name
             return (
                 <ListItem button key={index}>
                     <ListItemText
@@ -31,9 +31,8 @@ export const RoomList = ( { rooms, enterRoom, domainRooms } ) => {
     )
 }
 
-const mapStateToProps = ( { entities, rooms } ) => ({
+const mapStateToProps = ( { entities } ) => ({
     rooms: entities.rooms,
-    domainRooms: rooms, // TODO: it is better to combine with rooms
 })
 
 const mapDispatchToProps = (dispatch) => ({

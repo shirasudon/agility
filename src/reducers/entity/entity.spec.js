@@ -1,7 +1,7 @@
 import { users, room, rooms, messages } from './entity'
 import {
     RECEIVE_USER,
-    RECEIVE_ROOMS,
+    RECEIVE_ROOM,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
     CHANGE_ROOM, 
@@ -62,6 +62,7 @@ describe("room", () => {
             name: null,
             members: [],
             initialFetch: false,
+            hasUnreadMessage: false,
         }
         expect(room(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
     })
@@ -88,19 +89,21 @@ describe("room", () => {
         expect(room(initialState, action)).toEqual(expected)
     })
 
-    it('sets id, name, initialFetch on receiving RECEIVE_ROOMS', () => {
+    it('sets id, name, initialFetch, hasUnreadMessage on receiving RECEIVE_ROOM', () => {
         const expected = {
             createdBy: null,
             id: 3,
             name: "new room", 
             members: [],
             initialFetch: false,
+            hasUnreadMessage: true,
         }
         const action = {
-            type: RECEIVE_ROOMS,
+            type: RECEIVE_ROOM,
             id: 3,
             name: "new room",
             initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
+            hasUnreadMessage: true
         }
         expect(room(undefined, action)).toEqual(expected)
     })
@@ -112,6 +115,7 @@ describe("room", () => {
             name: "new room", 
             members: [],
             initialFetch: false,
+            hasUnreadMessage: false,
         }
         const action = {
             createdBy: null,
@@ -119,6 +123,7 @@ describe("room", () => {
             id: 3,
             name: "new room",
             initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
+            hasUnreadMessage: false,
         }
         expect(room(undefined, action)).toEqual(expected)
     })
@@ -133,7 +138,7 @@ describe("rooms", () => {
         expect(rooms(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
     })
 
-    it('sets byId and all on receiving RECEIVE_ROOMS', () => {
+    it('sets byId and all on receiving RECEIVE_ROOM', () => {
         const initialState = {
             byId: {
                 "1": {
@@ -142,6 +147,7 @@ describe("rooms", () => {
                     members: [5, 2, 6],
                     initialFetch: true,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 },
                 "2": {
                     id: "2",
@@ -149,6 +155,7 @@ describe("rooms", () => {
                     members: [1, 2, 3],
                     initialFetch: false,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 }
             },
             all: ["1", "2"]
@@ -162,6 +169,7 @@ describe("rooms", () => {
                     members: [5, 2, 6],
                     initialFetch: true,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 },
                 "2": {
                     id: "2",
@@ -169,6 +177,7 @@ describe("rooms", () => {
                     members: [1, 2, 3],
                     initialFetch: false,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 },
                 "5": {
                     id: "5",
@@ -176,31 +185,17 @@ describe("rooms", () => {
                     members: [],
                     initialFetch: false,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 },
-                "7": {
-                    id: "7",
-                    name: "sumo club",
-                    members: [],
-                    initialFetch: false,
-                    createdBy: null,
-                }
             },
-            all: ["1", "2", "5", "7"]
+            all: ["1", "2", "5"]
         }
 
         const action = {
-            type: RECEIVE_ROOMS,
-            rooms: [
-                {
-                    id: "5",
-                    name: "tennis club",
-                },
-                {
-                    id: "7",
-                    name: "sumo club",
-                },
-
-            ]
+            type: RECEIVE_ROOM,
+            id: "5",
+            name: "tennis club",
+            hasUnreadMessage: false,
         }
         expect(rooms(initialState, action)).toEqual(expected)
     })
@@ -244,10 +239,8 @@ describe("rooms", () => {
 
         const action = {
             type: RECEIVE_ROOM_INFO,
-            room: {
-                id: "1",
-                members: [5, 9, 10],
-            }
+            id: "1",
+            members: [5, 9, 10],
         }
         expect(rooms(initialState, action)).toEqual(expected)
     })
@@ -261,6 +254,7 @@ describe("rooms", () => {
                     members: [5, 9, 10],
                     initialFetch: true,
                     createdBy: 5,
+                    hasUnreadMessage: false,
                 }
             },
             all: ["1"]
@@ -274,6 +268,7 @@ describe("rooms", () => {
                     members: [5, 9, 10],
                     initialFetch: true,
                     createdBy: 5,
+                    hasUnreadMessage: false,
                 },
                 "5": {
                     id: "5",
@@ -281,6 +276,7 @@ describe("rooms", () => {
                     members: [],
                     initialFetch: false,
                     createdBy: null,
+                    hasUnreadMessage: false,
                 }
             },
             all: ["1", "5"]
@@ -288,10 +284,8 @@ describe("rooms", () => {
 
         const action = {
             type: RECEIVE_CREATE_ROOM,
-            room: {
-                id: "5",
-                name: "room5",
-            }
+            id: "5",
+            name: "room5",
         }
         expect(rooms(initialState, action)).toEqual(expected)
     })

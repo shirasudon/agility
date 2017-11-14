@@ -69,22 +69,22 @@ const users = [
 
 const rooms = [
     {
-        "id": 1,
-        "name": "吉野家",
-        "members": [3, 4, 8],
-        "createdBy": 4,
+        id: 1,
+        name: "吉野家",
+        members: [3, 4, 8],
+        createdBy: 4,
     },
     {
-        "id": 2,
-        "name": "テニス部",
-        "members": [1, 3, 7],
-        "createdBy": 3,
+        id: 2,
+        name: "テニス部",
+        members: [1, 3, 7],
+        createdBy: 3,
     },
     {
-        "id": 3,
-        "name": "React",
-        "members": [1, 3, 7],
-        "createdBy": 1,
+        id: 3,
+        name: "React",
+        members: [1, 3, 7],
+        createdBy: 1,
     }
 
 ];
@@ -172,7 +172,7 @@ export class RoomTable {
         if (room === undefined) {
             return null;
         }
-        return room;
+        return Object.assign({}, room, { hasUnreadMessage: Math.random() >= 0.5 } )
     }
 
     static getAllRooms(){
@@ -180,7 +180,9 @@ export class RoomTable {
     }
 
     static getAllRoomsByUserId(userId){
-        return rooms.filter( room => room.members.includes(userId))
+        return rooms
+            .filter( room => room.members.includes(userId))
+            .map( room => Object.assign({}, room, { hasUnreadMessage: Math.random() >= 0.5 } ))
     }
 
     static addRoom(room) {

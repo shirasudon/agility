@@ -1,11 +1,13 @@
 import {
     RECEIVE_USER,
-    RECEIVE_ROOMS,
+    RECEIVE_ROOM,
     RECEIVE_ROOM_INFO,
     RECEIVE_MESSAGE,
     RECEIVE_CREATE_ROOM,
     RECEIVE_DELETE_ROOM,
     RECEIVE_MESSAGE_READ,
+    EXIST_UNREAD_MESSAGE,
+    NO_UNREAD_MESSAGE,
 } from '../../actions/actionTypes';
 
 
@@ -25,60 +27,81 @@ export function users(state = {byId: {}, byUsername: {}, all: []}, action){
     }
 }
 
-export function room(state = {id: null, name: null, members: [], createdBy: null, initialFetch: false}, action){
+const roomInitialState = {
+    id: null, 
+    name: null,
+    members: [], 
+    createdBy: null, 
+    initialFetch: false,
+    hasUnreadMessage: false,
+}
+
+export function room(state = roomInitialState, action){
     switch(action.type){
         case RECEIVE_ROOM_INFO:
             return Object.assign({}, state, {
                 members: action.members,
                 createdBy: action.createdBy,
                 initialFetch: true,
-            });
+            })
 
-        case RECEIVE_ROOMS:
+        case RECEIVE_ROOM:
+            return Object.assign({}, state, {
+                id: action.id,
+                name: action.name,
+                initialFetch: false,
+                hasUnreadMessage: action.hasUnreadMessage,
+            })
+
         case RECEIVE_CREATE_ROOM:
             return Object.assign({}, state, {
                 id: action.id,
                 name: action.name,
                 initialFetch: false,
-            });
+            })
+
+        case EXIST_UNREAD_MESSAGE:
+            return Object.assign({}, state, {
+                hasUnreadMessage: true,
+            })
+
+        case NO_UNREAD_MESSAGE:
+            return Object.assign({}, state, {
+                hasUnreadMessage: false,
+            })
 
         default:
-            return state;
+            return state
     }
 }
 
 
 export function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
-        case RECEIVE_ROOMS: {
+        case RECEIVE_ROOM: {
             let newState = Object.assign({}, state)
-            action.rooms.forEach( r => {
-                if ( !newState.all.includes(r.id) ) { // TODO: make `all` a set
-                    newState.byId[r.id] = room(state.byId[r.id], {type: action.type, ...r});
-                    newState.all.push(r.id)
-                }
-            });
+            // action.rooms.forEach( r => {
+            if ( !newState.all.includes(action.id) ) { // TODO: make `all` a set
+                newState.byId[action.id] = room(state.byId[action.id], action)
+                newState.all.push(action.id)
+            }
+            // });
             return newState;
         }
 
         case RECEIVE_ROOM_INFO: {
-            const r = action.room;
-            let newState = Object.assign(
-                {},
-                state
-            );
-            newState.byId[r.id] = room(state.byId[r.id], { type: action.type, ...r } );
-            return newState;
+            let newState = Object.assign({},state)
+            newState.byId[action.id] = room(state.byId[action.id], action)
+            return newState
         }
 
         case RECEIVE_CREATE_ROOM: {
-            const r = action.room;
-            let newState = Object.assign({}, state);
-            if ( !newState.all.includes(r.id) ) { // TODO: make `all` a set
-                newState.byId[r.id] = room(state.byId[r.id], {type: action.type, ...r} );
-                newState.all.push(r.id);
+            let newState = Object.assign({}, state)
+            if ( !newState.all.includes(action.id) ) { // TODO: make `all` a set
+                newState.byId[action.id] = room(state.byId[action.id], action)
+                newState.all.push(action.id)
             }
-            return newState;
+            return newState
         }
 
         case RECEIVE_DELETE_ROOM: {
@@ -94,8 +117,13 @@ export function rooms(state = {byId: {}, all: []}, action){
             return newState
         }
 
+        case EXIST_UNREAD_MESSAGE:
+        case NO_UNREAD_MESSAGE:
+            let newState = Object.assign({}, state)
+            newState.byId[action.roomId] = room(state.byId[action.roomId], action)
+            return newState
         default:
-            return state;
+            return state
     }
 }
 
@@ -111,7 +139,7 @@ export function messages(
         byRoomId: {},
         all: [],
     },
-        action
+    action
 ) {
     switch (action.type) { 
         case RECEIVE_MESSAGE: {

@@ -3,7 +3,7 @@ import {
     REQUEST_FRIENDS,
     REQUEST_ROOM_INFO,
     RECEIVE_ROOM_INFO,
-    RECEIVE_ROOMS,
+    RECEIVE_ROOM,
     REQUEST_ROOMS,
     REQUEST_CREATE_ROOM,
     RECEIVE_CREATE_ROOM,
@@ -38,8 +38,8 @@ export default class ChatActionCreator {
     receiveRoomInfo(room){
         return {
             type: RECEIVE_ROOM_INFO,
-            room,
-        };
+            ...room
+        }
     }
 
     fetchRoomInfo(roomId){
@@ -48,7 +48,7 @@ export default class ChatActionCreator {
             return this.chatApi.fetchRoomInfo(roomId).then((room) => {
                 dispatch(this.receiveRoomInfo(room))
                 return room
-            });
+            })
         }
     }
 
@@ -56,7 +56,7 @@ export default class ChatActionCreator {
         return {
             type: CHANGE_ROOM,
             roomId,
-        };
+        }
     }
 
     enterRoom(roomId, initialFetch=false, lastMessageId = []) {
@@ -83,12 +83,12 @@ export default class ChatActionCreator {
                 dispatch(this.fetchMessagesByRoomId(roomId)).then( () => {
                     resolve();
                 })
-            });
+            })
 
             return Promise.all([roomFetchPromise, messageFetchPromise]).then( () => {
                 dispatch(this.changeRoom(roomId))
                 dispatch(this.noUnreadMessage(roomId))
-            });
+            })
         }
     }
 
@@ -96,19 +96,21 @@ export default class ChatActionCreator {
         return {type: REQUEST_ROOMS};
     }
 
-    receiveRooms(rooms = {}){
+    receiveRoom(room){
         return {
-            type: RECEIVE_ROOMS,
-            rooms
-        };
+            type: RECEIVE_ROOM,
+            ...room,
+        }
     }
 
     fetchRooms(userId) {
         return (dispatch) => {
-            dispatch(this.requestRooms());
+            dispatch(this.requestRooms())
             return this.chatApi.fetchRooms(userId).then((rooms) => {
-                dispatch(this.receiveRooms(rooms));
-            });
+                rooms.forEach( room => {
+                    dispatch(this.receiveRoom(room))
+                })
+            })
         };
     }
 
@@ -159,8 +161,8 @@ export default class ChatActionCreator {
     receiveCreateRoom(room) {
         return {
             type: RECEIVE_CREATE_ROOM,
-            room,
-        };
+            ...room,
+        }
     }
 
     requestMessages() {
