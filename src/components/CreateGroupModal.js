@@ -121,6 +121,7 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
                             raised
                             color="primary"
                             onClick={() => { handleCreateRoomClick(me.id) } }
+                            disabled={roomName === ""}
                         >
                             Go
                         </CircularProgressButton>

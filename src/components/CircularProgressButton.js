@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import green from 'material-ui/colors/green';
-import Button from 'material-ui/Button';
+import React from 'react'
+import { connect } from 'react-redux'
+import { withStyles } from 'material-ui/styles'
+import { CircularProgress } from 'material-ui/Progress'
+import green from 'material-ui/colors/green'
+import Button from 'material-ui/Button'
+import { compose, withHandlers } from 'recompose'
 
 
 const styles = {
@@ -23,50 +24,42 @@ const styles = {
         left: -2,
         opacity: 0.5,
     },
-};
+}
 
-export class CircularProgressButton extends Component {
+export const withButtonHandlers = withHandlers({
 
-    constructor(props) {
-        super(props)
-        this.handleButtonClick = this.handleButtonClick.bind(this)
-    }
-
-    handleButtonClick() {
-        const { onClick, ui } = this.props;
-        console.log(ui.createGroup.isRequesting)
-        if ( !ui.createGroup.isRequesting && onClick ) { // if not loading and onClick is callable
+    handleButtonClick: ( { onClick, isRequesting } ) => () => {
+        if ( !isRequesting && onClick ) { // if not loading and onClick is callable
             onClick()
         }
     }
 
-    render() {
-        const { children, classes, ui } = this.props;
-        const { isRequesting } = ui.createGroup;
+})
 
-        return (
-            <div className={classes.wrapper}>
-                <Button 
-                    fab
-                    onClick={this.handleButtonClick}
-                    raised={this.props.raised}
-                    color={this.props.color} >
-                    {children || ''} { /* if no children is found simply assign empty string */ }
-                </Button>
-                { isRequesting && <CircularProgress size={60} className={classes.progress} />}
-            </div>
-        );
-    }
-}
+
+export const CircularProgressButton = ( { children, classes, isRequesting, handleButtonClick, raised, disabled, color } ) => (
+    <div className={classes.wrapper}>
+        <Button 
+            fab
+            onClick={handleButtonClick}
+            raised={raised}
+            color={color} 
+            disabled={disabled} >
+            {children || ''} { /* if no children is found simply assign empty string */ }
+        </Button>
+        { isRequesting && <CircularProgress size={60} className={classes.progress} />}
+    </div>
+)
+    
 
 const mapStateToProps = ({ ui }) => ({
-    ui,
-});
+    isRequesting: ui.createGroup.isRequesting,
+})
 
-const mapDispatchToProps = (dispatch) => ({
-});
+const enhancer = compose(
+    withStyles(styles),
+    connect(mapStateToProps, null),
+    withButtonHandlers,
+)
 
-
-const StyledCircularProgressButton = withStyles(styles)(CircularProgressButton);
-
-export default connect(mapStateToProps, mapDispatchToProps)(StyledCircularProgressButton);
+export default enhancer(CircularProgressButton)
