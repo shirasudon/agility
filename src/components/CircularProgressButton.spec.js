@@ -1,100 +1,71 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import CircularProgressButton from './CircularProgressButton'
+import { CircularProgressButton, withButtonHandlers } from './CircularProgressButton'
 import Button from 'material-ui/Button'
-import { createShallow, createMount, createRender } from 'material-ui/test-utils'
-import configureMockStore from 'redux-mock-store'
+import { CircularProgress } from 'material-ui/Progress'
+import { shallow, mount, render } from 'enzyme'
 
-const middlewares = [];
-const mockStore = configureMockStore(middlewares);
+describe("CircularProgressButton", () => {
 
-let shallow;
-let mount;
-let render;
-
-beforeAll(() => {
-    shallow = (component, store) => {
-        const context = {
-            store
-        };
-        const shallowWithDive = createShallow({ dive: true });
-        return shallowWithDive(component, {context})
-    };
-
-    mount = (component, store) => {
-        const context = {
-            store
-        };
-        const enhancedMount = createMount();
-        return enhancedMount(component, {context})
-    };
-
-
-    render = (component, store) => {
-        const context = {
-            store
-        };
-        const enhancedRender = createRender();
-        return enhancedRender(component, {context})
-    };
-});
-
-it('renders without crashing', () => {
-    const store = mockStore({
-        ui: {
-            createGroup: {
-                isRequesting: false,
-            }
+    it("calls handleButtonClick when clicked and does not show CircularProgress when isRequesting is false", () => {
+        const props = {
+            children: "hoge",
+            classes: {},
+            isRequesting: false,
+            handleButtonClick: jest.fn(),
+            raised: false, 
+            disabled: false, 
+            color: "primary"
         }
-    });
-    render(<CircularProgressButton />, store);
-});
 
-it('calls onClick method when loading is off and onClick is passed to the component', () => {
-    const store = mockStore({
-        ui: {
-            createGroup: {
-                isRequesting: false,
-            }
+        const wrapper = shallow(<CircularProgressButton {...props} />)
+        wrapper.find(Button).simulate("click")
+        expect(props.handleButtonClick).toHaveBeenCalled()
+        expect(wrapper.find(CircularProgress)).toHaveLength(0)
+    })
+    
+    it("shows CircularProgress when isRequesting is true", () => {
+        const props = {
+            children: "hoge",
+            classes: {},
+            isRequesting: true,
+            handleButtonClick: jest.fn(),
+            raised: false, 
+            disabled: false, 
+            color: "primary"
         }
-    });
-    const onClick = jest.fn();
-    const wrapper = mount(<CircularProgressButton onClick={onClick}/>, store);
-    const button = wrapper.find(Button);
-    expect(button.length).toBe(1);
-    button.simulate('click');
-    expect(onClick.mock.calls.length).toBe(1);
-});
 
-it('does not call onClick method when loading is on', () => {
-    const store = mockStore({
-        ui: {
-            createGroup: {
-                isRequesting: true,
-            }
-        }
-    });
-    const onClick = jest.fn();
-    const wrapper = mount(<CircularProgressButton status='loading' onClick={onClick}/>, store);
-    const button = wrapper.find(Button);
-    expect(button.length).toBe(1);
-    button.simulate('click');
-    expect(onClick.mock.calls.length).toBe(0);
-});
+        const wrapper = shallow(<CircularProgressButton {...props} />)
+        expect(wrapper.find(CircularProgress)).toHaveLength(1)
+    })
 
-it('does not call onClick method when onClick is undefined', () => {
-     const store = mockStore({
-        ui: {
-            createGroup: {
-                isRequesting: false,
-            }
+})
+
+describe("handleButtonClick", () => {
+
+    it("does not call onClick when isRequesting is true", () => {
+        const props = {
+            onClick: jest.fn(),
+            isRequesting: true
         }
-    });
-    const onClick = jest.fn();
-    const wrapper = mount(<CircularProgressButton />, store );
-    const button = wrapper.find(Button);
-    expect(button.length).toBe(1);
-    button.simulate('click');
-    expect(onClick.mock.calls.length).toBe(0);
-});
+
+        const BaseComponent = ( { handleButtonClick } ) => <div> { handleButtonClick() } </div>
+        const Component = withButtonHandlers(BaseComponent)
+        mount(<Component {...props} />)
+        expect(props.onClick).not.toHaveBeenCalled()
+    })    
+
+    it("calls onClick when isRequesting is false", () => {
+        const props = {
+            onClick: jest.fn(),
+            isRequesting: false
+        }
+
+        const BaseComponent = ( { handleButtonClick } ) => <div> { handleButtonClick() } </div>
+        const Component = withButtonHandlers(BaseComponent)
+        mount(<Component {...props} />)
+        expect(props.onClick).toHaveBeenCalled()
+    })    
+
+})
 

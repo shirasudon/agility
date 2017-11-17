@@ -29,7 +29,7 @@ const styles = {
 export const withButtonHandlers = withHandlers({
 
     handleButtonClick: ( { onClick, isRequesting } ) => () => {
-        if ( !isRequesting && onClick ) { // if not loading and onClick is callable
+        if ( !isRequesting ) { // if not loading and onClick is callable
             onClick()
         }
     }
@@ -39,7 +39,7 @@ export const withButtonHandlers = withHandlers({
 
 export const CircularProgressButton = ( { children, classes, isRequesting, handleButtonClick, raised, disabled, color } ) => (
     <div className={classes.wrapper}>
-        <Button 
+        <Button
             fab
             onClick={handleButtonClick}
             raised={raised}
