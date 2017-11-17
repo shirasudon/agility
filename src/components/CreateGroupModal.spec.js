@@ -2,6 +2,7 @@ import React from 'react'
 
 import { shallow, mount, render } from 'enzyme'
 import { ListItem, ListItemText } from 'material-ui/List'
+import CircularProgressButton from './CircularProgressButton'
 
 import { 
     CreateGroupModal, 
@@ -205,4 +206,23 @@ describe("CreateGroupModal", () => {
     it("renders without crashing", () => {
         render(<CreateGroupModal {...props}/>);
     })
+
+    it("disables create button when room name is empty", () => {
+        props.roomName = ""
+        const wrapper = shallow(<CreateGroupModal {...props} />)
+        expect(wrapper.find(CircularProgressButton).prop("disabled")).toBe(true)
+        // Simulating click on disabled button unfortunatelly fires click event and this is not fixed as of 2017/11/17
+        // https://github.com/facebook/react/issues/8305
+        // wrapper.find(CircularProgressButton).simulate("click")
+        // expect(props.handleCreateRoomClick).not.toHaveBeenCalled()
+    })
+
+    it("enables create button when room name is not empty", () => {
+        props.roomName = "room name!"
+        const wrapper = shallow(<CreateGroupModal {...props} />)
+        expect(wrapper.find(CircularProgressButton).prop("disabled")).toBe(false)
+        wrapper.find(CircularProgressButton).simulate("click")
+        expect(props.handleCreateRoomClick).toHaveBeenCalledWith(props.session.user.id)
+    })
+
 })
