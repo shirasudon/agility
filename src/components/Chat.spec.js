@@ -12,7 +12,7 @@ describe("Chat", () => {
 
     it("contains CreateGroupModal, Button, SideTabs, MessageWindow ", () => {
         const openCreateGroupModal = jest.fn()
-        const wrapper = shallow(<Chat openCreateGroupModal={()=>{}} />)
+        const wrapper = shallow(<Chat classes={{}} openCreateGroupModal={()=>{}} />)
         expect(wrapper.find(CreateGroupModal)).toHaveLength(1)
         expect(wrapper.find(Button)).toHaveLength(1)
         expect(wrapper.find(SideTabs)).toHaveLength(1)
@@ -21,7 +21,7 @@ describe("Chat", () => {
 
     it("contains calls openCreateGroupModal when a button is clicked ", () => {
         const openCreateGroupModal = jest.fn()
-        const wrapper = shallow(<Chat openCreateGroupModal={openCreateGroupModal} />)
+        const wrapper = shallow(<Chat classes={{}} openCreateGroupModal={openCreateGroupModal} />)
         wrapper.find(Button).simulate("click")
         expect(openCreateGroupModal).toHaveBeenCalled()
     })

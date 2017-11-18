@@ -1,13 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withStyles } from 'material-ui/styles'
+import { compose } from 'recompose'
 
 import ChatHeader from './ChatHeader'
 import ChatHistory from './ChatHistory'
 import ChatInput from './ChatInput'
 
+const styles = {
+    root: {
+        height: "100%",
+    },
+}
 
-export const MessageWindow = ( { currentRoomId, entities, session } ) => {
-    if(currentRoomId === null){
+
+export const MessageWindow = ( { currentRoomId, entities, session, classes } ) => {
+    if (currentRoomId === null) {
         return (
             <div className="message-container">
                 Lets start chatting with your friends!!
@@ -20,7 +28,7 @@ export const MessageWindow = ( { currentRoomId, entities, session } ) => {
     const me = session.user
 
     return (
-        <div className="message-container">
+        <div className={classes.root}>
             <ChatHeader title={currentRoom.name} shouldShowDeleteIcon={currentRoom.createdBy === me.id} />
             <ChatHistory />
             <ChatInput />
@@ -28,13 +36,16 @@ export const MessageWindow = ( { currentRoomId, entities, session } ) => {
     )
 }
 
-const mapStateToProps = ({currentRoomId, session, entities}) => ({
+const mapStateToProps = ({ currentRoomId, session, entities }) => ({
     currentRoomId,
     session,
     entities,
 })
 
-export const enhancer = connect(mapStateToProps, null)
+export const enhancer = compose(
+    connect(mapStateToProps, null),
+    withStyles(styles)
+)
 
 export default enhancer(MessageWindow)
 

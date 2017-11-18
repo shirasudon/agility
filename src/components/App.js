@@ -1,6 +1,7 @@
 import React from 'react'
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import createHistory from 'history/createBrowserHistory'
+import { withStyles } from 'material-ui/styles'
 
 import Login from './Login'
 import Home from './Home'
@@ -9,9 +10,16 @@ import Chat from './Chat'
 import Navbar from './Navbar'
 import PrivateRoute from './PrivateRoute'
 
-export const App = () => (
+const styles = {
+    app: {
+        height: "100%",
+    }
+}
+
+
+export const App = ({ classes }) => (
     <Router history={createHistory()}>
-        <div>
+        <div className={classes.app}>
             <Navbar />
             <Switch>
                 <Route exact={true} path="/" component={Home} />
@@ -23,4 +31,7 @@ export const App = () => (
     </Router>
 )
 
-export default App
+export const enhancer = withStyles(styles)
+
+export default enhancer(App)
+

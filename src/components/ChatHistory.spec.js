@@ -55,10 +55,13 @@ describe("ChatHistory", () => {
                     id: 2,
                 } 
             },
+            classes: {
+                root: "chatHistory" 
+            },
         }
 
         const wrapper = shallow(<ChatHistory {...props} />)
-        const historyContainer = wrapper.find(".chatHistory")
+        const historyContainer = wrapper.find("." + props.classes.root)
         expect(historyContainer).toHaveLength(1)
         const balloons = historyContainer.find(Balloon) 
         expect(balloons).toHaveLength(3)

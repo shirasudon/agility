@@ -30,7 +30,7 @@ export const withMessageWindowHandlers = withHandlers({
     },
 })
 
-export const ChatInput = ( { handleChange, handleKeyPress, curText} ) => (
+export const ChatInput = ( { handleChange, handleKeyPress, curText } ) => (
     <TextField
         id="post-text-field"
         InputProps={{ placeholder: 'Press enter to send message!' }}

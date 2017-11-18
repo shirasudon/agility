@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { lifecycle, compose } from 'recompose'
+import { withStyles } from 'material-ui/styles'
 
 import Grid from 'material-ui/Grid'
 import Button from 'material-ui/Button'
@@ -12,6 +13,19 @@ import MessageWindow from './MessageWindow'
 
 let cac = chatActionCreator
 
+const styles = {
+    root: {
+        height: "88%",
+    },
+    sideTabs: {
+        height: "100%",
+    },
+    messageWindow: {
+        height: "100%",
+    }
+}
+
+
 export const withLifecycles = lifecycle({
     componentDidMount() {
         const { fetchRooms, fetchFriends, session } = this.props
@@ -20,17 +34,17 @@ export const withLifecycles = lifecycle({
     }
 })
 
-export const Chat = ({openCreateGroupModal: openModal}) => (
-    <Grid container justify="center">
-        <Grid item xs={3}>
+export const Chat = ({ openCreateGroupModal: openModal, classes }) => (
+    <Grid container justify="center" className={classes.root}>
+        <Grid item xs={3} className={classes.sideTabs}>
             <CreateGroupModal />
             <Button onClick={openModal} >
             グループ作成
             </Button>
-            <SideTabs/>
+            <SideTabs />
         </Grid>
-        <Grid item xs={6}>
-            <MessageWindow/>
+        <Grid item xs={6} className={classes.messageWindow}>
+            <MessageWindow />
         </Grid>
     </Grid>
 )
@@ -58,7 +72,8 @@ export const mapDispatchToProps = (dispatch) => ({
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
-    withLifecycles
+    withLifecycles,
+    withStyles(styles),
 )
 
 export default enhancer(Chat)

@@ -11,15 +11,15 @@ import Button from 'material-ui/Button'
 
 import { logout as logoutAction } from '../actions/AuthActions'
 
-const styleSheet = theme => ({
+const style = {
     root: {
-        "margin-bottom": '30px',
-        width: '100%',
+        width: "100%",
+        height: "12%",
     },
     flex: {
         flex: 1,
     },
-})
+}
 
 export const Navbar = ( { authenticated, logout, classes, } ) => (
     <div className={classes.root}>
@@ -48,7 +48,7 @@ const mapStateToProps = ( { session } ) => ({
 })
 
 export const enhancer = compose(
-    withStyles(styleSheet),
+    withStyles(style),
     connect(mapStateToProps, mapDispatchToProps)
 )
 

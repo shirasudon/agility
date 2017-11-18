@@ -45,6 +45,7 @@ describe("MessageWindow", () => {
                     byId: {}
                 }
             },
+            classes: {},
         }
 
         const wrapper = shallow(<MessageWindow {...props} />)
@@ -77,6 +78,7 @@ describe("MessageWindow", () => {
                     byId: {}
                 }
             },
+            classes: {},
         }
 
         const wrapper = shallow(<MessageWindow {...props} />)

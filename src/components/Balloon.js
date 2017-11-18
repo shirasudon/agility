@@ -44,11 +44,11 @@ const baloonMain = {
 const styleSheet = theme => ({
     balloonLeft: {
         ...baloonMain,
-        "&:before": balloonElement[LEFT],
+        // "&:before": balloonElement[LEFT],
     },
     balloonRight: {
         ...baloonMain,
-        "&:before": balloonElement[RIGHT],
+        // "&:before": balloonElement[RIGHT],
     },
     postMetaLeft: {
         textAlign: "left"
