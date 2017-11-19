@@ -9,27 +9,6 @@ import { chatActionCreator } from '../actions'
 export const RIGHT = "right"
 export const LEFT = "left"
 
-const balloonElement = {
-    [LEFT]: {
-        content: "''",
-        position: "absolute",
-        top: "50%",
-        left: "-30px",
-        marginTop: "-15px",
-        border: "15px solid transparent",
-        borderRight: "15px solid #e0edff",
-    },
-    [RIGHT]: {
-        content: "''",
-        position: "absolute",
-        top: "50%",
-        left: "100%",
-        marginTop: "-15px",
-        border: "15px solid transparent",
-        borderLeft: "15px solid #e0edff",
-    },
-}
-
 const baloonMain = {
     position: "relative",
     padding: "20px 10px",
@@ -44,11 +23,9 @@ const baloonMain = {
 const styleSheet = theme => ({
     balloonLeft: {
         ...baloonMain,
-        // "&:before": balloonElement[LEFT],
     },
     balloonRight: {
         ...baloonMain,
-        // "&:before": balloonElement[RIGHT],
     },
     postMetaLeft: {
         textAlign: "left"
