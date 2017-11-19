@@ -18,7 +18,7 @@
     "reconnecting-websocket": "^3.2.2",
     "redux": "^3.7.2",
     "redux-mock-store": "^1.2.3",
-    "redux-react-session": "^2.1.0",
+    "redux-react-session": "^2.2.0",
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
