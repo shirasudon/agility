@@ -23,23 +23,23 @@ export const MessageWindow = ( { currentRoomId, entities, session, classes } ) =
         )
     }
 
-    const { rooms } = entities
-    const currentRoom = rooms.byId[currentRoomId]
-    const me = session.user
+    const rooms = entities.get("rooms")
+    const currentRoom = rooms.getIn(["byId", currentRoomId])
+    const me = session.get("user")
 
     return (
         <div className={classes.root}>
-            <ChatHeader title={currentRoom.name} shouldShowDeleteIcon={currentRoom.createdBy === me.id} />
+            <ChatHeader title={currentRoom.get("name")} shouldShowDeleteIcon={currentRoom.get("createdBy") === me.get("id")} />
             <ChatHistory />
             <ChatInput />
         </div>
     )
 }
 
-const mapStateToProps = ({ currentRoomId, session, entities }) => ({
-    currentRoomId,
-    session,
-    entities,
+const mapStateToProps = props => ({
+    currentRoomId: props.get("currentRoomId"),
+    session: props.get("session"),
+    entities: props.get("entities"),
 })
 
 export const enhancer = compose(

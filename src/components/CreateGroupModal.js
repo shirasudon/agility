@@ -84,9 +84,9 @@ export const MatchedUserList = ( { friendIds, users, searchText, handleAddChip, 
 
 export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
 
-    const { showModal } = ui.createGroup
-    const { users } = entities
-    const me = session.user
+    const showModal = ui.getIn(["createGroup", "showModal"])
+    const users = entities.get("users")
+    const me = session.get("user")
 
     return (
         <Dialog
@@ -120,7 +120,7 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
                         <CircularProgressButton
                             raised
                             color="primary"
-                            onClick={() => { handleCreateRoomClick(me.id) } }
+                            onClick={() => { handleCreateRoomClick(me.get("id")) } }
                             disabled={roomName === ""}
                         >
                             Go
@@ -128,7 +128,7 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
                     </Grid>
                     <Grid item xs={12}>
                         <ChipsArray
-                            chipData={selectedUsers.map( userId => users.byId[userId])}
+                            chipData={selectedUsers.map( userId => users.getIn(["byId", userId]))}
                             handleRequestDelete={handleDeleteChip}
                         />
                     </Grid>
@@ -157,11 +157,11 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
     )
 }
 
-const mapStateToProps = ({friendIds, entities, ui, session}) => ({
-    entities,
-    ui,
-    session,
-    friendIds,
+const mapStateToProps = props => ({
+    entities: props.get("entities"),
+    ui: props.get("ui"),
+    session: props.get("session"),
+    friendIds: props.get("friendIds"),
 })
 
 export const mapDispatchToProps = (dispatch) => ({

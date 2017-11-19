@@ -29,8 +29,8 @@ const styles = {
 export const withLifecycles = lifecycle({
     componentDidMount() {
         const { fetchRooms, fetchFriends, session } = this.props
-        fetchRooms(session.user.id)
-        fetchFriends(session.user.id)
+        fetchRooms(session.getIn(["user", "id"]))
+        fetchFriends(session.getIn(["user", "id"]))
     }
 })
 
@@ -53,9 +53,9 @@ export function setChatActionCreator(actionCreator) {
     cac = actionCreator 
 }
 
-const mapStateToProps = ({entities, session}) => ({
-    entities,
-    session,
+const mapStateToProps = props => ({
+    entities: props.get("entities"),
+    session: props.get("session"),
 });
 
 export const mapDispatchToProps = (dispatch) => ({

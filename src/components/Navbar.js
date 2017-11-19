@@ -21,7 +21,7 @@ const style = {
     },
 }
 
-export const Navbar = ( { authenticated, logout, classes, } ) => (
+export const Navbar = ( { authenticated, logout, classes } ) => (
     <div className={classes.root}>
         <AppBar position="static">
             <Toolbar>
@@ -43,8 +43,8 @@ const mapDispatchToProps = (dispatch) => ({
     }
 })
 
-const mapStateToProps = ( { session } ) => ({
-    authenticated: session.authenticated,
+const mapStateToProps = props => ({
+    authenticated: props.getIn(["session", "authenticated"]),
 })
 
 export const enhancer = compose(

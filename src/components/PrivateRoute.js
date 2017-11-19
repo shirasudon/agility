@@ -2,7 +2,7 @@ import React from 'react'
 import {Route, Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 
-export const PrivateRoute = ( { exact, path, session: {authenticated,}, component: Component} ) => (
+export const PrivateRoute = ( { exact, path, authenticated, component: Component} ) => (
     <Route
         exact={exact}
         path={path}
@@ -18,8 +18,8 @@ export const PrivateRoute = ( { exact, path, session: {authenticated,}, componen
     />
 )
 
-const mapStateToProps = ({ session }) => ({
-    session,
+const mapStateToProps = props => ({
+    authenticated: props.getIn(["session", "authenticated"])
 })
 
 export default connect(mapStateToProps)(PrivateRoute);

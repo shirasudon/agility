@@ -35,8 +35,10 @@ export const createOnMessage = store => event => {
     const { type, data } = event.data 
     switch (type) {
         case SEND_CHAT_MESSAGE:
-            const { entities, currentRoomId } = store.getState()
-            if (entities.rooms.byId[data.roomId].initialFetch) {
+            const state = store.getState()
+            const entities = state.get("entities")
+            const currentRoomId = state.get("currentRoomId")
+            if (entities.getIn(["rooms", "byId", data.roomId, "initialFetch"])) {
                 store.dispatch(chatActionCreator.receiveMessage(data)) 
             }
             if (currentRoomId !== data.roomId) {
@@ -57,8 +59,8 @@ export const createOnClose = store => event => {
 export const createOnOpen = store => event => {
     // TODO: initialize all entity data
     const { dispatch} = store
-    const { session } = store.getState()
-    const userId = session.user.id
+    const state = store.getState()
+    const userId = state.getIn(["session", "user", "id"])
 
     if ( userId ) {
         dispatch(chatActionCreator.fetchRooms(userId))

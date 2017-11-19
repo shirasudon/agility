@@ -69,7 +69,8 @@ export const Login = ( {
     sessionUser,
     classes 
 } ) => {
-        if (authenticated && Object.keys(sessionUser).length > 0) {
+        console.log(authenticated, sessionUser)
+        if (authenticated && sessionUser.size > 0) {
             return <Redirect to="/chat" />;
         }
 
@@ -106,9 +107,9 @@ export const Login = ( {
         )
 }
 
-export const mapStateToProps = ( { session } ) => ({
-    authenticated: session.authenticated,
-    sessionUser: session.user,
+export const mapStateToProps = props => ({
+    authenticated: props.getIn(["session", "authenticated"]),
+    sessionUser: props.getIn(["session", "user"]),
 })
 
 export const mapDispatchToProps = (dispatch) => {

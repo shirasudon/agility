@@ -6,15 +6,15 @@ import { ListItem, ListItemText } from 'material-ui/List'
 export const FriendList = ({ friendIds, users }) => {
     const friendComponentList = friendIds.map(
         (friendId, index) => {
-            if (!users.byId.hasOwnProperty(friendId)) {
+            if (!users.get("byId").has(friendId)) {
                 return null
             }
-            const friend = users.byId[friendId];
+            const friend = users.getIn(["byId", friendId])
             return (
                 <ListItem button key={index}>
                     <ListItemText
-                        primary={friend.firstName + " " + friend.lastName}
-                        secondary={friend.username}
+                        primary={friend.get("firstName") + " " + friend.get("lastName")}
+                        secondary={friend.get("username")}
                     />
                 </ListItem>
             )
@@ -23,10 +23,10 @@ export const FriendList = ({ friendIds, users }) => {
     return (<div> { friendComponentList } </div>)
 }
 
-const mapStateToProps = ( { friendIds, entities } ) => ({
-    friendIds,
-    users: entities.users,
-});
+const mapStateToProps = props => ({
+    friendIds: props.get("friendIds"),
+    users: props.getIn(["entities", "users"]),
+})
 
 export default connect(mapStateToProps, null)(FriendList)
 

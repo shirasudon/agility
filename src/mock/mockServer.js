@@ -12,7 +12,7 @@ let mockServer
 const chatMessageFactory = (roomId, userId, text) => ({
     type: SEND_CHAT_MESSAGE,  
     data: {
-        id: Math.floor((Math.random() * 100) + 1),
+        id: "" + Math.floor((Math.random() * 100) + 1),
         roomId,
         userId,
         text,

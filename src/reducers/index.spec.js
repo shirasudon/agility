@@ -1,3 +1,5 @@
+import { fromJS, toJS } from 'immutable'
+
 import { rootReducer as reducer } from './index'
 
 const initialState = {
@@ -33,11 +35,11 @@ const initialState = {
 }
 
 it("returns correct inital state", () => {
-    expect(reducer(undefined, {type: "NON_EXISTENT_TYPE"})).toEqual(initialState)
+    expect(reducer(undefined, {type: "NON_EXISTENT_TYPE"}).toJS()).toEqual(initialState)
 })
 
 it("returns initialized data when action type is USER_LOGOUT", () => {
-    const state = {
+    const state = fromJS({
         currentRoomId: null,
         rooms: {},
         entities: {
@@ -70,8 +72,8 @@ it("returns initialized data when action type is USER_LOGOUT", () => {
                 showModal: false,
             }
         }
-    }
+    })
 
-    expect(reducer(state, {type: "USER_LOGOUT"})).toEqual(initialState)
+    expect(reducer(state, {type: "USER_LOGOUT"}).toJS()).toEqual(initialState)
 })
 

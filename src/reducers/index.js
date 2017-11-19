@@ -1,7 +1,7 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux-immutable'
 
 import * as ui from './ui'
-import { sessionReducer as session } from 'redux-react-session'
+import { sessionImmutableReducer as session } from 'redux-react-session'
 import * as entity from './entity'
 import * as domain from './domain'
 import { USER_LOGOUT } from '../actions/actionTypes'

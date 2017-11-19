@@ -48,13 +48,12 @@ export const withLifecycle = lifecycle({
     componentWillUpdate(nextProps) {
         const { refs, entities, currentRoomId } = this.props
         const { messageList } = refs
-        const messagesLength = entities.messages.byRoomId[currentRoomId].length
-        const newMessageLength = nextProps.entities.messages.byRoomId[currentRoomId].length
-        if ( messagesLength !== newMessageLength ) { // update shouldScrollToBottom only when the message history changed
+        const messages = entities.messages.byRoomId[currentRoomId]
+        const newMessages = nextProps.entities.messages.byRoomId[currentRoomId]
+        if ( messages && newMessages && messages.length !== newMessages.length ) { // update shouldScrollToBottom only when the message history changed
             const scrollPos = messageList.scrollTop
             const scrollBottom = (messageList.scrollHeight - messageList.clientHeight)
             this.shouldScrollToBottom = (scrollBottom <= 0) || (scrollPos === scrollBottom)
-            console.log(this.shouldScrollToBottom)
         }
     },
     // When new props are received, automatically scroll to the bottom
