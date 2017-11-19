@@ -4,6 +4,7 @@ import {Provider} from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import { sessionService } from 'redux-react-session'
 import thunk from 'redux-thunk'
+import logger from 'redux-logger'
 
 import reducer from './reducers'
 import './index.css'
@@ -16,6 +17,7 @@ const store = createStore(
     reducer,
     applyMiddleware(
         thunk,
+        logger,
         createWebSocketMiddleware(initializeWebSocket(process.env.NODE_ENV))
     )
 )
