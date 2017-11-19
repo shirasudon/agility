@@ -31,5 +31,3 @@ export function friendIds(state = [], action) {
     }
 }
 
-export { rooms } from './rooms'
-

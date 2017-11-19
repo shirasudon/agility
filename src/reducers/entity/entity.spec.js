@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { users, room, rooms, messages } from './entity'
 import {
     RECEIVE_USER,
@@ -7,8 +9,7 @@ import {
     CHANGE_ROOM, 
     RECEIVE_CREATE_ROOM,
     RECEIVE_DELETE_ROOM,
-} from '../../actions/actionTypes';
-
+} from '../../actions/actionTypes'
 
 
 describe("users", () => {
@@ -63,6 +64,7 @@ describe("room", () => {
             members: [],
             initialFetch: false,
             hasUnreadMessage: false,
+            oldestMessageTimestamp: null,
         }
         expect(room(undefined, {type: "NON_EXISTING_TYPE"})).toEqual(expected)
     })
@@ -97,13 +99,15 @@ describe("room", () => {
             members: [],
             initialFetch: false,
             hasUnreadMessage: true,
+            oldestMessageTimestamp: null,
         }
         const action = {
             type: RECEIVE_ROOM,
             id: 3,
             name: "new room",
             initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
-            hasUnreadMessage: true
+            hasUnreadMessage: true,
+            oldestMessageTimestamp: null,
         }
         expect(room(undefined, action)).toEqual(expected)
     })
@@ -116,6 +120,7 @@ describe("room", () => {
             members: [],
             initialFetch: false,
             hasUnreadMessage: false,
+            oldestMessageTimestamp: null,
         }
         const action = {
             createdBy: null,
@@ -186,6 +191,7 @@ describe("rooms", () => {
                     initialFetch: false,
                     createdBy: null,
                     hasUnreadMessage: false,
+                    oldestMessageTimestamp: null,
                 },
             },
             all: ["1", "2", "5"]
@@ -277,6 +283,7 @@ describe("rooms", () => {
                     initialFetch: false,
                     createdBy: null,
                     hasUnreadMessage: false,
+                    oldestMessageTimestamp: null,
                 }
             },
             all: ["1", "5"]
@@ -328,6 +335,75 @@ describe("rooms", () => {
         }
 
         expect(rooms(initialState, action)).toEqual(expected)
+    })
+
+    it("should update oldestMessageTimestamp when the received message is older than the oldest message", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 3,
+                roomId: 5,
+                createdAt: moment('2017-11-03 13:00:00').valueOf()
+            }
+        }
+
+        const initialState = {
+            byId: {
+                "5": {
+                    id: "5",
+                    name: "room5",
+                    members: [],
+                    initialFetch: false,
+                    oldestMessageTimestamp: moment('2017-11-03 19:12:00').valueOf(),
+                }
+            },
+            all: [5],
+        }
+
+
+        const expected = {
+            byId: {
+                "5": {
+                    id: "5",
+                    name: "room5",
+                    members: [],
+                    initialFetch: false,
+                    oldestMessageTimestamp: moment('2017-11-03 13:00:00').valueOf()
+                }
+            },
+            all: [5],
+        }
+
+        expect(rooms(initialState, action)).toEqual(expected)
+
+    })
+
+    it("should do nothing when the received message is newer than the oldest message", () => {
+        const action = {
+            type: "RECEIVE_MESSAGE",
+            message: {
+                id: 3,
+                roomId: 5,
+                createdAt: moment('2017-11-03 13:00:00').valueOf()
+            }
+        }
+
+        const initialState = {
+            byId: {
+                "5": {
+                    id: "5",
+                    name: "room5",
+                    members: [],
+                    initialFetch: false,
+                    oldestMessageTimestamp: moment('2017-11-03 11:12:00').valueOf()
+                }
+            },
+            all: [5],
+        }
+
+        // Returned state should be the same as the initial state
+        expect(rooms(initialState, action)).toEqual(initialState)
+
     })
 
 })

@@ -201,9 +201,11 @@ export class RoomTable {
 
 export class MessageTable {
 
+    static counter = 0
+
     static getMessagesByRoomId(roomId) {
         const filteredMessages = messages.filter(message => message.roomId === roomId);
-        return filteredMessages;
+        return filteredMessages.map( msg => Object.assign({}, msg, { id: MessageTable.counter++ }))
     }
 
 }

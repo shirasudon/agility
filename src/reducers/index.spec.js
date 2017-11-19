@@ -2,7 +2,6 @@ import { rootReducer as reducer } from './index'
 
 const initialState = {
     currentRoomId: null,
-    rooms: {},
     entities: {
         messages: {
             byId: {},

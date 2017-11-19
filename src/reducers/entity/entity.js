@@ -8,7 +8,7 @@ import {
     RECEIVE_MESSAGE_READ,
     EXIST_UNREAD_MESSAGE,
     NO_UNREAD_MESSAGE,
-} from '../../actions/actionTypes';
+} from '../../actions/actionTypes'
 
 
 export function users(state = {byId: {}, byUsername: {}, all: []}, action){
@@ -34,6 +34,7 @@ const roomInitialState = {
     createdBy: null, 
     initialFetch: false,
     hasUnreadMessage: false,
+    oldestMessageTimestamp: null,
 }
 
 export function room(state = roomInitialState, action){
@@ -70,6 +71,12 @@ export function room(state = roomInitialState, action){
                 hasUnreadMessage: false,
             })
 
+        case RECEIVE_MESSAGE:
+            const { createdAt } = action.message
+            return Object.assign({}, state, {
+                oldestMessageTimestamp: Math.min(createdAt, state.oldestMessageTimestamp),
+            })
+
         default:
             return state
     }
@@ -80,12 +87,10 @@ export function rooms(state = {byId: {}, all: []}, action){
     switch(action.type){
         case RECEIVE_ROOM: {
             let newState = Object.assign({}, state)
-            // action.rooms.forEach( r => {
             if ( !newState.all.includes(action.id) ) { // TODO: make `all` a set
                 newState.byId[action.id] = room(state.byId[action.id], action)
                 newState.all.push(action.id)
             }
-            // });
             return newState;
         }
 
@@ -118,10 +123,19 @@ export function rooms(state = {byId: {}, all: []}, action){
         }
 
         case EXIST_UNREAD_MESSAGE:
-        case NO_UNREAD_MESSAGE:
+        case NO_UNREAD_MESSAGE: {
             let newState = Object.assign({}, state)
             newState.byId[action.roomId] = room(state.byId[action.roomId], action)
             return newState
+        }
+
+        case RECEIVE_MESSAGE: {
+            const { roomId } = action.message
+            let newState = Object.assign({}, state)
+            newState.byId[roomId] = room(state.byId[roomId], action)
+            return newState
+        }
+
         default:
             return state
     }
@@ -129,8 +143,8 @@ export function rooms(state = {byId: {}, all: []}, action){
 
 export function addMessage(currentMessages = [], message) {
     let newMessages = currentMessages.slice();
-    newMessages.push(message);
-    return newMessages;
+    newMessages.push(message)
+    return newMessages
 }
 
 export function messages(
@@ -141,7 +155,7 @@ export function messages(
     },
     action
 ) {
-    switch (action.type) { 
+    switch (action.type) {
         case RECEIVE_MESSAGE: {
             const { id, roomId, } = action.message
             let newState = Object.assign({}, state)

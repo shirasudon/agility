@@ -178,14 +178,18 @@ export default class ChatActionCreator {
         };
     }
 
-    fetchMessagesByRoomId(roomId) {
+    // fetch messages of the room with `roomId`
+    // When `timestamp` is 
+    //   undefined: it fetches the all unread messages, as well as some read messages.
+    //   otherwise: it fetches some messages posted before `timestamp`
+    fetchMessagesByRoomId(roomId, timestamp) {
         return (dispatch) => {
-            dispatch(this.requestMessages());
-            return this.chatApi.fetchMessagesByRoomId(roomId).then((messages) => {
+            dispatch(this.requestMessages())
+            return this.chatApi.fetchMessagesByRoomId(roomId, timestamp).then((messages) => {
                 messages.forEach( message => {
-                    dispatch(this.receiveMessage(message));
-                });
-            });
+                    dispatch(this.receiveMessage(message))
+                })
+            })
         };
     }
 
