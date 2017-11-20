@@ -17,6 +17,7 @@ import {
     RECEIVE_DELETE_ROOM,
     RECEIVE_FRIEND_IDS,
     RECEIVE_MESSAGE_READ,
+    SEND_MESSAGE_READ,
     EXIST_UNREAD_MESSAGE,
     NO_UNREAD_MESSAGE,
 } from './actionTypes'
@@ -263,15 +264,12 @@ export default class ChatActionCreator {
     }
 
     sendMessageRead(messageIds, userId) {
-        return (dispatch) => {
-            return this.chatApi.messageRead(messageIds, userId).then( ok => {
-                if (ok) {
-                    dispatch(this.receiveMessageRead(messageIds, userId))
-                }
-                else {
-                    // TODO: error handling
-                }
-            })
+        return {
+            type: SEND_MESSAGE_READ,
+            data: {
+                messageIds,
+                userId,
+            }
         }
     }
 

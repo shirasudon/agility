@@ -43,11 +43,3 @@ export function deleteRoom(roomId) {
     return Promise.resolve(true)
 }
 
-export function messageRead(messageIds, userId) {
-    if (!userId || !!messageIds instanceof Array) { // let the server side define what are regarded as errrs
-        Promise.resolve(false)
-    }
-
-    return Promise.resolve(true) 
-}
-
