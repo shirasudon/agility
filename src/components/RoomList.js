@@ -1,8 +1,10 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { ListItem, ListItemText } from 'material-ui/List'
+import { compose } from 'recompose'
 
 import { chatActionCreator } from "../actions"
+import { toJS } from './ToJS'
 
 export const RoomList = ( { rooms, enterRoom } ) => {
 
@@ -31,8 +33,8 @@ export const RoomList = ( { rooms, enterRoom } ) => {
     )
 }
 
-const mapStateToProps = ( { entities } ) => ({
-    rooms: entities.rooms,
+const mapStateToProps = state => ({
+    rooms: state.getIn(["entities", "rooms"]),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -41,6 +43,10 @@ const mapDispatchToProps = (dispatch) => ({
     },
 })
 
+export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    toJS,
+)
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomList)
+export default enhancer(RoomList)
 

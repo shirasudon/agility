@@ -1,20 +1,23 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { ListItem, ListItemText } from 'material-ui/List'
+import { compose } from 'recompose'
+
+import { toJS } from './ToJS'
 
 
 export const FriendList = ({ friendIds, users }) => {
     const friendComponentList = friendIds.map(
         (friendId, index) => {
-            if (!users.get("byId").has(friendId)) {
+            if (!users.byId.hasOwnProperty(friendId)) {
                 return null
             }
-            const friend = users.getIn(["byId", friendId])
+            const friend = users.byId[friendId]
             return (
                 <ListItem button key={index}>
                     <ListItemText
-                        primary={friend.get("firstName") + " " + friend.get("lastName")}
-                        secondary={friend.get("username")}
+                        primary={friend.firstName + " " + friend.lastName}
+                        secondary={friend.username}
                     />
                 </ListItem>
             )
@@ -23,10 +26,15 @@ export const FriendList = ({ friendIds, users }) => {
     return (<div> { friendComponentList } </div>)
 }
 
-const mapStateToProps = props => ({
-    friendIds: props.get("friendIds"),
-    users: props.getIn(["entities", "users"]),
+const mapStateToProps = state => ({
+    friendIds: state.get("friendIds"),
+    users: state.getIn(["entities", "users"]),
 })
 
-export default connect(mapStateToProps, null)(FriendList)
+export const enhancer = compose(
+    connect(mapStateToProps, null),
+    toJS,
+)
+
+export default enhancer(FriendList)
 

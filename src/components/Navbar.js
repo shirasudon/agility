@@ -9,6 +9,7 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 
+import { toJS } from './ToJS'
 import { logout as logoutAction } from '../actions/AuthActions'
 
 const style = {
@@ -43,13 +44,15 @@ const mapDispatchToProps = (dispatch) => ({
     }
 })
 
-const mapStateToProps = props => ({
-    authenticated: props.getIn(["session", "authenticated"]),
+const mapStateToProps = state => ({
+    authenticated: state.getIn(["session", "authenticated"]),
 })
 
 export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withStyles(style),
-    connect(mapStateToProps, mapDispatchToProps)
 )
 
 export default enhancer(Navbar)
+

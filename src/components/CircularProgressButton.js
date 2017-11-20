@@ -6,6 +6,7 @@ import green from 'material-ui/colors/green'
 import Button from 'material-ui/Button'
 import { compose, withHandlers } from 'recompose'
 
+import { toJS } from './ToJS'
 
 const styles = {
     wrapper: {
@@ -52,12 +53,13 @@ export const CircularProgressButton = ( { children, classes, isRequesting, handl
 )
     
 
-const mapStateToProps = ({ ui }) => ({
-    isRequesting: ui.createGroup.isRequesting,
+const mapStateToProps = state => ({
+    isRequesting: state.getIn(["ui", "createGroup", "isRequesting"]),
 })
 
 const enhancer = compose(
     withStyles(styles),
+    toJS,
     connect(mapStateToProps, null),
     withButtonHandlers,
 )

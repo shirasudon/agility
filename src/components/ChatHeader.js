@@ -2,7 +2,9 @@ import React from 'react'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui-icons/Delete'
 import { connect } from 'react-redux'
+import { compose } from 'recompose'
 
+import { toJS } from './ToJS'
 import { chatActionCreator } from '../actions'
 
 export const ChatHeader = ( { title = '', shouldShowDeleteIcon = false, deleteRoom, currentRoomId } ) => (
@@ -16,8 +18,8 @@ export const ChatHeader = ( { title = '', shouldShowDeleteIcon = false, deleteRo
     </div>
 )
 
-const mapStateToProps = ( { currentRoomId } ) => ({
-    currentRoomId,
+const mapStateToProps = state => ({
+    currentRoomId: state.get("currentRoomId"),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -26,7 +28,10 @@ const mapDispatchToProps = (dispatch) => ({
     }
 })
 
-export const enhancer = connect(mapStateToProps, mapDispatchToProps)
+export const enhancer = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    toJS
+)
 
 export default enhancer(ChatHeader)
 

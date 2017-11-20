@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
 
 
+import { toJS } from './ToJS'
 import { KEY_ENTER } from '../keyCodes.js'
 import { chatActionCreator } from '../actions'
 
@@ -43,9 +44,9 @@ export const ChatInput = ( { handleChange, handleKeyPress, curText } ) => (
     />
 )
 
-const mapStateToProps = ({currentRoomId, session }) => ({
-    currentRoomId,
-    session,
+const mapStateToProps = state => ({
+    currentRoomId: state.get("currentRoomId"),
+    session: state.get("session"),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -56,6 +57,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withCurrentText,
     withMessageWindowHandlers,
 )

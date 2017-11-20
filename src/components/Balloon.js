@@ -6,6 +6,8 @@ import moment from 'moment'
 import { lifecycle, compose } from 'recompose'
 import { chatActionCreator } from '../actions'
 
+import { toJS } from './ToJS'
+
 export const RIGHT = "right"
 export const LEFT = "left"
 
@@ -69,10 +71,10 @@ export const Balloon = ( { message, classes, session, users } ) => {
     )
 }
 
-export const mapStateToProps = ( { session, entities } ) => ({
-    session,
-    users: entities.users,
-    messages: entities.messages
+export const mapStateToProps = state => ({
+    session: state.get("session"),
+    users: state.getIn(["entities", "users"]),
+    messages: state.getIn(["entities", "messages"])
 })
 
 export const mapDispatchToProps = dispatch => ({
@@ -82,8 +84,9 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 export const enhancer = compose(
-    withStyles(styleSheet),
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
+    withStyles(styleSheet),
     withLifecycle,
 )
 

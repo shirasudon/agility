@@ -1,5 +1,5 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import Dialog, { DialogContent } from 'material-ui/Dialog'
 import TextField from 'material-ui/TextField'
@@ -15,6 +15,7 @@ import Toolbar from 'material-ui/Toolbar'
 
 import { withState, compose, withHandlers } from 'recompose'
 
+import { toJS } from './ToJS'
 import ChipsArray from './ChipsArray'
 import { chatActionCreator } from '../actions'
 
@@ -84,9 +85,9 @@ export const MatchedUserList = ( { friendIds, users, searchText, handleAddChip, 
 
 export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
 
-    const showModal = ui.getIn(["createGroup", "showModal"])
-    const users = entities.get("users")
-    const me = session.get("user")
+    const showModal = ui.createGroup.showModal
+    const users = entities.users
+    const me = session.user
 
     return (
         <Dialog
@@ -120,7 +121,7 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
                         <CircularProgressButton
                             raised
                             color="primary"
-                            onClick={() => { handleCreateRoomClick(me.get("id")) } }
+                            onClick={() => { handleCreateRoomClick(me.id) } }
                             disabled={roomName === ""}
                         >
                             Go
@@ -128,7 +129,7 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
                     </Grid>
                     <Grid item xs={12}>
                         <ChipsArray
-                            chipData={selectedUsers.map( userId => users.getIn(["byId", userId]))}
+                            chipData={selectedUsers.map( userId => users.byId[userId])}
                             handleRequestDelete={handleDeleteChip}
                         />
                     </Grid>
@@ -157,11 +158,11 @@ export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities,
     )
 }
 
-const mapStateToProps = props => ({
-    entities: props.get("entities"),
-    ui: props.get("ui"),
-    session: props.get("session"),
-    friendIds: props.get("friendIds"),
+const mapStateToProps = state => ({
+    entities: state.get("entities"),
+    ui: state.get("ui"),
+    session: state.get("session"),
+    friendIds: state.get("friendIds"),
 })
 
 export const mapDispatchToProps = (dispatch) => ({
@@ -175,6 +176,7 @@ export const mapDispatchToProps = (dispatch) => ({
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withStyles(styleSheet),
     withSelectedUsers,
     withRoomName,

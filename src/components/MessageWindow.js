@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 import ChatHeader from './ChatHeader'
 import ChatHistory from './ChatHistory'
 import ChatInput from './ChatInput'
+import { toJS } from './ToJS'
 
 const styles = {
     root: {
@@ -23,27 +24,28 @@ export const MessageWindow = ( { currentRoomId, entities, session, classes } ) =
         )
     }
 
-    const rooms = entities.get("rooms")
-    const currentRoom = rooms.getIn(["byId", currentRoomId])
-    const me = session.get("user")
+    const rooms = entities.rooms
+    const currentRoom = rooms.byId[currentRoomId]
+    const me = session.user
 
     return (
         <div className={classes.root}>
-            <ChatHeader title={currentRoom.get("name")} shouldShowDeleteIcon={currentRoom.get("createdBy") === me.get("id")} />
+            <ChatHeader title={currentRoom.name} shouldShowDeleteIcon={currentRoom.createdBy === me.id} />
             <ChatHistory />
             <ChatInput />
         </div>
     )
 }
 
-const mapStateToProps = props => ({
-    currentRoomId: props.get("currentRoomId"),
-    session: props.get("session"),
-    entities: props.get("entities"),
+const mapStateToProps = state => ({
+    currentRoomId: state.get("currentRoomId"),
+    session: state.get("session"),
+    entities: state.get("entities"),
 })
 
 export const enhancer = compose(
     connect(mapStateToProps, null),
+    toJS,
     withStyles(styles)
 )
 

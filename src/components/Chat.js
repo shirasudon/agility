@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { lifecycle, compose } from 'recompose'
 import { withStyles } from 'material-ui/styles'
 
+import { toJS } from './ToJS'
 import Grid from 'material-ui/Grid'
 import Button from 'material-ui/Button'
 
@@ -29,8 +30,8 @@ const styles = {
 export const withLifecycles = lifecycle({
     componentDidMount() {
         const { fetchRooms, fetchFriends, session } = this.props
-        fetchRooms(session.getIn(["user", "id"]))
-        fetchFriends(session.getIn(["user", "id"]))
+        fetchRooms(session.user.id)
+        fetchFriends(session.user.id)
     }
 })
 
@@ -53,9 +54,9 @@ export function setChatActionCreator(actionCreator) {
     cac = actionCreator 
 }
 
-const mapStateToProps = props => ({
-    entities: props.get("entities"),
-    session: props.get("session"),
+const mapStateToProps = state => ({
+    entities: state.get("entities"),
+    session: state.get("session"),
 });
 
 export const mapDispatchToProps = (dispatch) => ({
@@ -72,6 +73,7 @@ export const mapDispatchToProps = (dispatch) => ({
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withLifecycles,
     withStyles(styles),
 )

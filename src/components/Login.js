@@ -9,6 +9,7 @@ import Grid from 'material-ui/Grid'
 import { withStyles } from 'material-ui/styles'
 
 import { login as loginAction } from '../actions/AuthActions'
+import { toJS } from './ToJS'
 
 
 const styleSheet = theme => ({
@@ -69,8 +70,7 @@ export const Login = ( {
     sessionUser,
     classes 
 } ) => {
-        console.log(authenticated, sessionUser)
-        if (authenticated && sessionUser.size > 0) {
+        if (authenticated && Object.keys(sessionUser).length > 0) {
             return <Redirect to="/chat" />;
         }
 
@@ -107,9 +107,9 @@ export const Login = ( {
         )
 }
 
-export const mapStateToProps = props => ({
-    authenticated: props.getIn(["session", "authenticated"]),
-    sessionUser: props.getIn(["session", "user"]),
+export const mapStateToProps = state => ({
+    authenticated: state.getIn(["session", "authenticated"]),
+    sessionUser: state.getIn(["session", "user"]),
 })
 
 export const mapDispatchToProps = (dispatch) => {
@@ -122,6 +122,7 @@ export const mapDispatchToProps = (dispatch) => {
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withLoginFailState,
     withUserState,
     withLoginHandlers,

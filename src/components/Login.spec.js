@@ -84,7 +84,8 @@ describe("Login", () => {
             },
             sessionUser: {
                 id: 3,
-            }
+            },
+            classes: {},
         }
         const wrapper = shallow(<Login {...props} />)
         expect(wrapper.find(Redirect)).toHaveLength(1)

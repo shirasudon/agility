@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Chip from 'material-ui/Chip';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from 'material-ui/styles'
+import Chip from 'material-ui/Chip'
+import { compose } from 'recompose'
 
 const styleSheet = theme => ({
     chip: {
@@ -12,7 +13,7 @@ const styleSheet = theme => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
     },
-});
+})
 
 export const ChipsArray = ({ classes, chipData, handleRequestDelete }) => (
     <div className={classes.row}>
@@ -33,6 +34,11 @@ export const ChipsArray = ({ classes, chipData, handleRequestDelete }) => (
 
 ChipsArray.propTypes = {
     classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styleSheet)(ChipsArray);
+export const enhancer = compose(
+    withStyles(styleSheet),
+)
+
+export default enhancer(ChipsArray)
+

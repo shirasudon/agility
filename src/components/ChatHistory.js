@@ -9,6 +9,7 @@ import {
     lifecycle
 } from 'recompose'
 
+import { toJS } from './ToJS'
 import { chatActionCreator } from '../actions'
 import Balloon from './Balloon'
 import RefsStore from '../RefsStore'
@@ -90,10 +91,10 @@ export const ChatHistory = ( { currentRoomId, session, entities, classes, handle
     )
 }
 
-const mapStateToProps = ( { currentRoomId, session, entities } ) => ({
-    currentRoomId,
-    session,
-    entities,
+const mapStateToProps = state => ({
+    currentRoomId: state.get("currentRoomId"),
+    session: state.get("session"),
+    entities: state.get("entities"),
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -104,6 +105,7 @@ const mapDispatchToProps = dispatch => ({
 
 export const enhancer = compose(
     connect(mapStateToProps, mapDispatchToProps),
+    toJS,
     withStyles(styles),
     withChatHistoryHandlers,
     withProps({ refs: new RefsStore() }),

@@ -1,6 +1,9 @@
 import React from 'react'
-import {Route, Redirect} from 'react-router-dom'
-import {connect} from 'react-redux'
+import { Route, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'recompose'
+
+import { toJS } from './ToJS'
 
 export const PrivateRoute = ( { exact, path, authenticated, component: Component} ) => (
     <Route
@@ -18,8 +21,14 @@ export const PrivateRoute = ( { exact, path, authenticated, component: Component
     />
 )
 
-const mapStateToProps = props => ({
-    authenticated: props.getIn(["session", "authenticated"])
+const mapStateToProps = state => ({
+    authenticated: state.getIn(["session", "authenticated"])
 })
 
-export default connect(mapStateToProps)(PrivateRoute);
+export const enhancer = compose(
+    connect(mapStateToProps),
+    toJS,
+)
+
+export default enhancer(PrivateRoute)
+

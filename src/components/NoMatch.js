@@ -7,3 +7,4 @@ export const NoMatch = ( { location } ) => (
 )
 
 export default NoMatch
+
