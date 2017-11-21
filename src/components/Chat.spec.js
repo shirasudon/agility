@@ -14,7 +14,7 @@ describe("Chat", () => {
         const openCreateGroupModal = jest.fn()
         const wrapper = shallow(<Chat classes={{}} openCreateGroupModal={()=>{}} />)
         expect(wrapper.find(CreateGroupModal)).toHaveLength(1)
-        expect(wrapper.find(Button)).toHaveLength(1)
+        expect(wrapper.find(Button)).not.toHaveLength(1)
         expect(wrapper.find(SideTabs)).toHaveLength(1)
         expect(wrapper.find(MessageWindow)).toHaveLength(1)
     })
