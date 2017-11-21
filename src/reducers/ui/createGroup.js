@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable'
 import {
     CLOSE_CREATE_GROUP_MODAL,
     OPEN_CREATE_GROUP_MODAL,
@@ -5,31 +6,32 @@ import {
     REQUEST_CREATE_ROOM
 } from "../../actions/actionTypes";
 
-export function createGroup(state =
-                         {isRequesting: false,
-                             showModal: false
-                         },
-                     action) {
+export const createGroupInitialState = fromJS(
+    {
+        isRequesting: false,
+        showModal: false
+    }
+)
+
+export function createGroup(state = createGroupInitialState, action) {
 
     switch (action.type) {
         case OPEN_CREATE_GROUP_MODAL:
-            return Object.assign({}, state, {
-                showModal: true,
-            });
+            return state.set("showModal", true)
         case CLOSE_CREATE_GROUP_MODAL:
-             return Object.assign({}, state, {
-                showModal: false,
-            });
+            return state.set("showModal", false)
         case REQUEST_CREATE_ROOM:
-            return Object.assign({}, state, {
-                isRequesting: true,
-            });
+            return state.set("isRequesting", true)
         case RECEIVE_CREATE_ROOM:
-            return Object.assign({}, state, {
-                isRequesting: false,
-                showModal: false,
-            });
+            return state.merge(
+                fromJS(
+                    {
+                        isRequesting: false,
+                        showModal: false,
+                    }
+                )
+            )
         default:
-            return state;
+            return state
     }
 }
