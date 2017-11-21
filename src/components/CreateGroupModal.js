@@ -53,8 +53,19 @@ export const withModalHandlers = withHandlers({
     handleRoomNameChange: ({setRoomName}) => event =>{
         setRoomName(event.target.value)
     },
-    handleCreateRoomClick: ({createRoom, selectedUsers, roomName}) => (createdBy) => {
+    handleCreateRoomClick: ({
+        createRoom,
+        selectedUsers,
+        roomName, 
+        setRoomName,
+        setSearchText,
+        setSelectedUsers
+    }) => (createdBy) => {
+
         createRoom(createdBy, selectedUsers, roomName)
+        setRoomName('')
+        setSearchText('')
+        setSelectedUsers([])
     }
 
 })
@@ -83,7 +94,23 @@ export const MatchedUserList = ( { friendIds, users, searchText, handleAddChip, 
 }
  
 
-export const CreateGroupModal = ( {friendIds, ui, session, closeModal, entities, classes, selectedUsers, searchText, roomName, handleAddChip, handleRoomNameChange, handleCreateRoomClick, handleDeleteChip, handleSearchTextChange} ) => {
+export const CreateGroupModal = (
+    {
+        friendIds,
+        ui, 
+        session,
+        closeModal,
+        entities,
+        classes, 
+        selectedUsers,
+        searchText, 
+        roomName, 
+        handleAddChip,
+        handleRoomNameChange,
+        handleCreateRoomClick,
+        handleDeleteChip,
+        handleSearchTextChange
+    } ) => {
 
     const showModal = ui.createGroup.showModal
     const users = entities.users

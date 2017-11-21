@@ -79,11 +79,14 @@ describe("withModalHandlers", () => {
 
     describe("handleCreateRoomClick", () => {
 
-        it("calls createRoom with selectedUsers and roomName", () => {
+        it("calls createRoom with selectedUsers and roomName and then clears the form", () => {
             const DummyComponent = ({handleCreateRoomClick}) => (<div>{handleCreateRoomClick(3)}</div>)
             const Component = withModalHandlers(DummyComponent)
             mount(<Component {...props} />)
             expect(props.createRoom).toHaveBeenCalledWith(3, props.selectedUsers, props.roomName)
+            expect(props.setRoomName).toHaveBeenCalledWith('')
+            expect(props.setSearchText).toHaveBeenCalledWith('')
+            expect(props.setSelectedUsers).toHaveBeenCalledWith([])
         }) 
 
     })
