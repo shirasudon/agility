@@ -32,7 +32,9 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+      - run:
+          name: prettier
+          command: yarn prettier-check
       - run:
           name: Run test
           command: yarn test --coverage --bail # make the test fail on the first failure
