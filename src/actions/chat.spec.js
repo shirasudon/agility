@@ -333,9 +333,11 @@ it('send a request to create a room', () => {
   ]
   const store = mockStore({})
 
-  return store.dispatch(cac.createRoom(createdBy, members, roomName)).then(() => {
-    expect(store.getActions()).toEqual(expectedActions)
-  })
+  return store
+    .dispatch(cac.createRoom(createdBy, members, roomName))
+    .then(() => {
+      expect(store.getActions()).toEqual(expectedActions)
+    })
 })
 
 it('create action SEND_CHAT_MESSAGE', () => {
