@@ -9,59 +9,68 @@ import { compose, withHandlers } from 'recompose'
 import { toJS } from './ToJS'
 
 const styles = {
-    wrapper: {
-        position: 'relative',
+  wrapper: {
+    position: 'relative',
+  },
+  successButton: {
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
     },
-    successButton: {
-        backgroundColor: green[500],
-        '&:hover': {
-            backgroundColor: green[700],
-        },
-    },
-    progress: {
-        color: green[500],
-        position: 'absolute',
-        top: -2,
-        left: -2,
-        opacity: 0.5,
-    },
+  },
+  progress: {
+    color: green[500],
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    opacity: 0.5,
+  },
 }
 
 export const withButtonHandlers = withHandlers({
-
-    handleButtonClick: ( { onClick, isRequesting } ) => () => {
-        if ( !isRequesting ) { // if not loading and onClick is callable
-            onClick()
-        }
+  handleButtonClick: ({ onClick, isRequesting }) => () => {
+    if (!isRequesting) {
+      // if not loading and onClick is callable
+      onClick()
     }
-
+  },
 })
 
-
-export const CircularProgressButton = ( { children, classes, isRequesting, handleButtonClick, raised, disabled, color } ) => (
-    <div className={classes.wrapper}>
-        <Button
-            fab
-            onClick={handleButtonClick}
-            raised={raised}
-            color={color} 
-            disabled={disabled} >
-            {children || ''} { /* if no children is found simply assign empty string */ }
-        </Button>
-        { isRequesting && <CircularProgress size={60} className={classes.progress} />}
-    </div>
+export const CircularProgressButton = ({
+  children,
+  classes,
+  isRequesting,
+  handleButtonClick,
+  raised,
+  disabled,
+  color,
+}) => (
+  <div className={classes.wrapper}>
+    <Button
+      fab
+      onClick={handleButtonClick}
+      raised={raised}
+      color={color}
+      disabled={disabled}
+    >
+      {children || ''}{' '}
+      {/* if no children is found simply assign empty string */}
+    </Button>
+    {isRequesting && (
+      <CircularProgress size={60} className={classes.progress} />
+    )}
+  </div>
 )
-    
 
 const mapStateToProps = state => ({
-    isRequesting: state.getIn(["ui", "createGroup", "isRequesting"]),
+  isRequesting: state.getIn(['ui', 'createGroup', 'isRequesting']),
 })
 
 const enhancer = compose(
-    withStyles(styles),
-    toJS,
-    connect(mapStateToProps, null),
-    withButtonHandlers,
+  withStyles(styles),
+  toJS,
+  connect(mapStateToProps, null),
+  withButtonHandlers
 )
 
 export default enhancer(CircularProgressButton)

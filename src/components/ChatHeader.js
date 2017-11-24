@@ -7,31 +7,40 @@ import { compose } from 'recompose'
 import { toJS } from './ToJS'
 import { chatActionCreator } from '../actions'
 
-export const ChatHeader = ( { title = '', shouldShowDeleteIcon = false, deleteRoom, currentRoomId } ) => (
-    <div className="chatHeader">
-        <div className="chatTitle">{ title }</ div>
-        { shouldShowDeleteIcon && (
-            <IconButton aria-label="Delete" onClick={()=>{deleteRoom(currentRoomId)}}>
-                <DeleteIcon />
-            </IconButton>
-        ) }
-    </div>
+export const ChatHeader = ({
+  title = '',
+  shouldShowDeleteIcon = false,
+  deleteRoom,
+  currentRoomId,
+}) => (
+  <div className="chatHeader">
+    <div className="chatTitle">{title}</div>
+    {shouldShowDeleteIcon && (
+      <IconButton
+        aria-label="Delete"
+        onClick={() => {
+          deleteRoom(currentRoomId)
+        }}
+      >
+        <DeleteIcon />
+      </IconButton>
+    )}
+  </div>
 )
 
 const mapStateToProps = state => ({
-    currentRoomId: state.get("currentRoomId"),
+  currentRoomId: state.get('currentRoomId'),
 })
 
-const mapDispatchToProps = (dispatch) => ({
-    deleteRoom: roomId => {
-        dispatch(chatActionCreator.deleteRoom(roomId))
-    }
+const mapDispatchToProps = dispatch => ({
+  deleteRoom: roomId => {
+    dispatch(chatActionCreator.deleteRoom(roomId))
+  },
 })
 
 export const enhancer = compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    toJS
+  connect(mapStateToProps, mapDispatchToProps),
+  toJS
 )
 
 export default enhancer(ChatHeader)
-

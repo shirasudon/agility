@@ -11,27 +11,25 @@ import Navbar from './Navbar'
 import PrivateRoute from './PrivateRoute'
 
 const styles = {
-    app: {
-        height: "100%",
-    }
+  app: {
+    height: '100%',
+  },
 }
 
-
 export const App = ({ classes }) => (
-    <Router history={createHistory()}>
-        <div className={classes.app}>
-            <Navbar />
-            <Switch>
-                <Route exact={true} path="/" component={Home} />
-                <PrivateRoute path="/chat" component={Chat} />
-                <Route exact={true} path="/login" component={Login} />
-                <Route component={NoMatch} />
-            </Switch>
-        </div>
-    </Router>
+  <Router history={createHistory()}>
+    <div className={classes.app}>
+      <Navbar />
+      <Switch>
+        <Route exact={true} path="/" component={Home} />
+        <PrivateRoute path="/chat" component={Chat} />
+        <Route exact={true} path="/login" component={Login} />
+        <Route component={NoMatch} />
+      </Switch>
+    </div>
+  </Router>
 )
 
 export const enhancer = withStyles(styles)
 
 export default enhancer(App)
-

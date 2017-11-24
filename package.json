@@ -27,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier": "prettier --write src/**/*.js"
   },
   "devDependencies": {
     "enzyme": "^3.1.0",
@@ -35,6 +36,7 @@
     "jest": "^21.2.1",
     "jest-enzyme": "^4.0.0",
     "mock-socket": "^7.0.0",
+    "prettier": "1.8.2",
     "react-test-renderer": "^16.0.0",
     "redux-logger": "^3.0.6"
   },

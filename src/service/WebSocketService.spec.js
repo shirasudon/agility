@@ -1,117 +1,113 @@
 import { WebSocketService } from './WebSocketService'
 
-it("send data if the connection is open", () => {
-    const mockFn = {
-        send: jest.fn(), 
+it('send data if the connection is open', () => {
+  const mockFn = {
+    send: jest.fn(),
+  }
+  const mockSend = jest.fn()
+  class WebSocketKlass {
+    constructor(endpoint, protocols, options) {
+      this.readyState = 1
     }
-    const mockSend = jest.fn() 
-    class WebSocketKlass {
-        constructor(endpoint, protocols, options) {
-            this.readyState = 1
-        }
-        send(...args) {
-            mockFn.send(...args)
-        }
-
+    send(...args) {
+      mockFn.send(...args)
     }
+  }
 
-    const conn = new WebSocketService("ws://dummy", {}, WebSocketKlass)
-    conn.connect()
-    const data = {a: 1, b: 2}
-    conn.send(data)
-    expect(mockFn.send).toHaveBeenCalledWith(JSON.stringify(data))
+  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
+  conn.connect()
+  const data = { a: 1, b: 2 }
+  conn.send(data)
+  expect(mockFn.send).toHaveBeenCalledWith(JSON.stringify(data))
 })
 
-it("buffers data if the connection is not open", () => {
-    const mockFn = {
-        send: jest.fn(), 
+it('buffers data if the connection is not open', () => {
+  const mockFn = {
+    send: jest.fn(),
+  }
+  class WebSocketKlass {
+    constructor(endpoint, protocols, options) {
+      this.readyState = 2 // not open
     }
-    class WebSocketKlass {
-        constructor(endpoint, protocols, options) {
-            this.readyState = 2 // not open
-        }
-        send(...args) {
-            mockFn.send(...args)
-        }
+    send(...args) {
+      mockFn.send(...args)
     }
+  }
 
-    const conn = new WebSocketService("ws://dummy", {}, WebSocketKlass)
-    conn.connect()
-    const data = {a: 1, b: 2}
-    conn.send(data, true) // buffer if enableBuffer is true
-    conn.send(data, false) // Does not buffer if enableBuffer is false
-    conn.send(data) // Does not buffer by default 
-    expect(mockFn.send).not.toHaveBeenCalled()
-    expect(conn.buffer).toHaveLength(1)
+  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
+  conn.connect()
+  const data = { a: 1, b: 2 }
+  conn.send(data, true) // buffer if enableBuffer is true
+  conn.send(data, false) // Does not buffer if enableBuffer is false
+  conn.send(data) // Does not buffer by default
+  expect(mockFn.send).not.toHaveBeenCalled()
+  expect(conn.buffer).toHaveLength(1)
 })
 
-it("only accepts onopen, onerror, onclose, onmessae for event listers", () => {
-    const mockFn = {
-        onopen: jest.fn(),
-        onclose: jest.fn(),
-        onerror: jest.fn(),
-        onmessage: jest.fn(),
-    }
+it('only accepts onopen, onerror, onclose, onmessae for event listers', () => {
+  const mockFn = {
+    onopen: jest.fn(),
+    onclose: jest.fn(),
+    onerror: jest.fn(),
+    onmessage: jest.fn(),
+  }
 
-    const conn = new WebSocketService("ws://dummy", {})
-    conn.registerEvent("onopen", mockFn.onopen)
-    conn.registerEvent("onclose", mockFn.onclose)
-    conn.registerEvent("onerror", mockFn.onerror)
-    conn.registerEvent("onmessage", mockFn.onmessage)
-    expect( () => { conn.registerEvent("hoge") }).toThrowError()
+  const conn = new WebSocketService('ws://dummy', {})
+  conn.registerEvent('onopen', mockFn.onopen)
+  conn.registerEvent('onclose', mockFn.onclose)
+  conn.registerEvent('onerror', mockFn.onerror)
+  conn.registerEvent('onmessage', mockFn.onmessage)
+  expect(() => {
+    conn.registerEvent('hoge')
+  }).toThrowError()
 })
 
-it("initializes event listers properly", () => {
-    const mockFn = {
-        onopen: jest.fn(),
-        onclose: jest.fn(),
-        onerror: jest.fn(),
-        onmessage: jest.fn(),
-        send: jest.fn(),
+it('initializes event listers properly', () => {
+  const mockFn = {
+    onopen: jest.fn(),
+    onclose: jest.fn(),
+    onerror: jest.fn(),
+    onmessage: jest.fn(),
+    send: jest.fn(),
+  }
+
+  class WebSocketKlass {
+    constructor(endpoint, protocols, options) {
+      this.readyState = 2 // not open
     }
-
-    class WebSocketKlass {
-        constructor(endpoint, protocols, options) {
-            this.readyState = 2 // not open
-        }
-        send(...args) {
-            mockFn.send(...args)
-        }
+    send(...args) {
+      mockFn.send(...args)
     }
+  }
 
-    const conn = new WebSocketService("ws://dummy", {}, WebSocketKlass)
-    conn.registerEvent("onopen", mockFn.onopen)
-    conn.registerEvent("onclose", mockFn.onclose)
-    conn.registerEvent("onerror", mockFn.onerror)
-    conn.registerEvent("onmessage", mockFn.onmessage)
-    conn.connect()
+  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
+  conn.registerEvent('onopen', mockFn.onopen)
+  conn.registerEvent('onclose', mockFn.onclose)
+  conn.registerEvent('onerror', mockFn.onerror)
+  conn.registerEvent('onmessage', mockFn.onmessage)
+  conn.connect()
 
-    const data = [
-        {a: 1, b: 2},
-        {c: 3, d: 4},
-    ]
+  const data = [{ a: 1, b: 2 }, { c: 3, d: 4 }]
 
-    data.forEach( obj => {
-        conn.send(obj, true)
-    })
+  data.forEach(obj => {
+    conn.send(obj, true)
+  })
 
-    const event = { 
-        desc: "some random event" 
-    }
+  const event = {
+    desc: 'some random event',
+  }
 
-    expect(conn.buffer).toHaveLength(2)
-    conn.ws.readyState = 1
-    conn.ws.onopen(event)
-    expect(conn.buffer).toHaveLength(0) // buffered data sent on successful reconnection?
+  expect(conn.buffer).toHaveLength(2)
+  conn.ws.readyState = 1
+  conn.ws.onopen(event)
+  expect(conn.buffer).toHaveLength(0) // buffered data sent on successful reconnection?
 
-    conn.ws.onclose(event)
-    expect(mockFn.onclose).toHaveBeenCalledWith(event)
+  conn.ws.onclose(event)
+  expect(mockFn.onclose).toHaveBeenCalledWith(event)
 
-    conn.ws.onmessage(event)
-    expect(mockFn.onmessage).toHaveBeenCalledWith(event)
+  conn.ws.onmessage(event)
+  expect(mockFn.onmessage).toHaveBeenCalledWith(event)
 
-    conn.ws.onerror(event)
-    expect(mockFn.onerror).toHaveBeenCalledWith(event)
-
+  conn.ws.onerror(event)
+  expect(mockFn.onerror).toHaveBeenCalledWith(event)
 })
-
