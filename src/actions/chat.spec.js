@@ -317,7 +317,7 @@ it('send a request to create a room', () => {
   }
 
   const cac = new ChatActionCreator(mockApi)
-  const memberIds = [1, 5]
+  const members = [1, 5]
   const createdBy = 1
   const roomName = 'room!'
 
@@ -326,14 +326,14 @@ it('send a request to create a room', () => {
     {
       type: 'RECEIVE_CREATE_ROOM',
       createdBy,
-      memberIds,
+      members,
       name: roomName,
       id: '2',
     },
   ]
   const store = mockStore({})
 
-  store.dispatch(cac.createRoom(createdBy, memberIds, roomName)).then(() => {
+  return store.dispatch(cac.createRoom(createdBy, members, roomName)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
   })
 })
@@ -369,7 +369,7 @@ it('send a request to delete a room', () => {
   ]
   const store = mockStore({})
 
-  store.dispatch(cac.deleteRoom(roomId)).then(() => {
+  return store.dispatch(cac.deleteRoom(roomId)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
   })
 })
