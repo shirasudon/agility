@@ -1,3 +1,4 @@
+// @format
 import { Server } from 'mock-socket'
 
 import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../actions/actionTypes'

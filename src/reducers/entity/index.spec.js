@@ -1,3 +1,4 @@
+// @format
 import { toJS } from "immutable";
 
 import { entities as reducer } from "./index";

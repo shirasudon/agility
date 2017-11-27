@@ -1,3 +1,4 @@
+// @format
 import {
   RECEIVE_USER,
   REQUEST_FRIENDS,

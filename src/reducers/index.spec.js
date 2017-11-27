@@ -1,3 +1,4 @@
+// @format
 import { fromJS, toJS } from 'immutable'
 
 import { rootReducer as reducer } from './index'

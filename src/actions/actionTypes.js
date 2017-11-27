@@ -1,3 +1,4 @@
+// @format
 /*
  * This file contains all the action types.
  * No action types should be defined in other files by convention.

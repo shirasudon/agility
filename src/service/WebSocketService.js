@@ -1,3 +1,4 @@
+// @format
 import ReconnectingWebSocket from 'reconnecting-websocket'
 
 const ONOPEN = 'onopen'

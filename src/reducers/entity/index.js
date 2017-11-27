@@ -1,3 +1,4 @@
+// @format
 import { combineReducers } from "redux-immutable";
 import { users, rooms, messages } from "./entity";
 

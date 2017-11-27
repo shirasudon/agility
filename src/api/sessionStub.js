@@ -1,3 +1,4 @@
+// @format
 import { UserTable } from './repositoryStub'
 
 export default class SessionApiStub {

@@ -1,3 +1,4 @@
+// @format
 import { sessionService as SessionService } from 'redux-react-session'
 import SessionApiStub from '../api/sessionStub'
 import { USER_LOGOUT } from '../actions/actionTypes'

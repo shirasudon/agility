@@ -1,3 +1,4 @@
+// @format
 import { fromJS } from "immutable";
 import {
   CLOSE_CREATE_GROUP_MODAL,

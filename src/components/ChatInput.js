@@ -1,3 +1,4 @@
+// @format
 import React from 'react'
 import { withState, withHandlers, compose } from 'recompose'
 import { connect } from 'react-redux'

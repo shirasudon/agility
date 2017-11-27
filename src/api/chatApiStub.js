@@ -1,3 +1,4 @@
+// @format
 import { UserTable, RoomTable, MessageTable } from './repositoryStub'
 
 export function fetchRooms(userId) {
