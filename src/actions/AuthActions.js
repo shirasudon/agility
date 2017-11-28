@@ -1,9 +1,13 @@
 // @format
 import { sessionService as SessionService } from 'redux-react-session'
-import SessionApiStub from '../api/sessionStub'
+// import SessionApiStub from '../api/sessionStub'
+import SessionApi from '../api/session'
 import { USER_LOGOUT } from '../actions/actionTypes'
+import { chatActionCreator } from '.'
 
-let sessionApi = SessionApiStub
+let cac = chatActionCreator
+
+let sessionApi = SessionApi
 let sessionService = SessionService
 
 export const setSessionApi = api => {
@@ -22,7 +26,7 @@ export const login = user => {
       .then(response => {
         if (response.ok) {
           responseData = response.data
-          return sessionService.saveSession(response.token)
+          return sessionService.saveSession('RANDOM KEY HERE')
         } else {
           throw new Error('authentication failed')
         }
@@ -31,6 +35,9 @@ export const login = user => {
         return sessionService.saveUser(responseData)
       })
       .then(() => {
+        return dispatch(cac.fetchUser(responseData.user_id))
+      })
+      .then(user => {
         return Promise.resolve(true)
       })
       .catch(err => {
