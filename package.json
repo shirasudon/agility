@@ -52,5 +52,6 @@
       "!src/registerServiceWorker.js",
       "!coverage/**"
     ]
-  }
+  },
+  "proxy": "http://localhost:8081"
 }
