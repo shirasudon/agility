@@ -29,9 +29,10 @@ const styles = {
 
 export const withLifecycles = lifecycle({
   componentDidMount() {
-    const { fetchRooms, fetchFriends, session } = this.props
-    fetchRooms(session.user.id)
-    fetchFriends(session.user.id)
+    const { fetchMyself, fetchRooms, fetchFriends, session } = this.props
+    fetchMyself(session.user_id)
+    fetchRooms(session.user_id)
+    fetchFriends(session.user_id)
   },
 })
 
@@ -58,6 +59,9 @@ const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
+  fetchMyself: id => {
+    dispatch(cac.fetchUser(id))
+  },
   fetchRooms: userId => {
     dispatch(cac.fetchRooms(userId))
   },

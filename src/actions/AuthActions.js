@@ -3,9 +3,6 @@ import { sessionService as SessionService } from 'redux-react-session'
 // import SessionApiStub from '../api/sessionStub'
 import SessionApi from '../api/session'
 import { USER_LOGOUT } from '../actions/actionTypes'
-import { chatActionCreator } from '.'
-
-let cac = chatActionCreator
 
 let sessionApi = SessionApi
 let sessionService = SessionService
@@ -33,9 +30,6 @@ export const login = user => {
       })
       .then(() => {
         return sessionService.saveUser(responseData)
-      })
-      .then(() => {
-        return dispatch(cac.fetchUser(responseData.user_id))
       })
       .then(user => {
         return Promise.resolve(true)
