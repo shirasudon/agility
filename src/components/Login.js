@@ -48,12 +48,11 @@ export const handlerFunctions = {
    * @param e event object
    */
   handleSubmit: ({ login, user, setUser, setLoginFail }) => event => {
-    event.preventDefault()
-    return login(user).then(success => {
-      if (!success) {
+    return login(user).catch( err => {
+        console.log(err)
         setLoginFail(true)
       }
-    })
+    )
   },
 }
 
@@ -64,11 +63,10 @@ export const Login = ({
   handleSubmit,
   user: { username, password },
   loginFail,
-  authenticated,
-  sessionUser,
   classes,
+  myId,
 }) => {
-  if (authenticated && Object.keys(sessionUser).length > 0) {
+  if (myId !== null) {
     return <Redirect to="/chat" />
   }
 
@@ -115,14 +113,13 @@ export const Login = ({
 }
 
 export const mapStateToProps = state => ({
-  authenticated: state.getIn(['session', 'authenticated']),
-  sessionUser: state.getIn(['session', 'user']),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 export const mapDispatchToProps = dispatch => {
   return {
-    login: (user, cb) => {
-      return dispatch(loginAction(user, cb))
+    login: user => {
+      return dispatch(loginAction(user))
     },
   }
 }

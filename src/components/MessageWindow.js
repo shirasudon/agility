@@ -15,12 +15,7 @@ const styles = {
   },
 }
 
-export const MessageWindow = ({
-  currentRoomId,
-  entities,
-  session,
-  classes,
-}) => {
+export const MessageWindow = ({ currentRoomId, myId, entities, classes }) => {
   if (currentRoomId === null) {
     return (
       <div className="message-container">
@@ -31,13 +26,12 @@ export const MessageWindow = ({
 
   const rooms = entities.rooms
   const currentRoom = rooms.byId[currentRoomId]
-  const me = session.user
 
   return (
     <div className={classes.root}>
       <ChatHeader
         title={currentRoom.name}
-        shouldShowDeleteIcon={currentRoom.createdBy === me.id}
+        shouldShowDeleteIcon={currentRoom.createdBy === myId}
       />
       <ChatHistory />
       <ChatInput />
@@ -47,7 +41,7 @@ export const MessageWindow = ({
 
 const mapStateToProps = state => ({
   currentRoomId: state.get('currentRoomId'),
-  session: state.get('session'),
+  myId: state.getIn(['auth', 'myId']),
   entities: state.get('entities'),
 })
 

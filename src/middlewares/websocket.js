@@ -57,11 +57,11 @@ export const createOnOpen = store => event => {
   // TODO: initialize all entity data
   const { dispatch } = store
   const state = store.getState()
-  const userId = state.getIn(['session', 'user', 'id'])
+  const myId = state.getIn(['auth', 'myId'])
 
-  if (userId) {
-    dispatch(chatActionCreator.fetchRooms(userId))
-    dispatch(chatActionCreator.fetchFriends(userId))
+  if (myId) {
+    dispatch(chatActionCreator.fetchRooms(myId))
+    dispatch(chatActionCreator.fetchFriends(myId))
   }
 }
 

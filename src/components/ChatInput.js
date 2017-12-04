@@ -16,12 +16,12 @@ export const withMessageWindowHandlers = withHandlers({
     curText,
     currentRoomId,
     sendMessage,
-    session,
+    myId,
   }) => event => {
     switch (event.which) {
       case KEY_ENTER:
         sendMessage({
-          userId: session.user.id,
+          userId: myId,
           roomId: currentRoomId,
           body: curText,
         })
@@ -51,7 +51,7 @@ export const ChatInput = ({ handleChange, handleKeyPress, curText }) => (
 
 const mapStateToProps = state => ({
   currentRoomId: state.get('currentRoomId'),
-  session: state.get('session'),
+  myId: state.getIn(['auth', 'myID']),
 })
 
 const mapDispatchToProps = dispatch => ({

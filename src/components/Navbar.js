@@ -23,14 +23,14 @@ const style = {
   },
 }
 
-export const Navbar = ({ authenticated, logout, classes }) => (
+export const Navbar = ({ myId, logout, classes }) => (
   <div className={classes.root}>
     <AppBar position="static">
       <Toolbar>
         <Typography type="title" color="inherit" className={classes.flex}>
           Chat
         </Typography>
-        {authenticated ? (
+        {myId !== null ? (
           <Button onClick={logout} color="contrast">
             Logout
           </Button>
@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = state => ({
-  authenticated: state.getIn(['session', 'authenticated']),
+  myId: state.getIn(['auth', 'userId']),
 })
 
 export const enhancer = compose(

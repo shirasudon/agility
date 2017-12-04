@@ -1,4 +1,5 @@
 // @format
+
 import axios from 'axios'
 
 export default class SessionApi {
@@ -8,18 +9,16 @@ export default class SessionApi {
         name: user.username,
         password: user.password,
       })
-      .then(response => ({
-        ok: true,
-        data: response.data,
-      }))
-      .catch(err => ({
-        ok: false,
-      }))
+      .then(response => {
+        return {
+          userId: response.data.user_id,
+        }
+      })
   }
 
   static logout() {
     return axios
-      .post('http://localhost:8080/logout', {})
+      .post('/logout', {})
       .then(response => {})
       .catch(err => {})
   }
