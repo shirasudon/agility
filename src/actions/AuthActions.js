@@ -9,7 +9,7 @@ export const setSessionApi = api => {
   sessionApi = api
 }
 
-export const userLogin = (userId) => ({
+export const userLogin = userId => ({
   type: USER_LOGIN,
   userId,
 })

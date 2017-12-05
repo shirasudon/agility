@@ -26,11 +26,7 @@ describe('MessageWindow', () => {
   it('shows delete icon for the rooms created by me', () => {
     const props = {
       currentRoomId: 1,
-      session: {
-        user: {
-          id: 5,
-        },
-      },
+      myId: 5,
       entities: {
         rooms: {
           byId: {

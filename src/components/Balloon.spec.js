@@ -13,19 +13,12 @@ describe('withLifecycles', () => {
         id: 3,
         readBy: [1, 3, 5],
       },
-      session: {
-        user: {
-          id: 2,
-        },
-      },
+      myId: 2,
     }
     const BaseComponent = () => <div>hoge</div>
     const Component = withLifecycle(BaseComponent)
     const wrapper = mount(<Component {...props} />)
-    expect(props.sendRead).toHaveBeenCalledWith(
-      props.message.id,
-      props.session.user.id
-    )
+    expect(props.sendRead).toHaveBeenCalledWith(props.message.id, props.myId)
   })
 
   it('does not call sendRead when a message is already read by the user', () => {
@@ -35,11 +28,7 @@ describe('withLifecycles', () => {
         id: 3,
         readBy: [1, 3, 5],
       },
-      session: {
-        user: {
-          id: 3,
-        },
-      },
+      myId: 3,
     }
     const BaseComponent = () => <div>hoge</div>
     const Component = withLifecycle(BaseComponent)

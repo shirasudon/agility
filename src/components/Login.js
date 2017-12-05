@@ -48,11 +48,10 @@ export const handlerFunctions = {
    * @param e event object
    */
   handleSubmit: ({ login, user, setUser, setLoginFail }) => event => {
-    return login(user).catch( err => {
-        console.log(err)
-        setLoginFail(true)
-      }
-    )
+    event.preventDefault()
+    return login(user).then(result => {
+      setLoginFail(!result)
+    })
   },
 }
 
@@ -71,44 +70,38 @@ export const Login = ({
   }
 
   return (
-    <div>
-      <Grid container justify="center">
-        {loginFail && (
-          <strong className="error">
-            Wrong username or password! Please try again!
-          </strong>
-        )}
-        <TextField
-          name="username"
-          label="ユーザー名"
-          value={username}
-          className={classes.textField}
-          onChange={handleChange}
-          margin="normal"
-        />
-      </Grid>
-      <Grid container justify="center">
-        <TextField
-          name="password"
-          type="password"
-          label="パスワード"
-          value={password}
-          className={classes.textField}
-          onChange={handleChange}
-          margin="normal"
-        />
-      </Grid>
-      <Grid container justify="center">
-        <Button
-          color="primary"
-          raised
-          onClick={handleSubmit}
-          className={classes.loginButton}
-        >
-          ログイン
-        </Button>
-      </Grid>
-    </div>
+    <Grid container justify="center">
+      {loginFail && (
+        <strong className="error">
+          Wrong username or password! Please try again!
+        </strong>
+      )}
+      <TextField
+        name="username"
+        label="ユーザー名"
+        value={username}
+        className={classes.textField}
+        onChange={handleChange}
+        margin="normal"
+      />
+      <TextField
+        name="password"
+        type="password"
+        label="パスワード"
+        value={password}
+        className={classes.textField}
+        onChange={handleChange}
+        margin="normal"
+      />
+      <Button
+        color="primary"
+        raised
+        onClick={handleSubmit}
+        className={classes.loginButton}
+      >
+        ログイン
+      </Button>
+    </Grid>
   )
 }
 

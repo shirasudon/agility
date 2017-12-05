@@ -87,7 +87,7 @@ describe('Login', () => {
     expect(wrapper.find(Redirect)).toHaveLength(1)
   })
 
-  it('does not redirect when authenticated but session is NOT set to redux store', () => {
+  it('does not redirect when unauthenticated', () => {
     const props = {
       handleChange: jest.fn(),
       handleSubmit: jest.fn(),
@@ -96,9 +96,8 @@ describe('Login', () => {
         password: 'hihi',
       },
       loginFail: false,
-      authenticated: true,
+      myId: null,
       classes: {},
-      sessionUser: {},
     }
 
     const wrapper = shallow(<Login {...props} />)
@@ -114,7 +113,7 @@ describe('Login', () => {
         password: 'hihi',
       },
       loginFail: true,
-      authenticated: false,
+      myId: null,
       classes: {},
     }
     const wrapper = shallow(<Login {...props} />)
@@ -132,7 +131,7 @@ describe('Login', () => {
         password: 'hihi',
       },
       loginFail: false,
-      authenticated: false,
+      myId: 3,
       classes: {},
     }
     const wrapper = shallow(<Login {...props} />)

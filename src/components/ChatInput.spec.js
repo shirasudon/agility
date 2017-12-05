@@ -13,11 +13,7 @@ describe('withMessageWindowHandlers', () => {
       curText: 'current text',
       currentRoomId: 2,
       sendMessage: jest.fn(),
-      session: {
-        user: {
-          id: 5,
-        },
-      },
+      myId: 5,
     }
   })
 

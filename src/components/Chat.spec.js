@@ -73,6 +73,7 @@ describe('componentDidMount', () => {
     const props = {
       fetchRooms: jest.fn(),
       fetchFriends: jest.fn(),
+      fetchMyself: jest.fn(),
       session: {
         user: {
           id: 3,
@@ -85,5 +86,6 @@ describe('componentDidMount', () => {
     mount(<Component {...props} />)
     expect(props.fetchFriends).toHaveBeenCalled()
     expect(props.fetchRooms).toHaveBeenCalled()
+    expect(props.fetchMyself).toHaveBeenCalled()
   })
 })
