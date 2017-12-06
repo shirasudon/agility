@@ -60,11 +60,7 @@ describe('Balloon', () => {
           },
         },
       },
-      session: {
-        user: {
-          id: 3,
-        },
-      },
+      myId: 3,
     }
 
     const wrapper = mount(<Balloon {...props} />)

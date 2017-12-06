@@ -131,7 +131,7 @@ describe('Login', () => {
         password: 'hihi',
       },
       loginFail: false,
-      myId: 3,
+      myId: null,
       classes: {},
     }
     const wrapper = shallow(<Login {...props} />)
