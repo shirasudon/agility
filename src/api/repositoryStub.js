@@ -3,63 +3,70 @@ import moment from 'moment'
 
 const users = [
   {
-    id: '1',
+    id: 0,
+    username: 'user',
+    lastName: 'us',
+    firstName: 'er',
+    password: 'password',
+  },
+  {
+    id: 1,
     username: 'hitochan',
     lastName: 'Hitoshi',
     firstName: 'Otsuki',
     password: 'user1',
   },
   {
-    id: '2',
+    id: 2,
     username: 'tasaki',
     lastName: 'Tsukuru',
     firstName: 'Tasaki',
     password: 'user2',
   },
   {
-    id: '3',
+    id: 3,
     username: 'furugura',
     lastName: 'Calbee',
     firstName: 'Fruit',
     password: 'user3',
   },
   {
-    id: '4',
+    id: 4,
     username: 'senjo',
     lastName: 'Senjogahara',
     firstName: 'Misaki',
     password: 'user4',
   },
   {
-    id: '5',
+    id: 5,
     username: 'shinjo',
     lastName: 'Shinjo',
     firstName: 'Tsuyoshi',
     password: 'user5',
   },
   {
-    id: '6',
+    id: 6,
     username: 'pokemon',
     lastName: 'Pokemon',
     firstName: 'Go',
     password: 'user6',
   },
   {
-    id: '7',
+    id: 7,
     username: 'aka',
     lastName: 'Akagi',
     firstName: 'Taro',
     password: 'user7',
   },
   {
-    id: '8',
+    id: 8,
     username: 'mike',
     lastName: 'Michael',
     firstName: 'Jackson',
     password: 'user8',
   },
   {
-    id: '9',
+    id: 9,
     username: 'aeron',
     lastName: 'Aeron',
     firstName: 'Davichi',
@@ -69,54 +76,54 @@ const users = [
 
 const rooms = [
   {
-    id: '1',
+    id: 1,
     name: '吉野家',
-    members: ['3', '4', '8'],
-    createdBy: '4',
+    members: [3, 4, 8],
+    createdBy: 4,
   },
   {
-    id: '2',
+    id: 2,
     name: 'テニス部',
-    members: ['1', '3', '7'],
-    createdBy: '3',
+    members: [1, 3, 7],
+    createdBy: 3,
   },
   {
-    id: '3',
+    id: 3,
     name: 'React',
-    members: ['1', '3', '7'],
-    createdBy: '1',
+    members: [1, 3, 7],
+    createdBy: 1,
   },
 ]
 
 const messages = [
   {
-    id: '1',
-    roomId: '1',
-    userId: '1',
+    id: 1,
+    roomId: 1,
+    userId: 1,
     text: 'こんにちは！',
     createdAt: moment('2017-11-03 13:00:00').valueOf(),
-    readBy: ['3', '4', '8'],
+    readBy: [3, 4, 8],
   },
   {
-    id: '2',
-    roomId: '1',
-    userId: '2',
+    id: 2,
+    roomId: 1,
+    userId: 2,
     text: 'はじめまして！',
     createdAt: moment('2017-11-03 13:13:00').valueOf(),
-    readBy: ['3', '4', '8'],
+    readBy: [3, 4, 8],
   },
   {
-    id: '3',
-    roomId: '2',
-    userId: '3',
+    id: 3,
+    roomId: 2,
+    userId: 3,
     text: 'hey',
     createdAt: moment('2017-10-04 13:00:00').valueOf(),
     readBy: [],
   },
   {
-    id: '4',
-    roomId: '2',
-    userId: '1',
+    id: 4,
+    roomId: 2,
+    userId: 1,
     text: 'hello',
     createdAt: moment('2017-10-05 13:00:00').valueOf(),
     readBy: [],
@@ -124,19 +131,21 @@ const messages = [
 ]
 
 const friendGraph = {
-  '1': ['3', '4'],
-  '2': ['1', '3'],
-  '3': ['5', '6', '7'],
-  '4': ['1', '6', '8'],
-  '5': [],
-  '6': ['9'],
-  '7': ['8', '9'],
-  '8': ['1', '2', '3', '4', '5', '6', '7', '9'],
-  '9': ['4', '7', '8'],
+  0: [3, 4],
+  1: [3, 4],
+  2: [1, 3],
+  3: [5, 6, 7],
+  4: [1, 6, 8],
+  5: [],
+  6: [9],
+  7: [8, 9],
+  8: [1, 2, 3, 4, 5, 6, 7, 9],
+  9: [4, 7, 8],
 }
 
 export class UserTable {
   static getUserById(id) {
+    console.log(id, users)
     const user = users.find(user => user.id === id)
     if (user === undefined) {
       return null
