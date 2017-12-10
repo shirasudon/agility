@@ -22,10 +22,8 @@ const initialState = {
     },
   },
   friendIds: [],
-  session: {
-    authenticated: false,
-    checked: false,
-    user: {},
+  auth: {
+    myId: null,
   },
   ui: {
     createGroup: {
@@ -62,12 +60,8 @@ it('returns initialized data when action type is USER_LOGOUT', () => {
       },
     },
     friendIds: [],
-    session: {
-      authenticated: true,
-      checked: true,
-      user: {
-        id: 2,
-      },
+    auth: {
+      myId: 2,
     },
     ui: {
       createGroup: {

@@ -109,7 +109,7 @@ export const MatchedUserList = ({
 export const CreateGroupModal = ({
   friendIds,
   ui,
-  session,
+  myId,
   closeModal,
   entities,
   classes,
@@ -124,7 +124,7 @@ export const CreateGroupModal = ({
 }) => {
   const showModal = ui.createGroup.showModal
   const users = entities.users
-  const me = session.user
+  const me = users.byId[myId]
 
   return (
     <Dialog
@@ -200,7 +200,7 @@ export const CreateGroupModal = ({
 const mapStateToProps = state => ({
   entities: state.get('entities'),
   ui: state.get('ui'),
-  session: state.get('session'),
+  myId: state.getIn(['auth', 'myId']),
   friendIds: state.get('friendIds'),
 })
 

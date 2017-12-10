@@ -6,17 +6,12 @@ import { compose } from 'recompose'
 
 import { toJS } from './ToJS'
 
-export const PrivateRoute = ({
-  exact,
-  path,
-  authenticated,
-  component: Component,
-}) => (
+export const PrivateRoute = ({ exact, path, myId, component: Component }) => (
   <Route
     exact={exact}
     path={path}
     render={props =>
-      authenticated ? (
+      myId !== null ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -30,7 +25,7 @@ export const PrivateRoute = ({
 )
 
 const mapStateToProps = state => ({
-  authenticated: state.getIn(['session', 'authenticated']),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 export const enhancer = compose(connect(mapStateToProps), toJS)

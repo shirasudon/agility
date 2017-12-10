@@ -10,7 +10,7 @@ describe('Navbar', () => {
   it('shows login button when not authenticated', () => {
     const props = {
       logout: jest.fn(),
-      authenticated: false,
+      myId: null,
       classes: {},
     }
     const wrapper = shallow(<Navbar {...props} />)
@@ -18,10 +18,10 @@ describe('Navbar', () => {
     expect(wrapper.find(Button).contains('Login')).toEqual(true)
   })
 
-  it('shows logout button when not authenticated', () => {
+  it('shows logout button when authenticated', () => {
     const props = {
       logout: jest.fn(),
-      authenticated: true,
+      myId: 2,
       classes: {},
     }
     const wrapper = shallow(<Navbar {...props} />)

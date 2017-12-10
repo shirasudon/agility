@@ -21,7 +21,6 @@
     "redux": "^3.7.2",
     "redux-immutable": "^4.0.0",
     "redux-mock-store": "^1.2.3",
-    "redux-react-session": "^2.2.0",
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
@@ -53,5 +52,5 @@
       "!coverage/**"
     ]
   },
-  "proxy": "http://localhost:8081"
+  "proxy": "http://localhost:8080"
 }

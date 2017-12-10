@@ -39,7 +39,6 @@ export const scrollToBottom = dom => {
 }
 
 export const withLifecycle = lifecycle({
-  // TODO: entity before and after stays the same for some reason!
   componentWillUpdate(nextProps) {
     const { refs, entities, currentRoomId } = this.props
     const { messageList } = refs
@@ -64,7 +63,6 @@ export const withLifecycle = lifecycle({
 
 export const ChatHistory = ({
   currentRoomId,
-  session,
   entities,
   classes,
   handleScroll,
@@ -98,7 +96,6 @@ export const ChatHistory = ({
 
 const mapStateToProps = state => ({
   currentRoomId: state.get('currentRoomId'),
-  session: state.get('session'),
   entities: state.get('entities'),
 })
 

@@ -2,13 +2,11 @@
 import { combineReducers } from 'redux-immutable'
 
 import * as ui from './ui'
-import { sessionImmutableReducer as session } from 'redux-react-session'
 import * as entity from './entity'
 import * as domain from './domain'
 import { USER_LOGOUT } from '../actions/actionTypes'
 
 export const appReducer = combineReducers({
-  session,
   ...entity,
   ...domain,
   ...ui,

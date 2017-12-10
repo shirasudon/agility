@@ -49,10 +49,8 @@ export const handlerFunctions = {
    */
   handleSubmit: ({ login, user, setUser, setLoginFail }) => event => {
     event.preventDefault()
-    return login(user).then(success => {
-      if (!success) {
-        setLoginFail(true)
-      }
+    return login(user).then(result => {
+      setLoginFail(!result)
     })
   },
 }
@@ -64,65 +62,57 @@ export const Login = ({
   handleSubmit,
   user: { username, password },
   loginFail,
-  authenticated,
-  sessionUser,
   classes,
+  myId,
 }) => {
-  if (authenticated && Object.keys(sessionUser).length > 0) {
+  if (myId !== null) {
     return <Redirect to="/chat" />
   }
 
   return (
-    <div>
-      <Grid container justify="center">
-        {loginFail && (
-          <strong className="error">
-            Wrong username or password! Please try again!
-          </strong>
-        )}
-        <TextField
-          name="username"
-          label="ユーザー名"
-          value={username}
-          className={classes.textField}
-          onChange={handleChange}
-          margin="normal"
-        />
-      </Grid>
-      <Grid container justify="center">
-        <TextField
-          name="password"
-          type="password"
-          label="パスワード"
-          value={password}
-          className={classes.textField}
-          onChange={handleChange}
-          margin="normal"
-        />
-      </Grid>
-      <Grid container justify="center">
-        <Button
-          color="primary"
-          raised
-          onClick={handleSubmit}
-          className={classes.loginButton}
-        >
-          ログイン
-        </Button>
-      </Grid>
-    </div>
+    <Grid container justify="center">
+      {loginFail && (
+        <strong className="error">
+          Wrong username or password! Please try again!
+        </strong>
+      )}
+      <TextField
+        name="username"
+        label="ユーザー名"
+        value={username}
+        className={classes.textField}
+        onChange={handleChange}
+        margin="normal"
+      />
+      <TextField
+        name="password"
+        type="password"
+        label="パスワード"
+        value={password}
+        className={classes.textField}
+        onChange={handleChange}
+        margin="normal"
+      />
+      <Button
+        color="primary"
+        raised
+        onClick={handleSubmit}
+        className={classes.loginButton}
+      >
+        ログイン
+      </Button>
+    </Grid>
   )
 }
 
 export const mapStateToProps = state => ({
-  authenticated: state.getIn(['session', 'authenticated']),
-  sessionUser: state.getIn(['session', 'user']),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 export const mapDispatchToProps = dispatch => {
   return {
-    login: (user, cb) => {
-      return dispatch(loginAction(user, cb))
+    login: user => {
+      return dispatch(loginAction(user))
     },
   }
 }

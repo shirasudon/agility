@@ -41,17 +41,16 @@ const styleSheet = theme => ({
 export const withLifecycle = lifecycle({
   componentDidMount() {
     // dispatch read notification to the server
-    const { message, session, sendRead } = this.props
-    const me = session.user
-    if (!message.readBy.includes(me.id)) {
+    const { message, myId, sendRead } = this.props
+    if (!message.readBy.includes(myId)) {
       // notify the server that the current user has read the specific message
-      sendRead(message.id, me.id)
+      sendRead(message.id, myId)
     }
   },
 })
 
-export const Balloon = ({ message, classes, session, users }) => {
-  const shouldPutRight = message.userId === session.user.id
+export const Balloon = ({ message, classes, myId, users }) => {
+  const shouldPutRight = message.userId === myId
   const balloonStyle = shouldPutRight
     ? classes.balloonRight
     : classes.balloonLeft
@@ -79,7 +78,7 @@ export const Balloon = ({ message, classes, session, users }) => {
 }
 
 export const mapStateToProps = state => ({
-  session: state.get('session'),
+  myId: state.getIn(['auth', 'myId']),
   users: state.getIn(['entities', 'users']),
   messages: state.getIn(['entities', 'messages']),
 })

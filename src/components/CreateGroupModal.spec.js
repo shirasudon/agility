@@ -230,11 +230,7 @@ describe('CreateGroupModal', () => {
         ui: {
           createGroup: true,
         },
-        session: {
-          user: {
-            id: 3,
-          },
-        },
+        myId: 3,
         entities: {
           users: {
             byId: {
@@ -294,8 +290,6 @@ describe('CreateGroupModal', () => {
     const wrapper = shallow(<CreateGroupModal {...props} />)
     expect(wrapper.find(CircularProgressButton).prop('disabled')).toBe(false)
     wrapper.find(CircularProgressButton).simulate('click')
-    expect(props.handleCreateRoomClick).toHaveBeenCalledWith(
-      props.session.user.id
-    )
+    expect(props.handleCreateRoomClick).toHaveBeenCalledWith(props.myId)
   })
 })
