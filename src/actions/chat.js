@@ -46,7 +46,6 @@ export default class ChatActionCreator {
   fetchRoomInfo(roomId) {
     return dispatch => {
       dispatch(this.requestRoomInfo())
-      console.log(roomId)
       return this.chatApi.fetchRoomInfo(roomId).then(room => {
         dispatch(this.receiveRoomInfo(room))
         return room

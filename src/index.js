@@ -9,6 +9,7 @@ import { createLogger } from 'redux-logger'
 import reducer from './reducers'
 import './index.css'
 import App from './components/App'
+import initSessionService from './service/sessionService'
 import registerServiceWorker from './registerServiceWorker'
 
 import {
@@ -29,11 +30,13 @@ const store = createStore(
   )
 )
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-)
+initSessionService(store).then(() => {
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  )
+})
 
 registerServiceWorker()

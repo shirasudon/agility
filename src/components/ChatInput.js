@@ -51,7 +51,7 @@ export const ChatInput = ({ handleChange, handleKeyPress, curText }) => (
 
 const mapStateToProps = state => ({
   currentRoomId: state.get('currentRoomId'),
-  myId: state.getIn(['auth', 'myID']),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 const mapDispatchToProps = dispatch => ({

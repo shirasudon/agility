@@ -9,7 +9,6 @@ const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 let SessionApiStub
-let sessionService
 
 beforeEach(() => {
   SessionApiStub = {
@@ -34,7 +33,7 @@ describe('login', () => {
     login({ username: 'john', password: 'pass' })(dispatch).then(success => {
       expect(success).toBe(true)
       expect(dispatch).toHaveBeenCalledWith({
-        type: 'USER_LOGIN',
+        type: 'USER_AUTH',
         userId: 3,
       })
       done()

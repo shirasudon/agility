@@ -11,7 +11,7 @@ export default class SessionApi {
       })
       .then(response => {
         return {
-          userId: response.data.user_id,
+          userId: Number(response.data.user_id),
         }
       })
   }

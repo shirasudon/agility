@@ -5,17 +5,20 @@ import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../actions/actionTypes'
 
 let mockServer
 
-const chatMessageFactory = (roomId, userId, text) => ({
-  type: SEND_CHAT_MESSAGE,
-  data: {
-    id: Math.floor(Math.random() * 100 + 1),
-    roomId,
-    userId,
-    text,
-    createdAt: Date.now(),
-    readBy: [],
-  },
-})
+const chatMessageFactory = (roomId, userId, text) => {
+  const action = {
+    type: SEND_CHAT_MESSAGE,
+    data: {
+      id: Math.floor(Math.random() * 100 + 1),
+      roomId,
+      userId,
+      text,
+      createdAt: Date.now(),
+      readBy: [],
+    },
+  }
+  return action
+}
 
 export default function startMockServer(url) {
   mockServer = new Server(url)

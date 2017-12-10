@@ -1,7 +1,7 @@
 // @format
 // import SessionApiStub from '../api/sessionStub'
 import SessionApi from '../api/session'
-import { USER_LOGOUT, USER_LOGIN } from '../actions/actionTypes'
+import { USER_LOGOUT, USER_AUTH } from '../actions/actionTypes'
 
 let sessionApi = SessionApi
 
@@ -9,8 +9,8 @@ export const setSessionApi = api => {
   sessionApi = api
 }
 
-export const userLogin = userId => ({
-  type: USER_LOGIN,
+export const userAuth = userId => ({
+  type: USER_AUTH,
   userId,
 })
 
@@ -19,7 +19,7 @@ export const login = user => {
     return sessionApi
       .login(user)
       .then(response => {
-        dispatch(userLogin(response.userId))
+        dispatch(userAuth(response.userId))
         return Promise.resolve(true)
       })
       .catch(err => {

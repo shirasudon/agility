@@ -6,7 +6,7 @@ import {
   CHANGE_ROOM,
   RECEIVE_FRIEND_IDS,
   RECEIVE_DELETE_ROOM,
-  USER_LOGIN,
+  USER_AUTH,
 } from '../../actions/actionTypes'
 
 // TODO: use immutable.js
@@ -39,7 +39,7 @@ export function friendIds(state = [], action) {
 
 export function auth(state = Immutable.fromJS({ myId: null }), action) {
   switch (action.type) {
-    case USER_LOGIN:
+    case USER_AUTH:
       return state.set('myId', action.userId)
     default:
       return state
