@@ -106,6 +106,8 @@ export const MatchedUserList = ({
   )
 }
 
+export const Transition = props => <Slide direction="up" {...props} />
+
 export const CreateGroupModal = ({
   friendIds,
   ui,
@@ -130,7 +132,7 @@ export const CreateGroupModal = ({
     <Dialog
       open={showModal}
       onRequestClose={closeModal}
-      transition={<Slide direction="up" />}
+      transition={Transition}
     >
       <AppBar className={classes.appBar}>
         <Toolbar>
