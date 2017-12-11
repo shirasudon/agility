@@ -3,12 +3,16 @@
 import axios from 'axios'
 
 export default class SessionApi {
-  static login(user) {
+  static login(user, config = {}) {
     return axios
-      .post('/login', {
-        name: user.username,
-        password: user.password,
-      })
+      .post(
+        '/login',
+        {
+          name: user.username,
+          password: user.password,
+        },
+        config
+      )
       .then(response => {
         if (!response.data.logged_in) {
           throw new Error('Authentication failed')
@@ -19,16 +23,11 @@ export default class SessionApi {
       })
   }
 
-  static logout() {
-    return axios
-      .post('/logout', {})
-      .then(response => {
-        if (response.data.logged_in) {
-          throw new Error('Could not logout')
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  static logout(config = {}) {
+    return axios.post('/logout', {}, config).then(response => {
+      if (response.data.logged_in) {
+        throw new Error('Server returned logged_in=true')
+      }
+    })
   }
 }
