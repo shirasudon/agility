@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = state => ({
-  myId: state.getIn(['auth', 'userId']),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 export const enhancer = compose(
