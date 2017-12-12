@@ -1,4 +1,6 @@
 // @format
+import axios from 'axios'
+
 // export function fetchRooms(userId) {
 //   return Promise.resolve(RoomTable.getAllRoomsByUserId(userId));
 // }
@@ -13,9 +15,20 @@
 //   }
 // }
 //
-// export function fetchUser(userId) {
-//   return Promise.resolve(UserTable.getUserById(userId))
-// }
+export function fetchUser(userId, config: {}) {
+  return axios.get(`/chat/users/${userId}`, config).then(response => {
+    const body = response.data
+    if (Number(body.user_id) !== userId) {
+      throw new Error('response user_id does not equal userId')
+    }
+    return {
+      userId,
+      username: body.user_name,
+      lastName: body.last_name,
+      firstName: body.first_name,
+    }
+  })
+}
 //
 // export function fetchFriendIds(userId) {
 //   return Promise.resolve(UserTable.getAllFriendIdsOfUserById(userId));
