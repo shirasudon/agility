@@ -1,6 +1,6 @@
 // @format
 
-import { fetchUser } from './chat'
+import { fetchUser, fetchRooms } from './chat'
 
 describe('fetchUser', () => {
   it('throws an error when user_id in response body is different from userId', () => {
@@ -47,6 +47,61 @@ describe('fetchUser', () => {
         firstName: 'hito',
         lastName: 'chan',
       })
+    })
+  })
+})
+
+describe('fetchRooms', () => {
+  it('throws an error when user_id in response body is different from userId', () => {
+    const config = {
+      adapter: config => {
+        return new Promise(resolve => {
+          resolve({
+            data: {
+              user_id: 10,
+              rooms: [
+                { room_id: 2, room_name: 'room2' },
+                { room_id: 3, room_name: 'room3' },
+              ],
+            },
+            status: 200,
+          })
+        })
+      },
+    }
+    return fetchRooms(2, config).catch(err => {
+      expect(err.message).toBe('response user_id does not equal userId')
+    })
+  })
+
+  it('returns object with id, name', () => {
+    const config = {
+      adapter: config => {
+        return new Promise(resolve => {
+          resolve({
+            data: {
+              user_id: 5,
+              rooms: [
+                { room_id: 2, room_name: 'room2' },
+                { room_id: 3, room_name: 'room3' },
+              ],
+            },
+            status: 200,
+          })
+        })
+      },
+    }
+    return fetchRooms(5, config).then(user => {
+      expect(user).toEqual([
+        {
+          id: 2,
+          name: 'room2',
+        },
+        {
+          id: 3,
+          name: 'room3',
+        },
+      ])
     })
   })
 })

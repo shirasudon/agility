@@ -1,9 +1,18 @@
 // @format
 import axios from 'axios'
 
-// export function fetchRooms(userId) {
-//   return Promise.resolve(RoomTable.getAllRoomsByUserId(userId));
-// }
+export function fetchRooms(userId, config: {}) {
+  return axios.get(`/chat/users/${userId}`, config).then(response => {
+    const body = response.data
+    if (Number(body.user_id) !== userId) {
+      throw new Error('response user_id does not equal userId')
+    }
+    return body.rooms.map(room => ({
+      id: room.room_id,
+      name: room.room_name,
+    }))
+  })
+}
 //
 // export function fetchRoomInfo(roomId) {
 //   const room = RoomTable.getRoomById(roomId);
