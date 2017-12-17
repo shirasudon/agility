@@ -38,11 +38,17 @@ export function fetchUser(userId, config: {}) {
     }
   })
 }
-//
-// export function fetchFriendIds(userId) {
-//   return Promise.resolve(UserTable.getAllFriendIdsOfUserById(userId));
-// }
-//
+
+export function fetchFriendIds(userId, config: {}) {
+  return axios.get(`/chat/users/${userId}`, config).then(response => {
+    const body = response.data
+    if (Number(body.user_id) !== userId) {
+      throw new Error('response user_id does not equal userId')
+    }
+    return body.friends.map(friend => friend.user_id)
+  })
+}
+
 // export function fetchMessagesByRoomId(roomId) {
 //   const messages = MessageTable.getMessagesByRoomId(roomId);
 //   return Promise.resolve(messages);
