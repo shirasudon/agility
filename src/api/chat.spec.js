@@ -1,6 +1,6 @@
 // @format
 
-import { fetchUser, fetchRooms, fetchFriendIds } from './chat'
+import { fetchUser, fetchRooms, fetchFriendIds, fetchRoomInfo } from './chat'
 
 describe('fetchUser', () => {
   it('throws an error when user_id in response body is different from userId', () => {
@@ -154,6 +154,36 @@ describe('fetchFriendIds', () => {
     }
     return fetchFriendIds(2, config).then(user => {
       expect(user).toEqual([3, 5])
+    })
+  })
+})
+
+describe('fetchRoomInfo', () => {
+  it('returns id, name, members, createdBy, hasUnreadMessage', () => {
+    const expected = {
+      id: 2,
+      name: 'room name',
+      members: [3, 5, 7],
+      createdBy: 7,
+      hasUnreadMessage: false,
+    }
+    const config = {
+      adapter: config => {
+        return new Promise(resolve => {
+          resolve({
+            data: {
+              room_id: 2,
+              room_name: 'room name',
+              room_members: [{ user_id: 3 }, { user_id: 5 }, { user_id: 7 }],
+              room_creator_id: 7,
+            },
+            status: 200,
+          })
+        })
+      },
+    }
+    return fetchRoomInfo(2, config).then(user => {
+      expect(user).toEqual(expected)
     })
   })
 })

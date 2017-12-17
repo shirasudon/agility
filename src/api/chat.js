@@ -13,17 +13,20 @@ export function fetchRooms(userId, config: {}) {
     }))
   })
 }
-//
-// export function fetchRoomInfo(roomId) {
-//   const room = RoomTable.getRoomById(roomId);
-//   if(room == null){
-//       return Promise.reject();
-//   }
-//   else {
-//       return Promise.resolve(room);
-//   }
-// }
-//
+
+export function fetchRoomInfo(roomId, config = {}) {
+  return axios.get(`/chat/rooms/${roomId}`, config).then(response => {
+    const body = response.data
+    return {
+      id: body.room_id,
+      name: body.room_name,
+      members: body.room_members.map(member => Number(member.user_id)),
+      createdBy: Number(body.room_creator_id),
+      hasUnreadMessage: false, // TODO: correctly fetches the info
+    }
+  })
+}
+
 export function fetchUser(userId, config: {}) {
   return axios.get(`/chat/users/${userId}`, config).then(response => {
     const body = response.data
