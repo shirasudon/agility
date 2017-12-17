@@ -31,7 +31,7 @@ export function fetchUser(userId, config: {}) {
       throw new Error('response user_id does not equal userId')
     }
     return {
-      userId,
+      id: userId,
       username: body.user_name,
       lastName: body.last_name,
       firstName: body.first_name,

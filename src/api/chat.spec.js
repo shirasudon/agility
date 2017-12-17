@@ -42,7 +42,7 @@ describe('fetchUser', () => {
     }
     return fetchUser(2, config).then(user => {
       expect(user).toEqual({
-        userId: 2,
+        id: 2,
         username: 'hitochan',
         firstName: 'hito',
         lastName: 'chan',
