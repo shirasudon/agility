@@ -11,7 +11,9 @@ export const setSessionApi = api => {
 
 export const userAuth = userId => ({
   type: USER_AUTH,
-  userId,
+  payload: {
+    userId,
+  },
 })
 
 export const login = user => {

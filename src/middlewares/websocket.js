@@ -28,22 +28,22 @@ export function initializeWebSocket(mode) {
 
 // returns a function to be called when receiving a message through websocket
 export const createOnMessage = store => event => {
-  const { type, data } = event.data
+  const { type, payload } = event.data
   switch (type) {
     case SEND_CHAT_MESSAGE:
       const state = store.getState()
       const entities = state.get('entities')
       const currentRoomId = state.get('currentRoomId')
-      if (entities.getIn(['rooms', 'byId', data.roomId, 'initialFetch'])) {
-        store.dispatch(chatActionCreator.receiveMessage(data))
+      if (entities.getIn(['rooms', 'byId', payload.roomId, 'initialFetch'])) {
+        store.dispatch(chatActionCreator.receiveMessage(payload))
       }
-      if (currentRoomId !== data.roomId) {
-        store.dispatch(chatActionCreator.existUnreadMessage(data.roomId))
+      if (currentRoomId !== payload.roomId) {
+        store.dispatch(chatActionCreator.existUnreadMessage(payload.roomId))
       }
       break
     case SEND_MESSAGE_READ:
       store.dispatch(
-        chatActionCreator.receiveMessageRead(data.messageId, data.userId)
+        chatActionCreator.receiveMessageRead(payload.messageId, payload.userId)
       )
       break
     default:
@@ -84,22 +84,10 @@ export const createWebSocketMiddleware = (
   return next => action => {
     switch (action.type) {
       case SEND_CHAT_MESSAGE:
-        connection.send(
-          {
-            type: SEND_CHAT_MESSAGE,
-            data: action.data,
-          },
-          true
-        )
+        connection.send(action, true)
         break
       case SEND_MESSAGE_READ:
-        connection.send(
-          {
-            type: SEND_MESSAGE_READ,
-            data: action.data,
-          },
-          true
-        )
+        connection.send(action, true)
         break
       default:
         break

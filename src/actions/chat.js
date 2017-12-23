@@ -39,7 +39,9 @@ export default class ChatActionCreator {
   receiveRoomInfo(room) {
     return {
       type: RECEIVE_ROOM_INFO,
-      ...room,
+      payload: {
+        ...room,
+      },
     }
   }
 
@@ -56,7 +58,9 @@ export default class ChatActionCreator {
   changeRoom(roomId) {
     return {
       type: CHANGE_ROOM,
-      roomId,
+      payload: {
+        roomId,
+      },
     }
   }
 
@@ -102,7 +106,9 @@ export default class ChatActionCreator {
   receiveRoom(room) {
     return {
       type: RECEIVE_ROOM,
-      ...room,
+      payload: {
+        ...room,
+      },
     }
   }
 
@@ -120,7 +126,9 @@ export default class ChatActionCreator {
   receiveUser(user = {}) {
     return {
       type: RECEIVE_USER,
-      user,
+      payload: {
+        ...user,
+      },
     }
   }
 
@@ -141,7 +149,9 @@ export default class ChatActionCreator {
   receiveFriendIds(friendIds) {
     return {
       type: RECEIVE_FRIEND_IDS,
-      ids: friendIds,
+      payload: {
+        ids: friendIds,
+      },
     }
   }
 
@@ -168,7 +178,9 @@ export default class ChatActionCreator {
   receiveCreateRoom(room) {
     return {
       type: RECEIVE_CREATE_ROOM,
-      ...room,
+      payload: {
+        ...room,
+      },
     }
   }
 
@@ -181,7 +193,9 @@ export default class ChatActionCreator {
   receiveMessage(message) {
     return {
       type: RECEIVE_MESSAGE,
-      message,
+      payload: {
+        ...message,
+      },
     }
   }
 
@@ -232,7 +246,9 @@ export default class ChatActionCreator {
   sendMessage(message) {
     return {
       type: SEND_CHAT_MESSAGE,
-      data: message,
+      payload: {
+        ...message,
+      },
     }
   }
 
@@ -258,22 +274,26 @@ export default class ChatActionCreator {
   receiveDeleteRoom(roomId) {
     return {
       type: RECEIVE_DELETE_ROOM,
-      roomId,
+      payload: {
+        roomId,
+      },
     }
   }
 
   receiveMessageRead(messageId, userId) {
     return {
       type: RECEIVE_MESSAGE_READ,
-      messageId,
-      userId,
+      payload: {
+        messageId,
+        userId,
+      },
     }
   }
 
   sendMessageRead(messageIds, userId) {
     return {
       type: SEND_MESSAGE_READ,
-      data: {
+      payload: {
         messageIds,
         userId,
       },
@@ -283,14 +303,18 @@ export default class ChatActionCreator {
   existUnreadMessage(roomId) {
     return {
       type: EXIST_UNREAD_MESSAGE,
-      roomId,
+      payload: {
+        roomId,
+      },
     }
   }
 
   noUnreadMessage(roomId) {
     return {
       type: NO_UNREAD_MESSAGE,
-      roomId,
+      payload: {
+        roomId,
+      },
     }
   }
 }

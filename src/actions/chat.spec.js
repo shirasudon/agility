@@ -24,7 +24,9 @@ it('returns receive room info', () => {
   const room = { a: 1, b: 2 }
   expect(cac.receiveRoomInfo(room)).toEqual({
     type: 'RECEIVE_ROOM_INFO',
-    ...room,
+    payload: {
+      ...room,
+    },
   })
 })
 
@@ -45,9 +47,11 @@ it('returns fetch room info', () => {
     { type: 'REQUEST_ROOM_INFO' },
     {
       type: 'RECEIVE_ROOM_INFO',
-      id: 2,
-      name: 'room name!',
-      members: [2, 5, 8],
+      payload: {
+        id: 2,
+        name: 'room name!',
+        members: [2, 5, 8],
+      },
     },
   ]
 
@@ -63,7 +67,9 @@ it('returns change room', () => {
   const roomId = 1
   expect(cac.changeRoom(roomId)).toEqual({
     type: 'CHANGE_ROOM',
-    roomId,
+    payload: {
+      roomId,
+    },
   })
 })
 
@@ -124,14 +130,14 @@ it('dispatch enter room', () => {
   const expectedActions = [
     { type: 'REQUEST_ROOM_INFO' },
     { type: 'REQUEST_MESSAGES' },
-    { type: 'RECEIVE_ROOM_INFO', ...roomInfo },
-    { type: 'RECEIVE_MESSAGE', message: messages[0] },
-    { type: 'RECEIVE_MESSAGE', message: messages[1] },
-    { type: 'RECEIVE_USER', user: users[1] },
-    { type: 'RECEIVE_USER', user: users[2] },
-    { type: 'RECEIVE_USER', user: users[3] },
-    { type: 'CHANGE_ROOM', roomId },
-    { type: 'NO_UNREAD_MESSAGE', roomId },
+    { type: 'RECEIVE_ROOM_INFO', payload: { ...roomInfo } },
+    { type: 'RECEIVE_MESSAGE', payload: messages[0] },
+    { type: 'RECEIVE_MESSAGE', payload: messages[1] },
+    { type: 'RECEIVE_USER', payload: users[1] },
+    { type: 'RECEIVE_USER', payload: users[2] },
+    { type: 'RECEIVE_USER', payload: users[3] },
+    { type: 'CHANGE_ROOM', payload: { roomId } },
+    { type: 'NO_UNREAD_MESSAGE', payload: { roomId } },
   ] // TODO: this test might fail depending on the execution order
   const store = mockStore({})
   const initialFetch = true
@@ -166,8 +172,8 @@ it('fetches rooms', () => {
   const roomId = 3
   const expectedActions = [
     { type: 'REQUEST_ROOMS' },
-    { type: 'RECEIVE_ROOM', ...rooms[0] },
-    { type: 'RECEIVE_ROOM', ...rooms[1] },
+    { type: 'RECEIVE_ROOM', payload: { ...rooms[0] } },
+    { type: 'RECEIVE_ROOM', payload: { ...rooms[1] } },
   ] // TODO: this test might fail depending on the execution order
   const store = mockStore({})
 
@@ -190,7 +196,10 @@ it('dispatch RECEIVE_USER', () => {
   }
 
   const cac = new ChatActionCreator({})
-  expect(cac.receiveUser(user)).toEqual({ type: 'RECEIVE_USER', user })
+  expect(cac.receiveUser(user)).toEqual({
+    type: 'RECEIVE_USER',
+    payload: { ...user },
+  })
 })
 
 it('fetches friends', () => {
@@ -226,10 +235,10 @@ it('fetches friends', () => {
   const cac = new ChatActionCreator(mockApi)
   const expectedActions = [
     { type: 'REQUEST_FRIENDS' },
-    { type: 'RECEIVE_FRIEND_IDS', ids: [1, 2, 3] },
-    { type: 'RECEIVE_USER', user: users[1] },
-    { type: 'RECEIVE_USER', user: users[2] },
-    { type: 'RECEIVE_USER', user: users[3] },
+    { type: 'RECEIVE_FRIEND_IDS', payload: { ids: [1, 2, 3] } },
+    { type: 'RECEIVE_USER', payload: users[1] },
+    { type: 'RECEIVE_USER', payload: users[2] },
+    { type: 'RECEIVE_USER', payload: users[3] },
   ] // TODO: this test might fail depending on the execution order
   const store = mockStore({})
 
@@ -248,7 +257,7 @@ it('dispatches RECEIVE_CREATE_ROOM', () => {
   const cac = new ChatActionCreator({})
   expect(cac.receiveCreateRoom(room)).toEqual({
     type: 'RECEIVE_CREATE_ROOM',
-    ...room,
+    payload: { ...room },
   })
 })
 
@@ -268,7 +277,7 @@ it('dispatches RECEIVE_MESSAGE', () => {
   const cac = new ChatActionCreator({})
   expect(cac.receiveMessage(message)).toEqual({
     type: 'RECEIVE_MESSAGE',
-    message,
+    payload: { ...message },
   })
 })
 
@@ -299,8 +308,8 @@ it('fetches messages by room ID', () => {
   const cac = new ChatActionCreator(mockApi)
   const expectedActions = [
     { type: 'REQUEST_MESSAGES' },
-    { type: 'RECEIVE_MESSAGE', message: messages[0] },
-    { type: 'RECEIVE_MESSAGE', message: messages[1] },
+    { type: 'RECEIVE_MESSAGE', payload: messages[0] },
+    { type: 'RECEIVE_MESSAGE', payload: messages[1] },
   ] // TODO: this test might fail depending on the execution order
   const store = mockStore({})
 
@@ -326,10 +335,12 @@ it('send a request to create a room', () => {
     { type: 'REQUEST_CREATE_ROOM' },
     {
       type: 'RECEIVE_CREATE_ROOM',
-      createdBy,
-      members,
-      name: roomName,
-      id: '2',
+      payload: {
+        createdBy,
+        members,
+        name: roomName,
+        id: '2',
+      },
     },
   ]
   const store = mockStore({})
@@ -352,7 +363,7 @@ it('create action SEND_CHAT_MESSAGE', () => {
   const cac = new ChatActionCreator({})
   expect(cac.sendMessage(message)).toEqual({
     type: 'SEND_CHAT_MESSAGE',
-    data: message,
+    payload: { ...message },
   })
 })
 
@@ -368,7 +379,7 @@ it('send a request to delete a room', () => {
   const roomId = 2
   const expectedActions = [
     { type: 'REQUEST_DELETE_ROOM' },
-    { type: 'RECEIVE_DELETE_ROOM', roomId },
+    { type: 'RECEIVE_DELETE_ROOM', payload: { roomId } },
   ]
   const store = mockStore({})
 
@@ -387,6 +398,6 @@ it('create action RECEIVE_DELETE_ROOM', () => {
   const cac = new ChatActionCreator({})
   expect(cac.receiveDeleteRoom(roomId)).toEqual({
     type: 'RECEIVE_DELETE_ROOM',
-    roomId,
+    payload: { roomId },
   })
 })

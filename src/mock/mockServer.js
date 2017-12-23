@@ -8,7 +8,7 @@ let mockServer
 const chatMessageFactory = (roomId, userId, text) => {
   const action = {
     type: SEND_CHAT_MESSAGE,
-    data: {
+    payload: {
       id: Math.floor(Math.random() * 100 + 1),
       roomId,
       userId,
@@ -27,22 +27,22 @@ export default function startMockServer(url) {
     // mockServer.send('test message 2');
   })
 
-  mockServer.on('message', data => {
-    const message = JSON.parse(data)
+  mockServer.on('message', payload => {
+    const message = JSON.parse(payload)
     switch (message.type) {
       case SEND_CHAT_MESSAGE:
         mockServer.send(
           chatMessageFactory(
-            message.data.roomId,
-            message.data.userId,
-            message.data.body
+            message.payload.roomId,
+            message.payload.userId,
+            message.payload.body
           )
         )
         mockServer.send(
           chatMessageFactory(
-            message.data.roomId,
-            message.data.userId + Math.floor(Math.random() * 10 + 1),
-            `echoing "${message.data.body}"`
+            message.payload.roomId,
+            message.payload.userId + Math.floor(Math.random() * 10 + 1),
+            `echoing "${message.payload.body}"`
           )
         )
         break

@@ -17,7 +17,9 @@ describe('login', () => {
     return init(store).then(() => {
       expect(store.dispatch).toHaveBeenCalledWith({
         type: 'USER_AUTH',
-        userId: 0,
+        payload: {
+          userId: 0,
+        },
       })
     })
   })
