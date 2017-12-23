@@ -1,7 +1,7 @@
 // @format
 
-export function insertOrdered(array, element, comparator = (a, b) => a - b) {
-  const index = locationOf(array, element, 0, array.length, comparator)
+export function insertOrdered(array, element, comparer = (a, b) => a - b) {
+  const index = locationOf(array, element, 0, array.length, comparer)
   array.splice(index + 1, 0, element)
   return array
 }
@@ -11,15 +11,26 @@ export function locationOf(
   element,
   start,
   end,
-  comparator = (a, b) => a - b
+  comparer = (a, b) => a - b
 ) {
-  const pivot = parseInt(start + (end - start) / 2, 10)
-  if (end - start <= 1 || !comparator(array[pivot], element)) {
-    return pivot
+  if (array.length === 0) {
+    return -1
   }
-  if (comparator(array[pivot], element) < 0) {
-    return locationOf(array, element, pivot, end)
+
+  start = start || 0
+  end = end || array.length
+  const pivot = (start + end) >> 1
+
+  const c = comparer(element, array[pivot])
+  if (end - start <= 1) {
+    return c < 0 ? pivot - 1 : pivot
+  }
+
+  if (c < 0) {
+    return locationOf(array, element, start, pivot, comparer)
+  } else if (c === 0) {
+    return pivot
   } else {
-    return locationOf(array, element, start, pivot)
+    return locationOf(array, element, pivot, end, comparer)
   }
 }
