@@ -23,7 +23,7 @@ export function users(
 ) {
   switch (action.type) {
     case RECEIVE_USER: {
-      const u = action.user
+      const u = action.payload
       if (!state.get('all').includes(u.id)) {
         state = state.setIn(['byId', u.id], u)
         state = state.setIn(['byUsername', u.username], u)
@@ -48,26 +48,27 @@ const roomInitialState = Immutable.fromJS({
 })
 
 export function room(state = roomInitialState, action) {
+  const data = action.payload
   switch (action.type) {
     case RECEIVE_ROOM_INFO:
       return state.merge({
-        members: action.members,
-        createdBy: action.createdBy,
+        members: data.members,
+        createdBy: data.createdBy,
         initialFetch: true,
       })
 
     case RECEIVE_ROOM:
       return state.merge({
-        id: action.id,
-        name: action.name,
+        id: data.id,
+        name: data.name,
         initialFetch: false,
-        hasUnreadMessage: action.hasUnreadMessage,
+        hasUnreadMessage: data.hasUnreadMessage,
       })
 
     case RECEIVE_CREATE_ROOM:
       return state.merge({
-        id: action.id,
-        name: action.name,
+        id: data.id,
+        name: data.name,
         initialFetch: false,
       })
 
@@ -82,7 +83,7 @@ export function room(state = roomInitialState, action) {
       })
 
     case RECEIVE_MESSAGE:
-      const { createdAt } = action.message
+      const { createdAt } = data
       return state.merge({
         oldestMessageTimestamp: Math.min(
           createdAt,
@@ -102,40 +103,41 @@ export function rooms(
   }),
   action
 ) {
+  const data = action.payload
   switch (action.type) {
     case RECEIVE_ROOM: {
-      if (!state.get('all').includes(action.id)) {
+      if (!state.get('all').includes(data.id)) {
         // TODO: make `all` a set
         state = state.setIn(
-          ['byId', action.id],
-          room(state.getIn(['byId', action.id]), action)
+          ['byId', data.id],
+          room(state.getIn(['byId', data.id]), action)
         )
-        state = state.update('all', all => all.push(action.id))
+        state = state.update('all', all => all.push(data.id))
       }
       return state
     }
 
     case RECEIVE_ROOM_INFO: {
       return state.setIn(
-        ['byId', action.id],
-        room(state.getIn(['byId', action.id]), action)
+        ['byId', data.id],
+        room(state.getIn(['byId', data.id]), action)
       )
     }
 
     case RECEIVE_CREATE_ROOM: {
-      if (!state.get('all').includes(action.id)) {
+      if (!state.get('all').includes(data.id)) {
         // TODO: make `all` a set
         state = state.setIn(
-          ['byId', action.id],
-          room(state.getIn(['byId', action.id]), action)
+          ['byId', data.id],
+          room(state.getIn(['byId', data.id]), action)
         )
-        state = state.update('all', all => all.push(action.id))
+        state = state.update('all', all => all.push(data.id))
       }
       return state
     }
 
     case RECEIVE_DELETE_ROOM: {
-      const { roomId } = action
+      const { roomId } = data
       const index = state.get('all').indexOf(roomId)
 
       // If the room is found, delete from array "all"
@@ -149,13 +151,13 @@ export function rooms(
     case EXIST_UNREAD_MESSAGE:
     case NO_UNREAD_MESSAGE: {
       return state.setIn(
-        ['byId', action.roomId],
-        room(state.getIn(['byId', action.roomId]), action)
+        ['byId', data.roomId],
+        room(state.getIn(['byId', data.roomId]), action)
       )
     }
 
     case RECEIVE_MESSAGE: {
-      const { roomId } = action.message
+      const { roomId } = data
       return state.setIn(
         ['byId', roomId],
         room(state.getIn(['byId', roomId]), action)
@@ -175,24 +177,25 @@ export function messages(
   }),
   action
 ) {
+  const data = action.payload
   switch (action.type) {
     case RECEIVE_MESSAGE: {
-      const { id, roomId } = action.message
+      const { id, roomId } = data
       if (!state.get('all').includes(id)) {
         state = state.update('all', all => all.push(id))
         state = state.updateIn(
           ['byRoomId', roomId],
           Immutable.List(),
-          messages => messages.push(action.message.id)
+          messages => messages.push(data.id)
         )
-        state = state.setIn(['byId', id], action.message)
+        state = state.setIn(['byId', id], data)
       }
 
       return state
     }
 
     case RECEIVE_MESSAGE_READ: {
-      const { messageId, userId } = action
+      const { messageId, userId } = data
       if (!state.getIn(['byId', messageId, 'readBy']).includes(userId)) {
         state.updateIn(['byId', messageId, 'readBy'], readBy =>
           readBy.push(userId)

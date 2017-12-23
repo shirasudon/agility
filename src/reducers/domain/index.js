@@ -9,11 +9,10 @@ import {
   USER_AUTH,
 } from '../../actions/actionTypes'
 
-// TODO: use immutable.js
 export function currentRoomId(state = null, action) {
   switch (action.type) {
     case CHANGE_ROOM:
-      return action.roomId
+      return action.payload.roomId
     case RECEIVE_DELETE_ROOM:
       return null
     default:
@@ -21,12 +20,11 @@ export function currentRoomId(state = null, action) {
   }
 }
 
-// TODO: use immutable.js
 export function friendIds(state = [], action) {
   switch (action.type) {
     case RECEIVE_FRIEND_IDS:
       const newState = state.slice()
-      action.ids.forEach(id => {
+      action.payload.ids.forEach(id => {
         if (!newState.includes(id)) {
           newState.push(id)
         }
@@ -40,7 +38,7 @@ export function friendIds(state = [], action) {
 export function auth(state = Immutable.fromJS({ myId: null }), action) {
   switch (action.type) {
     case USER_AUTH:
-      return state.set('myId', action.userId)
+      return state.set('myId', action.payload.userId)
     default:
       return state
   }

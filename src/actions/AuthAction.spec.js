@@ -34,7 +34,9 @@ describe('login', () => {
       expect(success).toBe(true)
       expect(dispatch).toHaveBeenCalledWith({
         type: 'USER_AUTH',
-        userId: 3,
+        payload: {
+          userId: 3,
+        },
       })
       done()
     })
