@@ -1,49 +1,38 @@
 // @format
-// import ReconnectingWebSocket from 'reconnecting-websocket'
+
 import { WebSocketService } from '../service/WebSocketService'
 
 import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../actions/actionTypes'
 import { chatActionCreator } from '../actions'
 import startMockServer from '../mock/mockServer'
 
-export function initializeWebSocket(mode) {
-  switch (mode) {
-    case 'development':
-      const socketURI = 'ws://localhost:8080/chat/ws'
-      startMockServer(socketURI)
-      return socketURI
-
-    case 'production':
-      //TODO: implement
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' not implemented')
-
-    case 'test':
-      //TODO: implement
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' not implemented')
-
-    default:
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' is invalid')
+export function initializeWebSocket() {
+  const socketURI = 'ws://localhost:8080/chat/ws'
+  if (process.env.MOCK) {
+    startMockServer(socketURI)
   }
+  return socketURI
 }
 
 // returns a function to be called when receiving a message through websocket
 export const createOnMessage = store => event => {
-  const { type, payload } = event.data
+  console.log(event)
+  const { type, data } = event.data
   switch (type) {
     case SEND_CHAT_MESSAGE:
       const state = store.getState()
       const entities = state.get('entities')
       const currentRoomId = state.get('currentRoomId')
-      if (entities.getIn(['rooms', 'byId', payload.roomId, 'initialFetch'])) {
-        store.dispatch(chatActionCreator.receiveMessage(payload))
+      if (entities.getIn(['rooms', 'byId', data.roomId, 'initialFetch'])) {
+        store.dispatch(chatActionCreator.receiveMessage(data))
       }
-      if (currentRoomId !== payload.roomId) {
-        store.dispatch(chatActionCreator.existUnreadMessage(payload.roomId))
+      if (currentRoomId !== data.roomId) {
+        store.dispatch(chatActionCreator.existUnreadMessage(data.roomId))
       }
       break
     case SEND_MESSAGE_READ:
       store.dispatch(
-        chatActionCreator.receiveMessageRead(payload.messageId, payload.userId)
+        chatActionCreator.receiveMessageRead(data.messageId, data.userId)
       )
       break
     default:
