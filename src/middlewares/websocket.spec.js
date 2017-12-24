@@ -100,11 +100,22 @@ describe('createWebSocketMiddleware', () => {
       )
       const action = {
         type: 'SEND_CHAT_MESSAGE',
-        data: 'this is data',
+        payload: {
+          roomId: 2,
+          userId: 3,
+          body: 'hello there',
+        },
       }
+
       nextHandler(next)(action)
       expect(next).toHaveBeenCalledWith(action)
-      expect(send).toHaveBeenCalledWith(action, true)
+      expect(send).toHaveBeenCalledWith(
+        {
+          action: 'CHAT_MESSAGE',
+          data: { content: 'hello there', room_id: 2, sender_id: 3 },
+        },
+        true
+      )
     })
   })
 })

@@ -5,6 +5,7 @@ import { WebSocketService } from '../service/WebSocketService'
 import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../actions/actionTypes'
 import { chatActionCreator } from '../actions'
 import startMockServer from '../mock/mockServer'
+import * as transformer from '../service/transformer'
 
 export function initializeWebSocket() {
   const socketURI = 'ws://localhost:8080/chat/ws'
@@ -16,23 +17,30 @@ export function initializeWebSocket() {
 
 // returns a function to be called when receiving a message through websocket
 export const createOnMessage = store => event => {
-  console.log(event)
-  const { type, data } = event.data
+  let type, payload
+  try {
+    const decodedObj = transformer.decode(event.data)
+    type = decodedObj.type
+    payload = decodedObj.payload
+  } catch (err) {
+    console.error(err)
+    return
+  }
   switch (type) {
     case SEND_CHAT_MESSAGE:
       const state = store.getState()
       const entities = state.get('entities')
       const currentRoomId = state.get('currentRoomId')
-      if (entities.getIn(['rooms', 'byId', data.roomId, 'initialFetch'])) {
-        store.dispatch(chatActionCreator.receiveMessage(data))
+      if (entities.getIn(['rooms', 'byId', payload.roomId, 'initialFetch'])) {
+        store.dispatch(chatActionCreator.receiveMessage(payload))
       }
-      if (currentRoomId !== data.roomId) {
-        store.dispatch(chatActionCreator.existUnreadMessage(data.roomId))
+      if (currentRoomId !== payload.roomId) {
+        store.dispatch(chatActionCreator.existUnreadMessage(payload.roomId))
       }
       break
     case SEND_MESSAGE_READ:
       store.dispatch(
-        chatActionCreator.receiveMessageRead(data.messageId, data.userId)
+        chatActionCreator.receiveMessageRead(payload.messageId, payload.userId)
       )
       break
     default:
@@ -71,12 +79,13 @@ export const createWebSocketMiddleware = (
   connection.connect()
 
   return next => action => {
+    // match with go-chat format
+    const data = transformer.encode(action)
+
     switch (action.type) {
       case SEND_CHAT_MESSAGE:
-        connection.send(action, true)
-        break
       case SEND_MESSAGE_READ:
-        connection.send(action, true)
+        connection.send(data, true)
         break
       default:
         break
