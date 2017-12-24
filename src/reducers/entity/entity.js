@@ -12,6 +12,7 @@ import {
   EXIST_UNREAD_MESSAGE,
   NO_UNREAD_MESSAGE,
 } from '../../actions/actionTypes'
+import { insertOrdered } from '../../utility/array'
 
 export function users(
   state = Immutable.fromJS({
@@ -182,11 +183,14 @@ export function messages(
     case RECEIVE_MESSAGE: {
       const { id, roomId } = data
       if (!state.get('all').includes(id)) {
-        state = state.update('all', all => all.push(id))
+        // sorting id based on it is on the premise that larger id is guaranteed to be the id of newer message
+        state = state.update('all', all =>
+          Immutable.fromJS(insertOrdered(all.toJS(), id))
+        )
         state = state.updateIn(
           ['byRoomId', roomId],
           Immutable.List(),
-          messages => messages.push(data.id)
+          messages => Immutable.fromJS(insertOrdered(messages.toJS(), id))
         )
         state = state.setIn(['byId', id], data)
       }
