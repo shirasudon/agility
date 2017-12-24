@@ -199,15 +199,19 @@ export default class ChatActionCreator {
     }
   }
 
-  // fetch messages of the room with `roomId`
-  // When `timestamp` is
-  //   undefined: it fetches the all unread messages, as well as some read messages.
-  //   otherwise: it fetches some messages posted before `timestamp`
-  fetchMessagesByRoomId(roomId, timestamp) {
+  /* fetch messages of the room with `roomId`
+   @param {Number} roomId - room ID
+   @param {Number} before -
+     undefined: it fetches the all unread messages, as well as some read messages.
+     otherwise: it fetches some messages posted before `before`
+   @param {Number} atLeast - fetch at least `atLeast` messages if exists
+  */
+
+  fetchMessagesByRoomId(roomId, before, atLeast) {
     return dispatch => {
       dispatch(this.requestMessages())
       return this.chatApi
-        .fetchMessagesByRoomId(roomId, timestamp)
+        .fetchMessagesByRoomId(roomId, before)
         .then(messages => {
           messages.forEach(message => {
             dispatch(this.receiveMessage(message))
