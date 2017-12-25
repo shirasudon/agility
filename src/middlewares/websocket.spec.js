@@ -100,34 +100,22 @@ describe('createWebSocketMiddleware', () => {
       )
       const action = {
         type: 'SEND_CHAT_MESSAGE',
-        data: 'this is data',
+        payload: {
+          roomId: 2,
+          userId: 3,
+          body: 'hello there',
+        },
       }
+
       nextHandler(next)(action)
       expect(next).toHaveBeenCalledWith(action)
-      expect(send).toHaveBeenCalledWith(action, true)
+      expect(send).toHaveBeenCalledWith(
+        {
+          action: 'CHAT_MESSAGE',
+          data: { content: 'hello there', room_id: 2, sender_id: 3 },
+        },
+        true
+      )
     })
-  })
-})
-
-describe('initializeWebSocket', () => {
-  it('returns ws://localhost:8080/chat/ws and starts mock server when development mode', done => {
-    const socketURI = 'ws://localhost:8080/chat/ws'
-    expect(initializeWebSocket('development')).toBe(socketURI)
-    const chatSocket = new WebSocket(socketURI)
-    chatSocket.onopen = event => {
-      done()
-    }
-  })
-
-  it('raise exception when non-development mode', () => {
-    expect(() => {
-      initializeWebSocket('test')
-    }).toThrowError(Error)
-    expect(() => {
-      initializeWebSocket('production')
-    }).toThrowError(Error)
-    expect(() => {
-      initializeWebSocket('non existent mode')
-    }).toThrowError(Error)
   })
 })

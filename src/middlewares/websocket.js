@@ -1,34 +1,31 @@
 // @format
-// import ReconnectingWebSocket from 'reconnecting-websocket'
+
 import { WebSocketService } from '../service/WebSocketService'
 
 import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../actions/actionTypes'
 import { chatActionCreator } from '../actions'
 import startMockServer from '../mock/mockServer'
+import * as transformer from '../service/transformer'
 
-export function initializeWebSocket(mode) {
-  switch (mode) {
-    case 'development':
-      const socketURI = 'ws://localhost:8080/chat/ws'
-      startMockServer(socketURI)
-      return socketURI
-
-    case 'production':
-      //TODO: implement
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' not implemented')
-
-    case 'test':
-      //TODO: implement
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' not implemented')
-
-    default:
-      throw new Error('Run mode ' + process.env.NODE_ENV + ' is invalid')
+export function initializeWebSocket() {
+  const socketURI = 'ws://localhost:8080/chat/ws'
+  if (process.env.MOCK) {
+    startMockServer(socketURI)
   }
+  return socketURI
 }
 
 // returns a function to be called when receiving a message through websocket
 export const createOnMessage = store => event => {
-  const { type, payload } = event.data
+  let type, payload
+  try {
+    const decodedObj = transformer.decode(event.data)
+    type = decodedObj.type
+    payload = decodedObj.payload
+  } catch (err) {
+    console.error(err)
+    return
+  }
   switch (type) {
     case SEND_CHAT_MESSAGE:
       const state = store.getState()
@@ -82,12 +79,13 @@ export const createWebSocketMiddleware = (
   connection.connect()
 
   return next => action => {
+    // match with go-chat format
+    const data = transformer.encode(action)
+
     switch (action.type) {
       case SEND_CHAT_MESSAGE:
-        connection.send(action, true)
-        break
       case SEND_MESSAGE_READ:
-        connection.send(action, true)
+        connection.send(data, true)
         break
       default:
         break
