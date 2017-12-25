@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import * as ClientActionTypes from '../../actions/actionTypes'
 
-const MESSAGE_CREATED = 'message_created'
+export const MESSAGE_CREATED = 'message_created'
 
 // decode event string from the server to the format interpretable by clients
 export function decode(eventStr) {
