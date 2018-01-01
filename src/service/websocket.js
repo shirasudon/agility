@@ -3,6 +3,7 @@
 import { NATIVE_EVENTS } from '../constants/websocket'
 import * as transformer from './transformer'
 import { BufferingWebSocket } from './BufferingWebSocket'
+import { router } from '../actions/websocket'
 import startMockServer from '../mock/mockServer'
 
 let connection = null
@@ -23,9 +24,9 @@ export const initWebsocketService = (
     reconnectionDelayGrowFactor: 2,
   }
   setConnection(new wsService(endpoint, options))
-  for (let type of Object.keys(NATIVE_EVENTS)) {
-    connection.registerEvent(type, payload => {
-      store.dispatch({ type, payload })
+  for (let type of Object.values(NATIVE_EVENTS)) {
+    connection.registerEvent(type, messageEvent => {
+      store.dispatch(router(type, messageEvent.data))
     })
   }
   connection.connect()

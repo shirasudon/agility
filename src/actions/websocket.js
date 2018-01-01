@@ -3,6 +3,7 @@
 import { NATIVE_EVENTS } from '../constants/websocket'
 import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../constants/chat'
 import { chatActionCreator } from '../actions'
+import * as transformer from '../service/transformer'
 
 // returns a function to be called when receiving a message through websocket
 export const onMessage = rawData => (dispatch, getState) => {
