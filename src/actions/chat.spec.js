@@ -369,10 +369,7 @@ it('create action SEND_CHAT_MESSAGE', () => {
   cac.sendMessage(message)(dispatch, getState, { emit })
   expect(dispatch).not.toHaveBeenCalled()
   expect(getState).not.toHaveBeenCalled()
-  expect(emit).toHaveBeenCalledWith({
-    type: 'SEND_CHAT_MESSAGE',
-    payload: { ...message },
-  })
+  expect(emit).toHaveBeenCalledWith('SEND_CHAT_MESSAGE', { ...message })
 })
 
 it('send a request to delete a room', () => {

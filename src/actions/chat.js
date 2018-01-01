@@ -249,11 +249,8 @@ export default class ChatActionCreator {
 
   sendMessage(message) {
     return (dispatch, getState, { emit }) => {
-      emit({
-        type: SEND_CHAT_MESSAGE,
-        payload: {
-          ...message,
-        },
+      emit(SEND_CHAT_MESSAGE, {
+        ...message,
       })
     }
   }

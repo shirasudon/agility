@@ -36,6 +36,6 @@ export const emit = (type, payload, buffer = false) => {
   if (connection == null) {
     throw new Error('connection is not yet initialized')
   }
-  const data = transformer.encode(type, payload)
+  const data = transformer.encode({ type, payload })
   connection.send(data, buffer)
 }
