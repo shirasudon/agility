@@ -11,7 +11,7 @@ import {
   CHANGE_ROOM,
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
-} from '../../actions/actionTypes'
+} from '../../constants/chat'
 
 describe('users', () => {
   it('returns initial state when undefined is given as state', () => {

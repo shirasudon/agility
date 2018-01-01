@@ -21,7 +21,7 @@ import {
   SEND_MESSAGE_READ,
   EXIST_UNREAD_MESSAGE,
   NO_UNREAD_MESSAGE,
-} from './actionTypes'
+} from '../constants/chat'
 
 export default class ChatActionCreator {
   constructor(chatApi) {
@@ -248,11 +248,13 @@ export default class ChatActionCreator {
   }
 
   sendMessage(message) {
-    return {
-      type: SEND_CHAT_MESSAGE,
-      payload: {
-        ...message,
-      },
+    return (dispatch, getState, { emit }) => {
+      emit({
+        type: SEND_CHAT_MESSAGE,
+        payload: {
+          ...message,
+        },
+      })
     }
   }
 
@@ -295,12 +297,14 @@ export default class ChatActionCreator {
   }
 
   sendMessageRead(messageIds, userId) {
-    return {
-      type: SEND_MESSAGE_READ,
-      payload: {
-        messageIds,
-        userId,
-      },
+    return (dispatch, getState, { emit }) => {
+      emit({
+        type: SEND_MESSAGE_READ,
+        payload: {
+          messageIds,
+          userId,
+        },
+      })
     }
   }
 

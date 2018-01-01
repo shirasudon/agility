@@ -5,7 +5,7 @@ import {
   OPEN_CREATE_GROUP_MODAL,
   RECEIVE_CREATE_ROOM,
   REQUEST_CREATE_ROOM
-} from "../../actions/actionTypes";
+} from "../../constants/chat";
 
 export const createGroupInitialState = fromJS({
   isRequesting: false,

@@ -1,7 +1,7 @@
 // @format
 
 import { encode, CHAT_MESSAGE } from './encode'
-import { SEND_CHAT_MESSAGE } from '../../actions/actionTypes'
+import { SEND_CHAT_MESSAGE } from '../../constants/chat'
 
 it('encodes SEND_CHAT_MESSAGE', () => {
   const input = {

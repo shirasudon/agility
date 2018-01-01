@@ -2,8 +2,9 @@
 
 import moment from 'moment'
 
-import { decode, MESSAGE_CREATED } from './decode'
-import { SEND_CHAT_MESSAGE } from '../../actions/actionTypes'
+import { decode } from './decode'
+import { MESSAGE_CREATED } from '../../constants/websocket'
+import { SEND_CHAT_MESSAGE } from '../../constants/chat'
 
 it('decodes message_created JSON string', () => {
   const responseStr = JSON.stringify({

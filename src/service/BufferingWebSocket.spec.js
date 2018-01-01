@@ -1,5 +1,7 @@
 // @format
-import { WebSocketService } from './WebSocketService'
+
+import { BufferingWebSocket } from './BufferingWebSocket'
+import { NATIVE_EVENTS } from '../constants/websocket'
 
 it('send data if the connection is open', () => {
   const mockFn = {
@@ -15,7 +17,7 @@ it('send data if the connection is open', () => {
     }
   }
 
-  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
+  const conn = new BufferingWebSocket('ws://dummy', {}, WebSocketKlass)
   conn.connect()
   const data = { a: 1, b: 2 }
   conn.send(data)
@@ -35,7 +37,7 @@ it('buffers data if the connection is not open', () => {
     }
   }
 
-  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
+  const conn = new BufferingWebSocket('ws://dummy', {}, WebSocketKlass)
   conn.connect()
   const data = { a: 1, b: 2 }
   conn.send(data, true) // buffer if enableBuffer is true
@@ -53,11 +55,11 @@ it('only accepts onopen, onerror, onclose, onmessae for event listers', () => {
     onmessage: jest.fn(),
   }
 
-  const conn = new WebSocketService('ws://dummy', {})
-  conn.registerEvent('onopen', mockFn.onopen)
-  conn.registerEvent('onclose', mockFn.onclose)
-  conn.registerEvent('onerror', mockFn.onerror)
-  conn.registerEvent('onmessage', mockFn.onmessage)
+  const conn = new BufferingWebSocket('ws://dummy', {})
+  conn.registerEvent(NATIVE_EVENTS.onopen, mockFn.onopen)
+  conn.registerEvent(NATIVE_EVENTS.onclose, mockFn.onclose)
+  conn.registerEvent(NATIVE_EVENTS.onerror, mockFn.onerror)
+  conn.registerEvent(NATIVE_EVENTS.onmessage, mockFn.onmessage)
   expect(() => {
     conn.registerEvent('hoge')
   }).toThrowError()
@@ -81,11 +83,11 @@ it('initializes event listers properly', () => {
     }
   }
 
-  const conn = new WebSocketService('ws://dummy', {}, WebSocketKlass)
-  conn.registerEvent('onopen', mockFn.onopen)
-  conn.registerEvent('onclose', mockFn.onclose)
-  conn.registerEvent('onerror', mockFn.onerror)
-  conn.registerEvent('onmessage', mockFn.onmessage)
+  const conn = new BufferingWebSocket('ws://dummy', {}, WebSocketKlass)
+  conn.registerEvent(NATIVE_EVENTS.onopen, mockFn.onopen)
+  conn.registerEvent(NATIVE_EVENTS.onclose, mockFn.onclose)
+  conn.registerEvent(NATIVE_EVENTS.onerror, mockFn.onerror)
+  conn.registerEvent(NATIVE_EVENTS.onmessage, mockFn.onmessage)
   conn.connect()
 
   const data = [{ a: 1, b: 2 }, { c: 3, d: 4 }]

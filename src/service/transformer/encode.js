@@ -1,6 +1,6 @@
 // @format
 
-import { SEND_CHAT_MESSAGE } from '../../actions/actionTypes'
+import { SEND_CHAT_MESSAGE } from '../../constants/chat'
 
 export const CHAT_MESSAGE = 'CHAT_MESSAGE'
 

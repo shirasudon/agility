@@ -1,4 +1,5 @@
 // @format
+
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -10,12 +11,8 @@ import reducer from './reducers'
 import './index.css'
 import App from './components/App'
 import initSessionService from './service/sessionService'
+import * as websocket from './service/websocket'
 import registerServiceWorker from './registerServiceWorker'
-
-import {
-  createWebSocketMiddleware,
-  initializeWebSocket,
-} from './middlewares/websocket'
 
 const logger = createLogger({
   diff: true,
@@ -23,12 +20,10 @@ const logger = createLogger({
 
 const store = createStore(
   reducer,
-  applyMiddleware(
-    thunk,
-    logger,
-    createWebSocketMiddleware(initializeWebSocket(process.env.NODE_ENV))
-  )
+  applyMiddleware(thunk.withExtraArgument({ emit: websocket.emit }), logger)
 )
+
+websocket.initWebsocketService(store, 'ws://localhost:8080/chat/ws') // TODO: remove hard coding
 
 initSessionService(store).then(() => {
   render(
