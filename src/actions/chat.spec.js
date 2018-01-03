@@ -361,10 +361,15 @@ it('create action SEND_CHAT_MESSAGE', () => {
     createdAt: moment('2017-11-03 13:00:00').valueOf(),
   }
   const cac = new ChatActionCreator({})
-  expect(cac.sendMessage(message)).toEqual({
-    type: 'SEND_CHAT_MESSAGE',
-    payload: { ...message },
-  })
+
+  const dispatch = jest.fn()
+  const getState = jest.fn()
+  const emit = jest.fn()
+
+  cac.sendMessage(message)(dispatch, getState, { emit })
+  expect(dispatch).not.toHaveBeenCalled()
+  expect(getState).not.toHaveBeenCalled()
+  expect(emit).toHaveBeenCalledWith('SEND_CHAT_MESSAGE', { ...message })
 })
 
 it('send a request to delete a room', () => {

@@ -1,14 +1,9 @@
 // @format
+
 import ReconnectingWebSocket from 'reconnecting-websocket'
+import { NATIVE_EVENTS } from '../constants/websocket'
 
-const ONOPEN = 'onopen'
-const ONCLOSE = 'onclose'
-const ONMESSAGE = 'onmessage'
-const ONERROR = 'onerror'
-
-const ALLOWED_EVENT_TYPES = [ONERROR, ONMESSAGE, ONCLOSE, ONOPEN]
-
-export class WebSocketService {
+export class BufferingWebSocket {
   constructor(endpoint, options = {}, WebSocketClass = ReconnectingWebSocket) {
     this.ws = null
     this.endpoint = endpoint
@@ -28,17 +23,17 @@ export class WebSocketService {
         }
         this.send(data, true)
       }
-      if (this.events[ONOPEN]) {
-        this.events[ONOPEN](event)
+      if (this.events[NATIVE_EVENTS.onopen]) {
+        this.events[NATIVE_EVENTS.onopen](event)
       }
     }
-    this.ws.onclose = this.events[ONCLOSE] || (() => {})
-    this.ws.onmessage = this.events[ONMESSAGE] || (() => {})
-    this.ws.onerror = this.events[ONERROR] || (() => {})
+    this.ws.onclose = this.events[NATIVE_EVENTS.onclose] || (() => {})
+    this.ws.onmessage = this.events[NATIVE_EVENTS.onmessage] || (() => {})
+    this.ws.onerror = this.events[NATIVE_EVENTS.onerror] || (() => {})
   }
 
   registerEvent(event, func) {
-    if (ALLOWED_EVENT_TYPES.includes(event)) {
+    if (Object.values(NATIVE_EVENTS).includes(event)) {
       this.events[event] = func
       return
     }
@@ -54,7 +49,6 @@ export class WebSocketService {
     } catch (err) {
       if (enableBuffer) {
         this.buffer.push(data)
-        console.log('Buffered: ' + JSON.stringify(data))
       }
     }
   }

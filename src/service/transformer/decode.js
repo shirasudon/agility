@@ -2,15 +2,14 @@
 
 import moment from 'moment'
 
-import * as ClientActionTypes from '../../actions/actionTypes'
-
-export const MESSAGE_CREATED = 'message_created'
+import * as ClientActionTypes from '../../constants/chat'
+import * as ServerActionTypes from '../../constants/websocket'
 
 // decode event string from the server to the format interpretable by clients
 export function decode(eventStr) {
   const { event, data } = JSON.parse(eventStr)
   switch (event) {
-    case MESSAGE_CREATED:
+    case ServerActionTypes.MESSAGE_CREATED:
       return {
         type: ClientActionTypes.SEND_CHAT_MESSAGE,
         payload: {

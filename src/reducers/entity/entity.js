@@ -11,7 +11,7 @@ import {
   RECEIVE_MESSAGE_READ,
   EXIST_UNREAD_MESSAGE,
   NO_UNREAD_MESSAGE,
-} from '../../actions/actionTypes'
+} from '../../constants/chat'
 import { insertOrdered } from '../../utility/array'
 
 export function users(

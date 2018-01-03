@@ -4,7 +4,7 @@ import { combineReducers } from 'redux-immutable'
 import * as ui from './ui'
 import * as entity from './entity'
 import * as domain from './domain'
-import { USER_LOGOUT } from '../actions/actionTypes'
+import { USER_LOGOUT } from '../constants/chat'
 
 export const appReducer = combineReducers({
   ...entity,

@@ -1,7 +1,7 @@
 // @format
 // import SessionApiStub from '../api/sessionStub'
 import SessionApi from '../api/session'
-import { USER_LOGOUT, USER_AUTH } from '../actions/actionTypes'
+import { USER_LOGOUT, USER_AUTH } from '../constants/chat'
 
 let sessionApi = SessionApi
 

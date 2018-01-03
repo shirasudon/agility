@@ -1,7 +1,7 @@
 // @format
 import moment from 'moment'
 
-import { CHANGE_ROOM, RECEIVE_FRIEND_IDS } from '../../actions/actionTypes'
+import { CHANGE_ROOM, RECEIVE_FRIEND_IDS } from '../../constants/chat'
 
 import { currentRoomId, friendIds, rooms } from './index'
 

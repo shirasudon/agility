@@ -7,7 +7,7 @@ import {
   RECEIVE_FRIEND_IDS,
   RECEIVE_DELETE_ROOM,
   USER_AUTH,
-} from '../../actions/actionTypes'
+} from '../../constants/chat'
 
 export function currentRoomId(state = null, action) {
   switch (action.type) {
