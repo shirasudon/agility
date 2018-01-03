@@ -5,6 +5,12 @@ import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../constants/chat'
 import { chatActionCreator } from '../actions'
 import * as transformer from '../service/transformer'
 
+let cac = chatActionCreator
+
+export const setChatActionCreator = newChatActionCreator => {
+  cac = newChatActionCreator
+}
+
 // returns a function to be called when receiving a message through websocket
 export const onMessage = rawData => (dispatch, getState) => {
   let type, payload
@@ -22,16 +28,14 @@ export const onMessage = rawData => (dispatch, getState) => {
       const entities = state.get('entities')
       const currentRoomId = state.get('currentRoomId')
       if (entities.getIn(['rooms', 'byId', payload.roomId, 'initialFetch'])) {
-        dispatch(chatActionCreator.receiveMessage(payload))
+        dispatch(cac.receiveMessage(payload))
       }
       if (currentRoomId !== payload.roomId) {
-        dispatch(chatActionCreator.existUnreadMessage(payload.roomId))
+        dispatch(cac.existUnreadMessages(payload.roomId))
       }
       break
     case SEND_MESSAGE_READ:
-      dispatch(
-        chatActionCreator.receiveMessageRead(payload.messageId, payload.userId)
-      )
+      dispatch(cac.receiveMessageRead(payload.messageId, payload.userId))
       break
     default:
       break
@@ -46,8 +50,8 @@ export const onOpen = () => (dispatch, getState) => {
   const myId = state.getIn(['auth', 'myId'])
 
   if (myId) {
-    dispatch(chatActionCreator.fetchRooms(myId))
-    dispatch(chatActionCreator.fetchFriends(myId))
+    dispatch(cac.fetchRooms(myId))
+    dispatch(cac.fetchFriends(myId))
   }
 }
 
