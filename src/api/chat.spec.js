@@ -9,6 +9,7 @@ import {
   fetchUnreadMessages,
   fetchMessagesByRoomId,
   createRoom,
+  deleteRoom,
 } from './chat'
 
 describe('fetchUser', () => {
@@ -478,5 +479,23 @@ describe('createRoom', () => {
         name: room.name,
       })
     })
+  })
+})
+
+describe('deleteRoom', () => {
+  it('sends a request DELETE to chat/rooms/{roomId}', () => {
+    const roomId = 2
+    const config = {
+      adapter: config => {
+        expect(config.url).toBe(`/chat/rooms/${roomId}`)
+        return new Promise(resolve => {
+          resolve({
+            data: {},
+            status: 200,
+          })
+        })
+      },
+    }
+    return deleteRoom(roomId, config)
   })
 })

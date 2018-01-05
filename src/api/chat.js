@@ -141,7 +141,7 @@ export function createRoom(room, config = {}) {
     room_name: room.name,
     room_member_ids: room.members,
   }
-  return axios.post(`/chat/rooms`, data, config).then(response => {
+  return axios.post('/chat/rooms', data, config).then(response => {
     const body = response.data
     return {
       id: body.room_id,
@@ -150,7 +150,6 @@ export function createRoom(room, config = {}) {
   })
 }
 
-// export function deleteRoom(roomId) {
-//   console.log(`chatApiStub deleted room {roomId}`)
-//   return Promise.resolve(true)
-// }
+export function deleteRoom(roomId, config = {}) {
+  return axios.delete(`/chat/rooms/${roomId}`, config)
+}
