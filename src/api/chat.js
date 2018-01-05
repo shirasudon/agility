@@ -134,15 +134,22 @@ export function fetchMessagesByRoomId(
     })
 }
 
-// export function createRoom(room) {
-//   const newRoom = RoomTable.addRoom(room)
-//   return new Promise(resolve => {
-//     setTimeout(() => {
-//       resolve(newRoom)
-//     }, 1500) // return after 1.5 second
-//   })
-// }
-//
+export function createRoom(room, config = {}) {
+  // TODO: better to migrate this transformation to transformer.js?
+  const data = {
+    sender_id: room.createdBy,
+    room_name: room.name,
+    room_member_ids: room.members,
+  }
+  return axios.post(`/chat/rooms`, data, config).then(response => {
+    const body = response.data
+    return {
+      id: body.room_id,
+      name: room.name,
+    }
+  })
+}
+
 // export function deleteRoom(roomId) {
 //   console.log(`chatApiStub deleted room {roomId}`)
 //   return Promise.resolve(true)
