@@ -8,6 +8,7 @@ import {
   messageMapper,
   fetchUnreadMessages,
   fetchMessagesByRoomId,
+  createRoom,
 } from './chat'
 
 describe('fetchUser', () => {
@@ -447,6 +448,35 @@ describe('fetchMessagesByRoomId', () => {
           userId: 5,
         },
       ])
+    })
+  })
+})
+
+describe('createRoom', () => {
+  it('returns room id and room name on successful creation of a room', () => {
+    const config = {
+      adapter: config => {
+        return new Promise(resolve => {
+          resolve({
+            data: {
+              room_id: 4,
+              ok: true,
+            },
+            status: 200,
+          })
+        })
+      },
+    }
+    const room = {
+      name: 'tennis club',
+      createdBy: 2,
+      members: [2, 3, 4],
+    }
+    return createRoom(room, config).then(response => {
+      expect(response).toEqual({
+        id: 4,
+        name: room.name,
+      })
     })
   })
 })
