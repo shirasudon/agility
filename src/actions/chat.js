@@ -19,8 +19,7 @@ import {
   RECEIVE_FRIEND_IDS,
   RECEIVE_MESSAGE_READ,
   SEND_MESSAGE_READ,
-  EXIST_UNREAD_MESSAGE,
-  NO_UNREAD_MESSAGE,
+  UNREAD_MESSAGES,
 } from '../constants/chat'
 
 export default class ChatActionCreator {
@@ -94,7 +93,7 @@ export default class ChatActionCreator {
 
       return Promise.all([roomFetchPromise, messageFetchPromise]).then(() => {
         dispatch(this.changeRoom(roomId))
-        dispatch(this.noUnreadMessage(roomId))
+        dispatch(this.unreadMessages(roomId, false))
       })
     }
   }
@@ -298,19 +297,11 @@ export default class ChatActionCreator {
     }
   }
 
-  existUnreadMessage(roomId) {
+  unreadMessages(roomId, exist) {
     return {
-      type: EXIST_UNREAD_MESSAGE,
+      type: UNREAD_MESSAGES,
       payload: {
-        roomId,
-      },
-    }
-  }
-
-  noUnreadMessage(roomId) {
-    return {
-      type: NO_UNREAD_MESSAGE,
-      payload: {
+        exist,
         roomId,
       },
     }

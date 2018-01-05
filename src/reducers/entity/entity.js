@@ -9,8 +9,7 @@ import {
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
   RECEIVE_MESSAGE_READ,
-  EXIST_UNREAD_MESSAGE,
-  NO_UNREAD_MESSAGE,
+  UNREAD_MESSAGES,
 } from '../../constants/chat'
 import { insertOrdered } from '../../utility/array'
 
@@ -73,14 +72,9 @@ export function room(state = roomInitialState, action) {
         initialFetch: false,
       })
 
-    case EXIST_UNREAD_MESSAGE:
+    case UNREAD_MESSAGES:
       return state.merge({
-        hasUnreadMessage: true,
-      })
-
-    case NO_UNREAD_MESSAGE:
-      return state.merge({
-        hasUnreadMessage: false,
+        hasUnreadMessage: data.exist,
       })
 
     case RECEIVE_MESSAGE:
@@ -149,8 +143,7 @@ export function rooms(
       return state
     }
 
-    case EXIST_UNREAD_MESSAGE:
-    case NO_UNREAD_MESSAGE: {
+    case UNREAD_MESSAGES: {
       return state.setIn(
         ['byId', data.roomId],
         room(state.getIn(['byId', data.roomId]), action)

@@ -137,7 +137,7 @@ it('dispatch enter room', () => {
     { type: 'RECEIVE_USER', payload: users[2] },
     { type: 'RECEIVE_USER', payload: users[3] },
     { type: 'CHANGE_ROOM', payload: { roomId } },
-    { type: 'NO_UNREAD_MESSAGE', payload: { roomId } },
+    { type: 'UNREAD_MESSAGES', payload: { roomId, exist: false } },
   ] // TODO: this test might fail depending on the execution order
   const store = mockStore({})
   const initialFetch = true
