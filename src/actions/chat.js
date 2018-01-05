@@ -258,13 +258,14 @@ export default class ChatActionCreator {
   deleteRoom(roomId) {
     return dispatch => {
       dispatch(this.requestDeleteRoom())
-      return this.chatApi.deleteRoom(roomId).then(ok => {
-        if (ok) {
+      return this.chatApi
+        .deleteRoom(roomId)
+        .then(() => {
           dispatch(this.receiveDeleteRoom(roomId))
-        } else {
+        })
+        .catch(err => {
           // TODO: error handling
-        }
-      })
+        })
     }
   }
 
