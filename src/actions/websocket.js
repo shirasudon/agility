@@ -5,6 +5,7 @@ import {
   SEND_CHAT_MESSAGE,
   SEND_MESSAGE_READ,
   RECEIVE_CREATE_ROOM,
+  RECEIVE_DELETE_ROOM,
 } from '../constants/chat'
 import { chatActionCreator } from '../actions'
 import * as transformer from '../service/transformer'
@@ -43,6 +44,9 @@ export const onMessage = rawData => (dispatch, getState) => {
       break
     case RECEIVE_CREATE_ROOM:
       dispatch(cac.receiveCreateRoom(payload.id, payload.name))
+      break
+    case RECEIVE_DELETE_ROOM:
+      dispatch(cac.receiveDeleteRoom(payload.id))
       break
     default:
       break
