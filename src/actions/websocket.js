@@ -1,7 +1,11 @@
 // @format
 
 import { NATIVE_EVENTS } from '../constants/websocket'
-import { SEND_CHAT_MESSAGE, SEND_MESSAGE_READ } from '../constants/chat'
+import {
+  SEND_CHAT_MESSAGE,
+  SEND_MESSAGE_READ,
+  RECEIVE_CREATE_ROOM,
+} from '../constants/chat'
 import { chatActionCreator } from '../actions'
 import * as transformer from '../service/transformer'
 
@@ -36,6 +40,9 @@ export const onMessage = rawData => (dispatch, getState) => {
       break
     case SEND_MESSAGE_READ:
       dispatch(cac.receiveMessageRead(payload.messageId, payload.userId))
+      break
+    case RECEIVE_CREATE_ROOM:
+      dispatch(cac.receiveCreateRoom(payload.id, payload.name))
       break
     default:
       break
