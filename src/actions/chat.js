@@ -175,11 +175,12 @@ export default class ChatActionCreator {
     }
   }
 
-  receiveCreateRoom(room) {
+  receiveCreateRoom(id, name) {
     return {
       type: RECEIVE_CREATE_ROOM,
       payload: {
-        ...room,
+        id,
+        name,
       },
     }
   }
@@ -229,9 +230,7 @@ export default class ChatActionCreator {
 
     return dispatch => {
       dispatch(this.requestCreateRoom())
-      return this.chatApi.createRoom(r).then(room => {
-        dispatch(this.receiveCreateRoom(room))
-      })
+      return this.chatApi.createRoom(r)
     }
   }
 

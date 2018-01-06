@@ -21,6 +21,15 @@ export function decode(eventStr) {
           readBy: [],
         },
       }
+    case ServerActionTypes.ROOM_CREATED:
+      return {
+        type: ClientActionTypes.RECEIVE_CREATE_ROOM,
+        payload: {
+          id: Number(data.room_id),
+          name: data.name,
+        },
+      }
+
     default:
       return {
         type: event,

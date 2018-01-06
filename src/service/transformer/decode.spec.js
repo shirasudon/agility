@@ -3,8 +3,8 @@
 import moment from 'moment'
 
 import { decode } from './decode'
-import { MESSAGE_CREATED } from '../../constants/websocket'
-import { SEND_CHAT_MESSAGE } from '../../constants/chat'
+import { MESSAGE_CREATED, ROOM_CREATED } from '../../constants/websocket'
+import { SEND_CHAT_MESSAGE, RECEIVE_CREATE_ROOM } from '../../constants/chat'
 
 it('decodes message_created JSON string', () => {
   const responseStr = JSON.stringify({
@@ -45,6 +45,26 @@ it('decodes unidentified event string to an obect with type and payload', () => 
     type: 'NONEXISTING_EVENT',
     payload: {
       hello: 'there',
+    },
+  }
+
+  expect(decode(responseStr)).toEqual(expected)
+})
+
+it('decodes ROOM_CREATED to RECEIVE_CREATE_ROOM', () => {
+  const responseStr = JSON.stringify({
+    event: ROOM_CREATED,
+    data: {
+      room_id: 2,
+      name: 'hello',
+    },
+  })
+
+  const expected = {
+    type: RECEIVE_CREATE_ROOM,
+    payload: {
+      id: 2,
+      name: 'hello',
     },
   }
 

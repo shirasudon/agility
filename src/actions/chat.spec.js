@@ -255,7 +255,7 @@ it('dispatches REQUEST_CREATE_ROOM', () => {
 it('dispatches RECEIVE_CREATE_ROOM', () => {
   const room = { id: 1, name: 'hoge' }
   const cac = new ChatActionCreator({})
-  expect(cac.receiveCreateRoom(room)).toEqual({
+  expect(cac.receiveCreateRoom(room.id, room.name)).toEqual({
     type: 'RECEIVE_CREATE_ROOM',
     payload: { ...room },
   })
@@ -331,18 +331,7 @@ it('send a request to create a room', () => {
   const createdBy = 1
   const roomName = 'room!'
 
-  const expectedActions = [
-    { type: 'REQUEST_CREATE_ROOM' },
-    {
-      type: 'RECEIVE_CREATE_ROOM',
-      payload: {
-        createdBy,
-        members,
-        name: roomName,
-        id: '2',
-      },
-    },
-  ]
+  const expectedActions = [{ type: 'REQUEST_CREATE_ROOM' }]
   const store = mockStore({})
 
   return store
