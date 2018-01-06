@@ -3,8 +3,16 @@
 import moment from 'moment'
 
 import { decode } from './decode'
-import { MESSAGE_CREATED, ROOM_CREATED } from '../../constants/websocket'
-import { SEND_CHAT_MESSAGE, RECEIVE_CREATE_ROOM } from '../../constants/chat'
+import {
+  MESSAGE_CREATED,
+  ROOM_CREATED,
+  ROOM_DELETED,
+} from '../../constants/websocket'
+import {
+  SEND_CHAT_MESSAGE,
+  RECEIVE_CREATE_ROOM,
+  RECEIVE_DELETE_ROOM,
+} from '../../constants/chat'
 
 it('decodes message_created JSON string', () => {
   const responseStr = JSON.stringify({
@@ -65,6 +73,25 @@ it('decodes ROOM_CREATED to RECEIVE_CREATE_ROOM', () => {
     payload: {
       id: 2,
       name: 'hello',
+    },
+  }
+
+  expect(decode(responseStr)).toEqual(expected)
+})
+
+it('decodes ROOM_DELETED to RECEIVE_DELETE_ROOM', () => {
+  const responseStr = JSON.stringify({
+    event: ROOM_DELETED,
+    data: {
+      room_id: 2,
+      name: 'hello',
+    },
+  })
+
+  const expected = {
+    type: RECEIVE_DELETE_ROOM,
+    payload: {
+      id: 2,
     },
   }
 

@@ -371,10 +371,7 @@ it('send a request to delete a room', () => {
   const cac = new ChatActionCreator(mockApi)
 
   const roomId = 2
-  const expectedActions = [
-    { type: 'REQUEST_DELETE_ROOM' },
-    { type: 'RECEIVE_DELETE_ROOM', payload: { roomId } },
-  ]
+  const expectedActions = [{ type: 'REQUEST_DELETE_ROOM' }]
   const store = mockStore({})
 
   return store.dispatch(cac.deleteRoom(roomId)).then(() => {

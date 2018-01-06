@@ -29,6 +29,13 @@ export function decode(eventStr) {
           name: data.name,
         },
       }
+    case ServerActionTypes.ROOM_DELETED:
+      return {
+        type: ClientActionTypes.RECEIVE_DELETE_ROOM,
+        payload: {
+          id: Number(data.room_id),
+        },
+      }
 
     default:
       return {
