@@ -67,7 +67,7 @@ describe('room', () => {
       members: [],
       initialFetch: false,
       hasUnreadMessage: false,
-      oldestMessageTimestamp: null,
+      oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
     }
     expect(room(undefined, { type: 'NON_EXISTING_TYPE' }).toJS()).toEqual(
       expected
@@ -108,7 +108,7 @@ describe('room', () => {
       members: [],
       initialFetch: false,
       hasUnreadMessage: true,
-      oldestMessageTimestamp: null,
+      oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
     }
     const action = {
       type: RECEIVE_ROOM,
@@ -117,7 +117,7 @@ describe('room', () => {
         name: 'new room',
         initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
         hasUnreadMessage: true,
-        oldestMessageTimestamp: null,
+        oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
       },
     }
     expect(room(undefined, action).toJS()).toEqual(expected)
@@ -131,7 +131,7 @@ describe('room', () => {
       members: [],
       initialFetch: false,
       hasUnreadMessage: false,
-      oldestMessageTimestamp: null,
+      oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
     }
     const action = {
       type: RECEIVE_CREATE_ROOM,
@@ -206,7 +206,7 @@ describe('rooms', () => {
           initialFetch: false,
           createdBy: null,
           hasUnreadMessage: false,
-          oldestMessageTimestamp: null,
+          oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
         },
       },
       all: ['1', '2', '5'],
@@ -302,7 +302,7 @@ describe('rooms', () => {
           initialFetch: false,
           createdBy: null,
           hasUnreadMessage: false,
-          oldestMessageTimestamp: null,
+          oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
         },
       },
       all: ['1', '5'],
