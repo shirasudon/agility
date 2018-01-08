@@ -45,7 +45,7 @@ const roomInitialState = Immutable.fromJS({
   createdBy: null,
   initialFetch: false,
   hasUnreadMessage: false,
-  oldestMessageTimestamp: null,
+  oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
 })
 
 export function room(state = roomInitialState, action) {
