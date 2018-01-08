@@ -1,8 +1,10 @@
 // @format
+
 import axios from 'axios'
 import moment from 'moment'
+import { SERVER_TIME_FORMAT } from '../constants/time'
 
-export function fetchRooms(userId, config: {}) {
+export function fetchRooms(userId, config = {}) {
   return axios.get(`/chat/users/${userId}`, config).then(response => {
     const body = response.data
     if (Number(body.user_id) !== userId) {
@@ -28,7 +30,7 @@ export function fetchRoomInfo(roomId, config = {}) {
   })
 }
 
-export function fetchUser(userId, config: {}) {
+export function fetchUser(userId, config = {}) {
   return axios.get(`/chat/users/${userId}`, config).then(response => {
     const body = response.data
     if (Number(body.user_id) !== userId) {
@@ -43,7 +45,7 @@ export function fetchUser(userId, config: {}) {
   })
 }
 
-export function fetchFriendIds(userId, config: {}) {
+export function fetchFriendIds(userId, config = {}) {
   return axios.get(`/chat/users/${userId}`, config).then(response => {
     const body = response.data
     if (Number(body.user_id) !== userId) {
@@ -112,12 +114,17 @@ export function fetchMessagesByRoomId(
         // do not make any unnecessary connection
         return null
       }
-      let url = `/chat/rooms/${roomId}/messages?limit=${limit}`
-      if (before) {
-        before = moment(before).format('YYYY-MM-DD[T]HH:mm:ss.SSSSSSSSSZZ')
-        url += `&before=${before}`
+      let url = `/chat/rooms/${roomId}/messages`
+      let params = {
+        limit,
       }
-      return axios.get(url, config)
+      if (before) {
+        params = {
+          ...params,
+          before: moment(before).format(SERVER_TIME_FORMAT),
+        }
+      }
+      return axios.get(url, Object.assign(config, { params }))
     })
     .then(response => {
       if (response) {
