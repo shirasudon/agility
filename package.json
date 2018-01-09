@@ -1,15 +1,14 @@
 {
   "name": "chat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "axios": "^0.17.1",
-    "codecov": "^2.3.0",
     "history": "^4.6.3",
     "immutable": "^3.8.2",
     "material-ui": "^1.0.0-beta.22",
     "material-ui-icons": "^1.0.0-beta.17",
-    "moment": "^2.19.1",
+    "moment": "^2.20.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
@@ -32,6 +31,7 @@
     "prettier-check": "prettier -l src/**/*.js"
   },
   "devDependencies": {
+    "codecov": "^3.0.0",
     "enzyme": "^3.1.0",
     "enzyme-adapter-react-16": "^1.0.1",
     "jest": "^21.2.1",
