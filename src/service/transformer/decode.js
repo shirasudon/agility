@@ -36,7 +36,15 @@ export function decode(eventStr) {
           id: Number(data.room_id),
         },
       }
-
+    case ServerActionTypes.ROOM_MESSAGES_READ_BY_USER:
+      return {
+        type: ClientActionTypes.RECEIVE_MESSAGE_READ,
+        payload: {
+          userId: Number(data.user_id),
+          roomId: Number(data.room_id),
+          readAt: moment(data.read_at).valueOf(),
+        },
+      }
     default:
       return {
         type: event,

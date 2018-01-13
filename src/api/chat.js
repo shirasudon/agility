@@ -20,10 +20,17 @@ export function fetchRooms(userId, config = {}) {
 export function fetchRoomInfo(roomId, config = {}) {
   return axios.get(`/chat/rooms/${roomId}`, config).then(response => {
     const body = response.data
+
+    // TODO: follow the server side spec when it is ready
+    let members = new Map()
+    for (let member of body.room_members) {
+      members.set(member.user_id, new Map([['readAt', member.read_at || -1]]))
+    }
+
     return {
       id: body.room_id,
       name: body.room_name,
-      members: body.room_members.map(member => Number(member.user_id)),
+      members,
       createdBy: Number(body.room_creator_id),
       hasUnreadMessage: false, // TODO: correctly fetches the info
     }
@@ -61,7 +68,6 @@ export const messageMapper = (message, roomId) => ({
   userId: message.user_id,
   text: message.content,
   createdAt: moment(message.created_at).valueOf(),
-  readBy: [], // TODO: wait for the API to be ready
 })
 
 export function fetchUnreadMessages(roomId, config) {
@@ -159,4 +165,17 @@ export function createRoom(room, config = {}) {
 
 export function deleteRoom(roomId, config = {}) {
   return axios.delete(`/chat/rooms/${roomId}`, config)
+}
+
+export function sendMessageRead(roomId, readAt, config = {}) {
+  return axios.post(
+    `/chat/rooms/${roomId}/messages/read`,
+    {
+      room_id: roomId,
+      read_at: moment(readAt)
+        .utc()
+        .format(SERVER_TIME_FORMAT),
+    },
+    config
+  )
 }

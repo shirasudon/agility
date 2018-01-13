@@ -1,5 +1,6 @@
 // @format
-import Immutable from 'immutable'
+
+import Immutable, { Map as IMap } from 'immutable'
 
 import {
   RECEIVE_USER,
@@ -9,8 +10,7 @@ import {
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
   RECEIVE_MESSAGE_READ,
-  EXIST_UNREAD_MESSAGE,
-  NO_UNREAD_MESSAGE,
+  UNREAD_MESSAGES,
 } from '../../constants/chat'
 import { insertOrdered } from '../../utility/array'
 
@@ -41,7 +41,7 @@ export function users(
 const roomInitialState = Immutable.fromJS({
   id: null,
   name: null,
-  members: [],
+  members: {},
   createdBy: null,
   initialFetch: false,
   hasUnreadMessage: false,
@@ -53,7 +53,7 @@ export function room(state = roomInitialState, action) {
   switch (action.type) {
     case RECEIVE_ROOM_INFO:
       return state.merge({
-        members: data.members,
+        members: IMap(data.members),
         createdBy: data.createdBy,
         initialFetch: true,
       })
@@ -73,14 +73,9 @@ export function room(state = roomInitialState, action) {
         initialFetch: false,
       })
 
-    case EXIST_UNREAD_MESSAGE:
+    case UNREAD_MESSAGES:
       return state.merge({
-        hasUnreadMessage: true,
-      })
-
-    case NO_UNREAD_MESSAGE:
-      return state.merge({
-        hasUnreadMessage: false,
+        hasUnreadMessage: data.exist,
       })
 
     case RECEIVE_MESSAGE:
@@ -91,6 +86,11 @@ export function room(state = roomInitialState, action) {
           state.get('oldestMessageTimestamp')
         ),
       })
+
+    case RECEIVE_MESSAGE_READ:
+      const { userId, readAt } = action.payload
+      const key = ['members', userId, 'readAt']
+      return state.setIn(key, Math.max(readAt, state.getIn(key)))
 
     default:
       return state
@@ -108,7 +108,6 @@ export function rooms(
   switch (action.type) {
     case RECEIVE_ROOM: {
       if (!state.get('all').includes(data.id)) {
-        // TODO: make `all` a set
         state = state.setIn(
           ['byId', data.id],
           room(state.getIn(['byId', data.id]), action)
@@ -149,15 +148,9 @@ export function rooms(
       return state
     }
 
-    case EXIST_UNREAD_MESSAGE:
-    case NO_UNREAD_MESSAGE: {
-      return state.setIn(
-        ['byId', data.roomId],
-        room(state.getIn(['byId', data.roomId]), action)
-      )
-    }
-
-    case RECEIVE_MESSAGE: {
+    case RECEIVE_MESSAGE_READ:
+    case RECEIVE_MESSAGE:
+    case UNREAD_MESSAGES: {
       const { roomId } = data
       return state.setIn(
         ['byId', roomId],
@@ -199,11 +192,18 @@ export function messages(
     }
 
     case RECEIVE_MESSAGE_READ: {
-      const { messageId, userId } = data
-      if (!state.getIn(['byId', messageId, 'readBy']).includes(userId)) {
-        state.updateIn(['byId', messageId, 'readBy'], readBy =>
-          readBy.push(userId)
-        )
+      const { userId, roomId, readAt } = data
+      for (let messageId of state.getIn(['byRoomId', roomId]).reverse()) {
+        // from the new messages
+        const msg = state.getIn(['byId', messageId, 'readBy'])
+        if (!msg || msg.includes(userId)) {
+          break
+        }
+        if (state.getIn(['byId', messageId, 'createdAt']) <= readAt) {
+          state = state.updateIn(['byId', messageId, 'readBy'], readBy =>
+            readBy.push(userId)
+          )
+        }
       }
       return state
     }

@@ -1,5 +1,7 @@
 // @format
 
+import moment from 'moment'
+
 import {
   fetchUser,
   fetchRooms,
@@ -10,6 +12,7 @@ import {
   fetchMessagesByRoomId,
   createRoom,
   deleteRoom,
+  sendMessageRead,
 } from './chat'
 
 describe('fetchUser', () => {
@@ -173,7 +176,11 @@ describe('fetchRoomInfo', () => {
     const expected = {
       id: 2,
       name: 'room name',
-      members: [3, 5, 7],
+      members: new Map([
+        [3, new Map([['readAt', -1]])],
+        [5, new Map([['readAt', -1]])],
+        [7, new Map([['readAt', -1]])],
+      ]),
       createdBy: 7,
       hasUnreadMessage: false,
     }
@@ -213,7 +220,6 @@ describe('messageMapper', () => {
       userId: 3,
       text: 'hello world',
       createdAt: 1514014237700,
-      readBy: [], // TODO: wait for the API to be ready
     })
   })
 })
@@ -280,7 +286,6 @@ describe('fetchUnreadMessages', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -288,7 +293,6 @@ describe('fetchUnreadMessages', () => {
         {
           createdAt: 1513927837700,
           id: 4,
-          readBy: [],
           roomId: 2,
           text: 'message 4',
           userId: 2,
@@ -348,7 +352,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -356,7 +359,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1512027037700,
           id: 3,
-          readBy: [],
           roomId: 2,
           text: 'message 3',
           userId: 3,
@@ -427,7 +429,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -435,7 +436,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 4,
-          readBy: [],
           roomId: 2,
           text: 'message 4',
           userId: 5,
@@ -443,7 +443,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 3,
-          readBy: [],
           roomId: 2,
           text: 'message 3',
           userId: 5,
@@ -497,5 +496,27 @@ describe('deleteRoom', () => {
       },
     }
     return deleteRoom(roomId, config)
+  })
+})
+
+describe('sendMessageRead', () => {
+  it('sends a POST request to chat/rooms/{roomId}/messages/read', () => {
+    const roomId = 2
+    const readAt = moment('2018-01-13T18:01:50+09:00').valueOf()
+    const config = {
+      adapter: config => {
+        expect(config.url).toBe(`/chat/rooms/${roomId}/messages/read`)
+        expect(config.data).toEqual(
+          `{\"room_id\":2,\"read_at\":\"2018-01-13T09:01:50.000000000+00:00\"}`
+        )
+        return new Promise(resolve => {
+          resolve({
+            data: {},
+            status: 200,
+          })
+        })
+      },
+    }
+    return sendMessageRead(roomId, readAt, config)
   })
 })

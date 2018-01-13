@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import Grid from 'material-ui/Grid'
 import moment from 'moment'
-import { lifecycle, compose } from 'recompose'
-import { chatActionCreator } from '../actions'
+import { compose } from 'recompose'
 
 import { toJS } from './ToJS'
 
@@ -35,17 +34,6 @@ const styleSheet = theme => ({
   },
   postMetaRight: {
     textAlign: 'right',
-  },
-})
-
-export const withLifecycle = lifecycle({
-  componentDidMount() {
-    // dispatch read notification to the server
-    const { message, myId, sendRead } = this.props
-    if (!message.readBy.includes(myId)) {
-      // notify the server that the current user has read the specific message
-      sendRead(message.id, myId)
-    }
   },
 })
 
@@ -83,17 +71,10 @@ export const mapStateToProps = state => ({
   messages: state.getIn(['entities', 'messages']),
 })
 
-export const mapDispatchToProps = dispatch => ({
-  sendRead: (messageId, userId) => {
-    dispatch(chatActionCreator.sendMessageRead([messageId], userId))
-  },
-})
-
 export const enhancer = compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, null),
   toJS,
-  withStyles(styleSheet),
-  withLifecycle
+  withStyles(styleSheet)
 )
 
 export default enhancer(Balloon)

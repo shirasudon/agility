@@ -18,9 +18,7 @@ import {
   RECEIVE_DELETE_ROOM,
   RECEIVE_FRIEND_IDS,
   RECEIVE_MESSAGE_READ,
-  SEND_MESSAGE_READ,
-  EXIST_UNREAD_MESSAGE,
-  NO_UNREAD_MESSAGE,
+  UNREAD_MESSAGES,
 } from '../constants/chat'
 
 export default class ChatActionCreator {
@@ -72,11 +70,11 @@ export default class ChatActionCreator {
         }
         dispatch(this.fetchRoomInfo(roomId))
           .then(room => {
-            return Promise.all(
-              room.members.map(member => {
-                return dispatch(this.fetchUser(member))
-              })
-            )
+            let events = []
+            for (let userId of new Map(room.members).keys()) {
+              events.push(dispatch(this.fetchUser(userId)))
+            }
+            return Promise.all(events)
           })
           .then(() => {
             resolve()
@@ -94,7 +92,7 @@ export default class ChatActionCreator {
 
       return Promise.all([roomFetchPromise, messageFetchPromise]).then(() => {
         dispatch(this.changeRoom(roomId))
-        dispatch(this.noUnreadMessage(roomId))
+        dispatch(this.unreadMessages(roomId, false))
       })
     }
   }
@@ -191,12 +189,33 @@ export default class ChatActionCreator {
     }
   }
 
-  receiveMessage(message) {
-    return {
-      type: RECEIVE_MESSAGE,
-      payload: {
-        ...message,
-      },
+  // computes readBy from redux state
+  getReadBy(state, roomId, createdAt) {
+    const entities = state.get('entities')
+    const readByIterator = entities
+      .getIn(['rooms', 'byId', roomId, 'members'])
+      .filter(userInfo => {
+        const readAt = userInfo.get('readAt')
+        return readAt && readAt >= createdAt
+      })
+      .keys()
+    return Array.from(readByIterator)
+  }
+
+  receiveMessage({ id, roomId, userId, text, createdAt }) {
+    return (dispatch, getState) => {
+      const readBy = this.getReadBy(getState(), roomId, createdAt)
+      dispatch({
+        type: RECEIVE_MESSAGE,
+        payload: {
+          id,
+          roomId,
+          userId,
+          text,
+          createdAt,
+          readBy,
+        },
+      })
     }
   }
 
@@ -212,7 +231,7 @@ export default class ChatActionCreator {
     return dispatch => {
       dispatch(this.requestMessages())
       return this.chatApi
-        .fetchMessagesByRoomId(roomId, before)
+        .fetchMessagesByRoomId(roomId, before, atLeast)
         .then(messages => {
           messages.forEach(message => {
             dispatch(this.receiveMessage(message))
@@ -276,41 +295,26 @@ export default class ChatActionCreator {
     }
   }
 
-  receiveMessageRead(messageId, userId) {
+  receiveMessageRead(userId, roomId, readAt) {
     return {
       type: RECEIVE_MESSAGE_READ,
       payload: {
-        messageId,
         userId,
-      },
-    }
-  }
-
-  sendMessageRead(messageIds, userId) {
-    return (dispatch, getState, { emit }) => {
-      emit({
-        type: SEND_MESSAGE_READ,
-        payload: {
-          messageIds,
-          userId,
-        },
-      })
-    }
-  }
-
-  existUnreadMessage(roomId) {
-    return {
-      type: EXIST_UNREAD_MESSAGE,
-      payload: {
         roomId,
+        readAt,
       },
     }
   }
 
-  noUnreadMessage(roomId) {
+  sendMessageRead(roomId, readAt) {
+    return dispatch => this.chatApi.sendMessageRead(roomId, readAt)
+  }
+
+  unreadMessages(roomId, exist) {
     return {
-      type: NO_UNREAD_MESSAGE,
+      type: UNREAD_MESSAGES,
       payload: {
+        exist,
         roomId,
       },
     }

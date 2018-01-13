@@ -3,7 +3,7 @@
 import { NATIVE_EVENTS } from '../constants/websocket'
 import {
   SEND_CHAT_MESSAGE,
-  SEND_MESSAGE_READ,
+  RECEIVE_MESSAGE_READ,
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
 } from '../constants/chat'
@@ -36,11 +36,13 @@ export const onMessage = rawData => (dispatch, getState) => {
         dispatch(cac.receiveMessage(payload))
       }
       if (currentRoomId !== payload.roomId) {
-        dispatch(cac.existUnreadMessages(payload.roomId))
+        dispatch(cac.unreadMessages(payload.roomId, true))
       }
       break
-    case SEND_MESSAGE_READ:
-      dispatch(cac.receiveMessageRead(payload.messageId, payload.userId))
+    case RECEIVE_MESSAGE_READ:
+      dispatch(
+        cac.receiveMessageRead(payload.userId, payload.roomId, payload.readAt)
+      )
       break
     case RECEIVE_CREATE_ROOM:
       dispatch(cac.receiveCreateRoom(payload.id, payload.name))

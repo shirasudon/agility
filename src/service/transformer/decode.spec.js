@@ -7,11 +7,13 @@ import {
   MESSAGE_CREATED,
   ROOM_CREATED,
   ROOM_DELETED,
+  ROOM_MESSAGES_READ_BY_USER,
 } from '../../constants/websocket'
 import {
   SEND_CHAT_MESSAGE,
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
+  RECEIVE_MESSAGE_READ,
 } from '../../constants/chat'
 
 it('decodes message_created JSON string', () => {
@@ -35,6 +37,28 @@ it('decodes message_created JSON string', () => {
       userId: 3,
       createdAt: moment('2017-12-26T00:07:03.004699564+09:00').valueOf(),
       readBy: [],
+    },
+  }
+
+  expect(decode(responseStr)).toEqual(expected)
+})
+
+it('decodes room_messages_read_by_user JSON string', () => {
+  const responseStr = JSON.stringify({
+    event: ROOM_MESSAGES_READ_BY_USER,
+    data: {
+      room_id: 2,
+      user_id: 3,
+      read_at: '2018-01-05T00:07:03.004699564+09:00',
+    },
+  })
+
+  const expected = {
+    type: RECEIVE_MESSAGE_READ,
+    payload: {
+      roomId: 2,
+      userId: 3,
+      readAt: moment('2018-01-05T00:07:03.004699564+09:00').valueOf(),
     },
   }
 
