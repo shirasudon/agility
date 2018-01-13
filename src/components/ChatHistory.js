@@ -38,50 +38,58 @@ export const scrollToBottom = dom => {
   ReactDOM.findDOMNode(dom).scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
 }
 
-export const withLifecycle = lifecycle({
-  sendReadIfExistNonRead(props) {
-    const { entities, sendRead, myId, currentRoomId } = props
-    const messages = entities.messages.byRoomId[currentRoomId]
-    const latestMessage =
-      messages &&
-      messages.length > 0 &&
-      entities.messages.byId[messages[messages.length - 1]]
+// send read notification to the server if the last message is not read by the current user
+export const sendReadIfExistNonRead = props => {
+  const { entities, sendRead, myId, currentRoomId } = props
+  const messages = entities.messages.byRoomId[currentRoomId]
+  const latestMessage =
+    messages &&
+    messages.length > 0 &&
+    entities.messages.byId[messages[messages.length - 1]]
 
-    if (latestMessage && !latestMessage.readBy.includes(myId)) {
-      // notify the server that the current user has read the specific message
-      sendRead(currentRoomId, latestMessage.createdAt)
-    }
-  },
-  componentDidMount() {
-    this.sendReadIfExistNonRead(this.props)
-  },
-  componentWillUpdate(nextProps) {
-    const { refs, currentRoomId: nextRoomId } = nextProps
-    const { messageList } = refs
-    const messages = this.props.entities.messages.byRoomId[nextRoomId]
-    const newMessages = nextProps.entities.messages.byRoomId[nextRoomId]
-    if (messages && newMessages && messages.length !== newMessages.length) {
-      // update shouldScrollToBottom only when the message history changed
-      const scrollPos = messageList.scrollTop
-      const scrollBottom = messageList.scrollHeight - messageList.clientHeight
-      this.shouldScrollToBottom =
-        scrollBottom <= 0 || scrollPos === scrollBottom
-    }
-    const shouldTrySendRead =
-      (messages && newMessages && messages.length !== newMessages.length) ||
-      this.props.currentRoomId !== nextRoomId
-    if (shouldTrySendRead) {
-      this.sendReadIfExistNonRead(nextProps)
-    }
-  },
-  // When new props are received, automatically scroll to the bottom
-  componentDidUpdate() {
-    const { messageList } = this.props.refs
-    if (this.shouldScrollToBottom) {
-      scrollToBottom(messageList)
-    }
-  },
-})
+  if (latestMessage && !latestMessage.readBy.includes(myId)) {
+    // notify the server that the current user has read the specific message
+    sendRead(currentRoomId, latestMessage.createdAt)
+  }
+}
+
+export const withLifecycleFactory = (sendReadIfExistNonRead, scrollToBottom) =>
+  lifecycle({
+    componentDidMount() {
+      sendReadIfExistNonRead(this.props)
+    },
+    componentWillUpdate(nextProps) {
+      const { refs, currentRoomId: nextRoomId } = nextProps
+      const { messageList } = refs
+      const messages = this.props.entities.messages.byRoomId[nextRoomId]
+      const newMessages = nextProps.entities.messages.byRoomId[nextRoomId]
+      if (messages && newMessages && messages.length !== newMessages.length) {
+        // update shouldScrollToBottom only when the message history changed
+        const scrollPos = messageList.scrollTop
+        const scrollBottom = messageList.scrollHeight - messageList.clientHeight
+        this.shouldScrollToBottom =
+          scrollBottom <= 0 || scrollPos === scrollBottom
+      }
+      this.shouldTrySendRead =
+        (messages && newMessages && messages.length !== newMessages.length) ||
+        this.props.currentRoomId !== nextRoomId
+    },
+    componentDidUpdate() {
+      const { messageList } = this.props.refs
+      // When new props are received, automatically scroll to the bottom
+      if (this.shouldScrollToBottom) {
+        scrollToBottom(messageList)
+      }
+      if (this.shouldTrySendRead) {
+        sendReadIfExistNonRead(this.props)
+      }
+    },
+  })
+
+export const withLifecycle = withLifecycleFactory(
+  sendReadIfExistNonRead,
+  scrollToBottom
+)
 
 export const ChatHistory = ({
   currentRoomId,

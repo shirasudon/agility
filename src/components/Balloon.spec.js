@@ -5,43 +5,6 @@ import { shallow, mount, render } from 'enzyme'
 
 import { Balloon, RIGHT, LEFT, withLifecycle } from './Balloon'
 
-describe('withLifecycles', () => {
-  xit('calls sendRead when a message is not read by the user', () => {
-    const props = {
-      sendRead: jest.fn(),
-      message: {
-        id: 3,
-        readBy: [1, 3, 5],
-        createdAt: moment('2018-01-10T21:57:29+09:00').valueOf(),
-      },
-      currentRoomId: 3,
-      myId: 2,
-    }
-    const BaseComponent = () => <div>hoge</div>
-    const Component = withLifecycle(BaseComponent)
-    const wrapper = mount(<Component {...props} />)
-    expect(props.sendRead).toHaveBeenCalledWith(
-      props.currentRoomId,
-      props.message.createdAt
-    )
-  })
-
-  xit('does not call sendRead when a message is already read by the user', () => {
-    const props = {
-      sendRead: jest.fn(),
-      message: {
-        id: 3,
-        readBy: [1, 3, 5],
-      },
-      myId: 3,
-    }
-    const BaseComponent = () => <div>hoge</div>
-    const Component = withLifecycle(BaseComponent)
-    const wrapper = mount(<Component {...props} />)
-    expect(props.sendRead).not.toHaveBeenCalled()
-  })
-})
-
 describe('Balloon', () => {
   it('renders message, read count, meta infos on the right when the poster is myself', () => {
     const props = {
