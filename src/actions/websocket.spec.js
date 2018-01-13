@@ -16,12 +16,12 @@ import * as transformer from '../service/transformer'
 const createChatActionCreator = () => {
   const fetchRooms = jest.fn(() => 'fetchRooms')
   const fetchFriends = jest.fn(() => 'fetchFriends')
-  const existUnreadMessages = jest.fn(() => 'existUnreadMessages')
+  const unreadMessages = jest.fn(() => 'unreadMessages')
   const receiveMessage = jest.fn(() => 'receiveMessage')
   return {
     fetchRooms,
     fetchFriends,
-    existUnreadMessages,
+    unreadMessages,
     receiveMessage,
   }
 }
@@ -35,6 +35,10 @@ describe('onMessage', () => {
       Immutable.fromJS({})
         .set('currentRoomId', 3)
         .setIn(['entities', 'rooms', 'byId', 3, 'initialFetch'], true)
+        .setIn(
+          ['entities', 'rooms', 'byId', 3, 'members'],
+          Immutable.List.of(1, 2, 3)
+        )
     )
 
     const data = {
@@ -55,7 +59,7 @@ describe('onMessage', () => {
     expect(dispatch).toHaveBeenCalledWith('receiveMessage')
   })
 
-  it(`dispatches existUnreadMessages when current room is not the same as the received messages'room`, () => {
+  it(`dispatches unreadMessages when current room is not the same as the received messages'room`, () => {
     const chatActionCreator = createChatActionCreator()
     setChatActionCreator(chatActionCreator)
     const dispatch = jest.fn()
@@ -63,6 +67,10 @@ describe('onMessage', () => {
       Immutable.fromJS({})
         .set('currentRoomId', 3)
         .setIn(['entities', 'rooms', 'byId', 3, 'initialFetch'], true)
+        .setIn(
+          ['entities', 'rooms', 'byId', 3, 'members'],
+          Immutable.List.of(1, 2, 3)
+        )
     )
 
     const data = {
@@ -77,8 +85,8 @@ describe('onMessage', () => {
     }
     const rawData = JSON.stringify(data)
     onMessage(rawData)(dispatch, getState)
-    expect(chatActionCreator.existUnreadMessages).toHaveBeenCalledWith(4)
-    expect(dispatch).toHaveBeenCalledWith('existUnreadMessages')
+    expect(chatActionCreator.unreadMessages).toHaveBeenCalledWith(4, true)
+    expect(dispatch).toHaveBeenCalledWith('unreadMessages')
   })
 
   // TODO

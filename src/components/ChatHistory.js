@@ -39,17 +39,39 @@ export const scrollToBottom = dom => {
 }
 
 export const withLifecycle = lifecycle({
-  componentWillUpdate(nextProps) {
-    const { refs, entities, currentRoomId } = this.props
-    const { messageList } = refs
+  sendReadIfExistNonRead(props) {
+    const { entities, sendRead, myId, currentRoomId } = props
     const messages = entities.messages.byRoomId[currentRoomId]
-    const newMessages = nextProps.entities.messages.byRoomId[currentRoomId]
+    const latestMessage =
+      messages &&
+      messages.length > 0 &&
+      entities.messages.byId[messages[messages.length - 1]]
+
+    if (latestMessage && !latestMessage.readBy.includes(myId)) {
+      // notify the server that the current user has read the specific message
+      sendRead(currentRoomId, latestMessage.createdAt)
+    }
+  },
+  componentDidMount() {
+    this.sendReadIfExistNonRead(this.props)
+  },
+  componentWillUpdate(nextProps) {
+    const { refs, currentRoomId: nextRoomId } = nextProps
+    const { messageList } = refs
+    const messages = this.props.entities.messages.byRoomId[nextRoomId]
+    const newMessages = nextProps.entities.messages.byRoomId[nextRoomId]
     if (messages && newMessages && messages.length !== newMessages.length) {
       // update shouldScrollToBottom only when the message history changed
       const scrollPos = messageList.scrollTop
       const scrollBottom = messageList.scrollHeight - messageList.clientHeight
       this.shouldScrollToBottom =
         scrollBottom <= 0 || scrollPos === scrollBottom
+    }
+    const shouldTrySendRead =
+      (messages && newMessages && messages.length !== newMessages.length) ||
+      this.props.currentRoomId !== nextRoomId
+    if (shouldTrySendRead) {
+      this.sendReadIfExistNonRead(nextProps)
     }
   },
   // When new props are received, automatically scroll to the bottom
@@ -77,12 +99,11 @@ export const ChatHistory = ({
       )
   const messagesDOM = roomMessages ? (
     roomMessages.map((message, index) => {
-      return <Balloon key={index} message={message} />
+      return <Balloon key={message.id} message={message} />
     })
   ) : (
     <span>There is no conversation yet</span>
   )
-
   return (
     <div
       className={classes.root}
@@ -97,11 +118,15 @@ export const ChatHistory = ({
 const mapStateToProps = state => ({
   currentRoomId: state.get('currentRoomId'),
   entities: state.get('entities'),
+  myId: state.getIn(['auth', 'myId']),
 })
 
 const mapDispatchToProps = dispatch => ({
   fetchHistory: (roomId, timestamp) => {
     dispatch(cac.fetchMessagesByRoomId(roomId, timestamp))
+  },
+  sendRead: (roomId, readAt) => {
+    dispatch(chatActionCreator.sendMessageRead(roomId, readAt))
   },
 })
 

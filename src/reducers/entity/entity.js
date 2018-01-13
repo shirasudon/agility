@@ -1,5 +1,6 @@
 // @format
-import Immutable from 'immutable'
+
+import Immutable, { Map as IMap } from 'immutable'
 
 import {
   RECEIVE_USER,
@@ -40,7 +41,7 @@ export function users(
 const roomInitialState = Immutable.fromJS({
   id: null,
   name: null,
-  members: [],
+  members: {},
   createdBy: null,
   initialFetch: false,
   hasUnreadMessage: false,
@@ -52,7 +53,7 @@ export function room(state = roomInitialState, action) {
   switch (action.type) {
     case RECEIVE_ROOM_INFO:
       return state.merge({
-        members: data.members,
+        members: IMap(data.members),
         createdBy: data.createdBy,
         initialFetch: true,
       })
@@ -86,6 +87,10 @@ export function room(state = roomInitialState, action) {
         ),
       })
 
+    case RECEIVE_MESSAGE_READ:
+      const { userId, readAt } = action.payload
+      return state.set(userId, Math.max(readAt, state.get(userId)))
+
     default:
       return state
   }
@@ -102,7 +107,6 @@ export function rooms(
   switch (action.type) {
     case RECEIVE_ROOM: {
       if (!state.get('all').includes(data.id)) {
-        // TODO: make `all` a set
         state = state.setIn(
           ['byId', data.id],
           room(state.getIn(['byId', data.id]), action)
@@ -143,14 +147,9 @@ export function rooms(
       return state
     }
 
+    case RECEIVE_MESSAGE_READ:
+    case RECEIVE_MESSAGE:
     case UNREAD_MESSAGES: {
-      return state.setIn(
-        ['byId', data.roomId],
-        room(state.getIn(['byId', data.roomId]), action)
-      )
-    }
-
-    case RECEIVE_MESSAGE: {
       const { roomId } = data
       return state.setIn(
         ['byId', roomId],
@@ -192,11 +191,20 @@ export function messages(
     }
 
     case RECEIVE_MESSAGE_READ: {
-      const { messageId, userId } = data
-      if (!state.getIn(['byId', messageId, 'readBy']).includes(userId)) {
-        state.updateIn(['byId', messageId, 'readBy'], readBy =>
-          readBy.push(userId)
-        )
+      const { userId, roomId, readAt } = data
+      for (let messageId of state
+        .getIn(['byRoomId', roomId])
+        .reverse() // from the new messages
+        .toJS()) {
+        const msg = state.getIn(['byId', messageId, 'readBy'])
+        if (!msg || msg.includes(userId)) {
+          break
+        }
+        if (msg.get('createdAt') <= readAt) {
+          state = state.updateIn(['byId', messageId, 'readBy'], readBy =>
+            readBy.push(userId)
+          )
+        }
       }
       return state
     }

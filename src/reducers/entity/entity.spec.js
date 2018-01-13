@@ -1,6 +1,6 @@
 // @format
 import moment from 'moment'
-import { toJS, fromJS } from 'immutable'
+import { toJS, Map as IMap, List as IList } from 'immutable'
 
 import { users, room, rooms, messages } from './entity'
 import {
@@ -29,7 +29,7 @@ describe('users', () => {
     const action = {
       type: 'RECEIVE_USER',
       payload: {
-        id: '3',
+        id: 3,
         username: 'user3',
         firstName: 'first3',
         lastName: 'last3',
@@ -37,8 +37,8 @@ describe('users', () => {
     }
     const expected = {
       byId: {
-        '3': {
-          id: '3',
+        3: {
+          id: 3,
           username: 'user3',
           firstName: 'first3',
           lastName: 'last3',
@@ -46,13 +46,13 @@ describe('users', () => {
       },
       byUsername: {
         user3: {
-          id: '3',
+          id: 3,
           username: 'user3',
           firstName: 'first3',
           lastName: 'last3',
         },
       },
-      all: ['3'],
+      all: [3],
     }
     expect(users(undefined, action).toJS()).toEqual(expected)
   })
@@ -64,7 +64,7 @@ describe('room', () => {
       createdBy: null,
       id: null,
       name: null,
-      members: [],
+      members: {},
       initialFetch: false,
       hasUnreadMessage: false,
       oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
@@ -76,25 +76,33 @@ describe('room', () => {
 
   it('sets members and initialFetch on receiving RECEIVE_ROOM_INFO', () => {
     const expected = {
-      createdBy: '2',
-      id: '2',
+      createdBy: 2,
+      id: 2,
       name: 'room name',
-      members: ['2', '4', '5'],
+      members: {
+        2: moment('2018-01-11T08:10:49+09:00').valueOf(),
+        4: moment('2018-01-11T09:10:49+09:00').valueOf(),
+        5: moment('2018-01-11T10:10:49+09:00').valueOf(),
+      },
       initialFetch: true,
     }
 
-    const initialState = fromJS({
-      id: '2',
-      name: 'room name',
-      members: [],
-      initialFetch: false,
-    })
+    const initialState = IMap([
+      ['id', 2],
+      ['name', 'room name'],
+      ['members', {}],
+      ['initialFetch', false],
+    ])
 
     const action = {
       type: RECEIVE_ROOM_INFO,
       payload: {
-        members: ['2', '4', '5'],
-        createdBy: '2',
+        members: [
+          [2, moment('2018-01-11T08:10:49+09:00').valueOf()],
+          [4, moment('2018-01-11T09:10:49+09:00').valueOf()],
+          [5, moment('2018-01-11T10:10:49+09:00').valueOf()],
+        ],
+        createdBy: 2,
       },
     }
     expect(room(initialState, action).toJS()).toEqual(expected)
@@ -103,9 +111,9 @@ describe('room', () => {
   it('sets id, name, initialFetch, hasUnreadMessage on receiving RECEIVE_ROOM', () => {
     const expected = {
       createdBy: null,
-      id: '3',
+      id: 3,
       name: 'new room',
-      members: [],
+      members: {},
       initialFetch: false,
       hasUnreadMessage: true,
       oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
@@ -113,7 +121,7 @@ describe('room', () => {
     const action = {
       type: RECEIVE_ROOM,
       payload: {
-        id: '3',
+        id: 3,
         name: 'new room',
         initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
         hasUnreadMessage: true,
@@ -126,9 +134,9 @@ describe('room', () => {
   it('sets id, name, initialFetch on receiving RECEIVE_CREATE_ROOM', () => {
     const expected = {
       createdBy: null,
-      id: '3',
+      id: 3,
       name: 'new room',
-      members: [],
+      members: {},
       initialFetch: false,
       hasUnreadMessage: false,
       oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
@@ -136,7 +144,7 @@ describe('room', () => {
     const action = {
       type: RECEIVE_CREATE_ROOM,
       payload: {
-        id: '3',
+        id: 3,
         name: 'new room',
         initialFetch: true, // this is to verify that initialFetch is set to false regardless of initialFetch in action
         createdBy: null,
@@ -159,63 +167,72 @@ describe('rooms', () => {
   })
 
   it('sets byId and all on receiving RECEIVE_ROOM', () => {
-    const initialState = fromJS({
-      byId: {
-        '1': {
-          id: '1',
-          name: 'room1',
-          members: ['5', '2', '6'],
-          initialFetch: true,
-          createdBy: null,
-          hasUnreadMessage: false,
-        },
-        '2': {
-          id: '2',
-          name: 'room2',
-          members: ['1', '2', '3'],
-          initialFetch: false,
-          createdBy: null,
-          hasUnreadMessage: false,
-        },
-      },
-      all: ['1', '2'],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            1,
+            IMap([
+              ['id', 1],
+              ['name', 'room1'],
+              ['members', IMap()],
+              ['initialFetch', true],
+              ['createdBy', null],
+              ['hasUnreadMessage', false],
+            ]),
+          ],
+          [
+            2,
+            IMap([
+              ['id', 2],
+              ['name', 'room2'],
+              ['members', IMap()],
+              ['initialFetch', false],
+              ['createdBy', null],
+              ['hasUnreadMessage', false],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', IList.of(1, 2)],
+    ])
 
     const expected = {
       byId: {
-        '1': {
-          id: '1',
+        1: {
+          id: 1,
           name: 'room1',
-          members: ['5', '2', '6'],
+          members: {},
           initialFetch: true,
           createdBy: null,
           hasUnreadMessage: false,
         },
-        '2': {
-          id: '2',
+        2: {
+          id: 2,
           name: 'room2',
-          members: ['1', '2', '3'],
+          members: {},
           initialFetch: false,
           createdBy: null,
           hasUnreadMessage: false,
         },
-        '5': {
-          id: '5',
+        5: {
+          id: 5,
           name: 'tennis club',
-          members: [],
+          members: {},
           initialFetch: false,
           createdBy: null,
           hasUnreadMessage: false,
           oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
         },
       },
-      all: ['1', '2', '5'],
+      all: [1, 2, 5],
     }
 
     const action = {
       type: RECEIVE_ROOM,
       payload: {
-        id: '5',
+        id: 5,
         name: 'tennis club',
         hasUnreadMessage: false,
       },
@@ -224,94 +241,117 @@ describe('rooms', () => {
   })
 
   it('update corresponding room on receiving RECEIVE_ROOM_INFO', () => {
-    const initialState = fromJS({
-      byId: {
-        '1': {
-          id: '1',
-          name: 'room1',
-          members: [],
-          initialFetch: false,
-        },
-        '2': {
-          id: '2',
-          name: 'room2',
-          members: [],
-          initialFetch: false,
-        },
-      },
-      all: ['1', '2'],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            1,
+            IMap([
+              ['id', 1],
+              ['name', 'room1'],
+              ['members', IMap()],
+              ['initialFetch', false],
+            ]),
+          ],
+          [
+            2,
+            IMap([
+              ['id', 2],
+              ['name', 'room2'],
+              ['members', IMap()],
+              ['initialFetch', false],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', IList.of(1, 2)],
+    ])
 
     const expected = {
       byId: {
-        '1': {
-          id: '1',
+        1: {
+          id: 1,
           name: 'room1',
-          members: ['5', '9', '10'],
+          members: {
+            5: { readAt: moment('2018-01-11T08:10:49+09:00').valueOf() },
+            9: { readAt: moment('2018-01-11T09:10:49+09:00').valueOf() },
+            10: { readAt: moment('2018-01-11T10:10:49+09:00').valueOf() },
+          },
           initialFetch: true,
         },
-        '2': {
-          id: '2',
+        2: {
+          id: 2,
           name: 'room2',
-          members: [],
+          members: {},
           initialFetch: false,
         },
       },
-      all: ['1', '2'],
+      all: [1, 2],
     }
 
     const action = {
       type: RECEIVE_ROOM_INFO,
       payload: {
-        id: '1',
-        members: ['5', '9', '10'],
+        id: 1,
+        members: [
+          [5, { readAt: moment('2018-01-11T08:10:49+09:00').valueOf() }],
+          [9, { readAt: moment('2018-01-11T09:10:49+09:00').valueOf() }],
+          [10, { readAt: moment('2018-01-11T10:10:49+09:00').valueOf() }],
+        ],
       },
     }
     expect(rooms(initialState, action).toJS()).toEqual(expected)
   })
 
   it('add room on receiving RECEIVE_CREATE_ROOM', () => {
-    const initialState = fromJS({
-      byId: {
-        '1': {
-          id: '1',
-          name: 'room1',
-          members: ['5', '9', '10'],
-          initialFetch: true,
-          createdBy: '5',
-          hasUnreadMessage: false,
-        },
-      },
-      all: ['1'],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            1,
+            IMap([
+              ['id', 1],
+              ['name', 'room1'],
+              ['members', IMap()],
+              ['initialFetch', true],
+              ['createdBy', 5],
+              ['hasUnreadMessage', false],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', IList.of(1)],
+    ])
 
     const expected = {
       byId: {
-        '1': {
-          id: '1',
+        1: {
+          id: 1,
           name: 'room1',
-          members: ['5', '9', '10'],
+          members: {},
           initialFetch: true,
-          createdBy: '5',
+          createdBy: 5,
           hasUnreadMessage: false,
         },
-        '5': {
-          id: '5',
+        5: {
+          id: 5,
           name: 'room5',
-          members: [],
+          members: {},
           initialFetch: false,
           createdBy: null,
           hasUnreadMessage: false,
           oldestMessageTimestamp: Number.MAX_SAFE_INTEGER,
         },
       },
-      all: ['1', '5'],
+      all: [1, 5],
     }
 
     const action = {
       type: RECEIVE_CREATE_ROOM,
       payload: {
-        id: '5',
+        id: 5,
         name: 'room5',
       },
     }
@@ -321,38 +361,47 @@ describe('rooms', () => {
   it('delete room on receiving RECEIVE_DELETE_ROOM', () => {
     const expected = {
       byId: {
-        '1': {
-          id: '1',
+        1: {
+          id: 1,
           name: 'room1',
-          members: ['5', '9', '10'],
+          members: {},
           initialFetch: true,
         },
       },
-      all: ['1'],
+      all: [1],
     }
 
-    const initialState = fromJS({
-      byId: {
-        '1': {
-          id: '1',
-          name: 'room1',
-          members: ['5', '9', '10'],
-          initialFetch: true,
-        },
-        '5': {
-          id: '5',
-          name: 'room5',
-          members: [],
-          initialFetch: false,
-        },
-      },
-      all: ['1', '5'],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            1,
+            IMap([
+              ['id', 1],
+              ['name', 'room1'],
+              ['members', IMap()],
+              ['initialFetch', true],
+            ]),
+          ],
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['name', 'room5'],
+              ['members', IList.of()],
+              ['initialFetch', false],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', IList.of(1, 5)],
+    ])
 
     const action = {
       type: RECEIVE_DELETE_ROOM,
       payload: {
-        roomId: '5',
+        roomId: 5,
       },
     }
 
@@ -363,36 +412,45 @@ describe('rooms', () => {
     const action = {
       type: 'RECEIVE_MESSAGE',
       payload: {
-        id: '3',
-        roomId: '5',
+        id: 3,
+        roomId: 5,
         createdAt: moment('2017-11-03 13:00:00').valueOf(),
       },
     }
 
-    const initialState = fromJS({
-      byId: {
-        '5': {
-          id: '5',
-          name: 'room5',
-          members: [],
-          initialFetch: false,
-          oldestMessageTimestamp: moment('2017-11-03 19:12:00').valueOf(),
-        },
-      },
-      all: ['5'],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['name', 'room5'],
+              ['members', IMap()],
+              ['initialFetch', false],
+              [
+                'oldestMessageTimestamp',
+                moment('2017-11-03 19:12:00').valueOf(),
+              ],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', [5]],
+    ])
 
     const expected = {
       byId: {
-        '5': {
-          id: '5',
+        5: {
+          id: 5,
           name: 'room5',
-          members: [],
+          members: {},
           initialFetch: false,
           oldestMessageTimestamp: moment('2017-11-03 13:00:00').valueOf(),
         },
       },
-      all: ['5'],
+      all: [5],
     }
 
     expect(rooms(initialState, action).toJS()).toEqual(expected)
@@ -402,27 +460,36 @@ describe('rooms', () => {
     const action = {
       type: 'RECEIVE_MESSAGE',
       payload: {
-        id: '3',
-        roomId: '5',
+        id: 3,
+        roomId: 5,
         createdAt: moment('2017-11-03 13:00:00').valueOf(),
       },
     }
 
-    const initialState = fromJS({
-      byId: {
-        '5': {
-          id: '5',
-          name: 'room5',
-          members: [],
-          initialFetch: false,
-          oldestMessageTimestamp: moment('2017-11-03 11:12:00').valueOf(),
-        },
-      },
-      all: [5],
-    })
+    const initialState = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['name', 'room5'],
+              ['members', IMap()],
+              ['initialFetch', false],
+              [
+                'oldestMessageTimestamp',
+                moment('2017-11-03 11:12:00').valueOf(),
+              ],
+            ]),
+          ],
+        ]),
+      ],
+      ['all', [5]],
+    ])
 
     // Returned state should be the same as the initial state
-    expect(rooms(initialState, action)).toEqual(initialState)
+    expect(rooms(initialState, action).toJS()).toEqual(initialState.toJS())
   })
 })
 
@@ -441,22 +508,22 @@ describe('messages', () => {
   it('add room on receiving RECEIVE_MESSAGE', () => {
     const expected = {
       byId: {
-        '5': {
-          id: '5',
-          roomId: '3',
+        5: {
+          id: 5,
+          roomId: 3,
         },
       },
       byRoomId: {
-        '3': ['5'],
+        3: [5],
       },
-      all: ['5'],
+      all: [5],
     }
 
     const action = {
       type: RECEIVE_MESSAGE,
       payload: {
-        id: '5',
-        roomId: '3',
+        id: 5,
+        roomId: 3,
       },
     }
     expect(messages(undefined, action).toJS()).toEqual(expected)

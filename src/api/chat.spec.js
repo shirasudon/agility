@@ -173,7 +173,7 @@ describe('fetchRoomInfo', () => {
     const expected = {
       id: 2,
       name: 'room name',
-      members: [3, 5, 7],
+      members: [[3, { readAt: -1 }], [5, { readAt: -1 }], [7, { readAt: -1 }]],
       createdBy: 7,
       hasUnreadMessage: false,
     }
@@ -213,7 +213,6 @@ describe('messageMapper', () => {
       userId: 3,
       text: 'hello world',
       createdAt: 1514014237700,
-      readBy: [], // TODO: wait for the API to be ready
     })
   })
 })
@@ -280,7 +279,6 @@ describe('fetchUnreadMessages', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -288,7 +286,6 @@ describe('fetchUnreadMessages', () => {
         {
           createdAt: 1513927837700,
           id: 4,
-          readBy: [],
           roomId: 2,
           text: 'message 4',
           userId: 2,
@@ -348,7 +345,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -356,7 +352,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1512027037700,
           id: 3,
-          readBy: [],
           roomId: 2,
           text: 'message 3',
           userId: 3,
@@ -427,7 +422,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 5,
-          readBy: [],
           roomId: 2,
           text: 'message 5',
           userId: 5,
@@ -435,7 +429,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 4,
-          readBy: [],
           roomId: 2,
           text: 'message 4',
           userId: 5,
@@ -443,7 +436,6 @@ describe('fetchMessagesByRoomId', () => {
         {
           createdAt: 1514014237700,
           id: 3,
-          readBy: [],
           roomId: 2,
           text: 'message 3',
           userId: 5,

@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import ChatActionCreator from './chat'
 import thunk from 'redux-thunk'
 import moment from 'moment'
+import { Map as IMap, List as IList } from 'immutable'
 
 import configureMockStore from 'redux-mock-store'
 
@@ -93,7 +94,7 @@ it('dispatch enter room', () => {
   const roomInfo = {
     id: 2,
     name: 'room name!',
-    members: [1, 2, 3],
+    members: [[1, { readAt: -1 }], [2, { readAt: -1 }], [3, { readAt: -1 }]],
   }
 
   const users = {
@@ -125,14 +126,15 @@ it('dispatch enter room', () => {
     createRoom: () => {},
   }
   const cac = new ChatActionCreator(mockApi)
+  cac.getReadBy = () => [1, 2, 3]
 
   const roomId = 3
   const expectedActions = [
     { type: 'REQUEST_ROOM_INFO' },
     { type: 'REQUEST_MESSAGES' },
     { type: 'RECEIVE_ROOM_INFO', payload: { ...roomInfo } },
-    { type: 'RECEIVE_MESSAGE', payload: messages[0] },
-    { type: 'RECEIVE_MESSAGE', payload: messages[1] },
+    { type: 'RECEIVE_MESSAGE', payload: { ...messages[0], readBy: [1, 2, 3] } },
+    { type: 'RECEIVE_MESSAGE', payload: { ...messages[1], readBy: [1, 2, 3] } },
     { type: 'RECEIVE_USER', payload: users[1] },
     { type: 'RECEIVE_USER', payload: users[2] },
     { type: 'RECEIVE_USER', payload: users[3] },
@@ -266,7 +268,7 @@ it('dispatches REQUEST_MESSAGES', () => {
   expect(cac.requestMessages()).toEqual({ type: 'REQUEST_MESSAGES' })
 })
 
-it('dispatches RECEIVE_MESSAGE', () => {
+it('dispatches RECEIVE_MESSAGE after attaching readBy field to the payload', () => {
   const message = {
     id: 1,
     roomId: 1,
@@ -275,10 +277,15 @@ it('dispatches RECEIVE_MESSAGE', () => {
     createdAt: moment('2017-11-03 13:00:00').valueOf(),
   }
   const cac = new ChatActionCreator({})
-  expect(cac.receiveMessage(message)).toEqual({
+  cac.getReadBy = jest.fn(() => [1, 2, 3])
+  const dispatch = jest.fn()
+  const getState = jest.fn()
+  cac.receiveMessage(message)(dispatch, getState)
+  expect(dispatch).toHaveBeenCalledWith({
     type: 'RECEIVE_MESSAGE',
-    payload: { ...message },
+    payload: { ...message, readBy: [1, 2, 3] },
   })
+  expect(getState).toHaveBeenCalledTimes(1)
 })
 
 it('fetches messages by room ID', () => {
@@ -306,16 +313,20 @@ it('fetches messages by room ID', () => {
     },
   }
   const cac = new ChatActionCreator(mockApi)
-  const expectedActions = [
-    { type: 'REQUEST_MESSAGES' },
-    { type: 'RECEIVE_MESSAGE', payload: messages[0] },
-    { type: 'RECEIVE_MESSAGE', payload: messages[1] },
-  ] // TODO: this test might fail depending on the execution order
-  const store = mockStore({})
+  cac.requestMessages = jest.fn(() => 'requestMessages')
+  cac.receiveMessage = jest.fn(() => 'receiveMessage')
 
-  return store.dispatch(cac.fetchMessagesByRoomId(roomId)).then(() => {
-    expect(store.getActions()).toEqual(expectedActions)
-  })
+  const dispatch = jest.fn()
+
+  return cac
+    .fetchMessagesByRoomId(roomId)(dispatch)
+    .then(() => {
+      expect(cac.requestMessages).toHaveBeenCalled()
+      expect(cac.receiveMessage.mock.calls[0]).toEqual([messages[0]])
+      expect(cac.receiveMessage.mock.calls[1]).toEqual([messages[1]])
+      expect(dispatch.mock.calls[0]).toEqual(['requestMessages'])
+      expect(dispatch.mock.calls[1]).toEqual(['receiveMessage'])
+    })
 })
 
 it('send a request to create a room', () => {
