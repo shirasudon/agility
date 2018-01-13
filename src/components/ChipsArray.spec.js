@@ -12,7 +12,7 @@ describe('ChipsArray', () => {
       row: {},
     }
 
-    const chipData = [{ label: 'l1', key: 1 }, { label: 'l2', key: 2 }]
+    const chipData = [{ usename: 'user1', id: 1 }, { username: 'user2', id: 2 }]
 
     const wrapper = mount(<ChipsArray classes={classes} chipData={chipData} />)
     expect(wrapper.find(Chip)).toHaveLength(2)
@@ -24,7 +24,7 @@ describe('ChipsArray', () => {
       row: {},
     }
 
-    const chipData = [{ label: 'l1', key: 1 }, { label: 'l2', key: 2 }]
+    const chipData = [{ usename: 'user1', id: 1 }, { username: 'user2', id: 2 }]
 
     const handleRequestDelete = jest.fn()
 
