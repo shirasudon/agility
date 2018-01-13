@@ -12,6 +12,7 @@ import { chatActionCreator } from '../actions'
 import CreateGroupModal from './CreateGroupModal'
 import SideTabs from './SideTabs'
 import MessageWindow from './MessageWindow'
+import * as websocket from '../service/websocket'
 
 let cac = chatActionCreator
 
@@ -29,6 +30,10 @@ const styles = {
 
 export const withLifecycles = lifecycle({
   componentDidMount() {
+    if (typeof WebSocket !== 'undefined') {
+      // TODO: for now do not initialize when WebSocket is not available (e.g. test)
+      websocket.initWebsocketService('ws://localhost:8080/chat/ws') // TODO: remove hard coding
+    }
     const { fetchMyself, fetchRooms, fetchFriends, myId } = this.props
     fetchMyself(myId)
     fetchRooms(myId)

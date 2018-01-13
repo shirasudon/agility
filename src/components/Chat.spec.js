@@ -74,11 +74,6 @@ describe('componentDidMount', () => {
       fetchRooms: jest.fn(),
       fetchFriends: jest.fn(),
       fetchMyself: jest.fn(),
-      session: {
-        user: {
-          id: 3,
-        },
-      },
     }
 
     const DummyComponent = () => <div>Dummy</div>

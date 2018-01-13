@@ -1,6 +1,11 @@
 // @format
 
-import { initWebsocketService, emit, setConnection } from './websocket'
+import {
+  initWebsocketService,
+  emit,
+  setConnection,
+  setStore,
+} from './websocket'
 import { NATIVE_EVENTS } from '../constants/websocket'
 
 describe('initWebsocketService', () => {
@@ -30,8 +35,8 @@ describe('initWebsocketService', () => {
   it('registers listeners for websocket native events and calls connect', () => {
     const { mockFunc, MockWebSocketService } = createMockWebSocketService()
     const { mockStore } = createMockStore()
-
-    initWebsocketService(mockStore, endpoint, MockWebSocketService)
+    setStore(mockStore)
+    initWebsocketService(endpoint, MockWebSocketService)
     const resultArgs = mockFunc.registerEvent.mock.calls.map(args => args[0])
     expect(resultArgs.length).toBe(Object.keys(NATIVE_EVENTS).length)
     expect(Object.values(NATIVE_EVENTS)).toEqual(
