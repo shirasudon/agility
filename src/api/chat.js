@@ -170,7 +170,12 @@ export function deleteRoom(roomId, config = {}) {
 export function sendMessageRead(roomId, readAt, config = {}) {
   return axios.post(
     `/chat/rooms/${roomId}/messages/read`,
-    { room_id: roomId, read_at: moment(readAt).format(SERVER_TIME_FORMAT) },
+    {
+      room_id: roomId,
+      read_at: moment(readAt)
+        .utc()
+        .format(SERVER_TIME_FORMAT),
+    },
     config
   )
 }

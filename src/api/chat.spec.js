@@ -507,7 +507,7 @@ describe('sendMessageRead', () => {
       adapter: config => {
         expect(config.url).toBe(`/chat/rooms/${roomId}/messages/read`)
         expect(config.data).toEqual(
-          `{\"room_id\":2,\"read_at\":\"2018-01-13T18:01:50.000000000+09:00\"}`
+          `{\"room_id\":2,\"read_at\":\"2018-01-13T09:01:50.000000000+00:00\"}`
         )
         return new Promise(resolve => {
           resolve({
