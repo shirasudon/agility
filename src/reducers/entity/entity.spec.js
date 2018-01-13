@@ -11,6 +11,8 @@ import {
   CHANGE_ROOM,
   RECEIVE_CREATE_ROOM,
   RECEIVE_DELETE_ROOM,
+  RECEIVE_MESSAGE_READ,
+  UNREAD_MESSAGES,
 } from '../../constants/chat'
 
 describe('users', () => {
@@ -152,6 +154,81 @@ describe('room', () => {
       },
     }
     expect(room(undefined, action).toJS()).toEqual(expected)
+  })
+
+  it('returns state where hasUnreadMessage is set', () => {
+    const state = IMap([['hasUnreadMessage', false]])
+    const expected = {
+      hasUnreadMessage: true,
+    }
+    const action = {
+      type: UNREAD_MESSAGES,
+      payload: {
+        exist: true,
+      },
+    }
+
+    expect(room(state, action).toJS()).toEqual(expected)
+  })
+
+  it('updates readAt for the specific user when received readAt is bigger than the current one', () => {
+    const state = IMap([
+      [
+        'members',
+        IMap([
+          [
+            2,
+            IMap([['readAt', moment('2018-01-13T17:49:07+09:00').valueOf()]]),
+          ],
+        ]),
+      ],
+    ])
+    const expected = {
+      members: {
+        2: {
+          readAt: moment('2018-01-14T17:49:07+09:00').valueOf(),
+        },
+      },
+    }
+    const action = {
+      type: RECEIVE_MESSAGE_READ,
+      payload: {
+        userId: 2,
+        readAt: moment('2018-01-14T17:49:07+09:00').valueOf(),
+      },
+    }
+
+    expect(room(state, action).toJS()).toEqual(expected)
+  })
+
+  it('does NOT update readAt for the specific user when received readAt is not bigger than the current one', () => {
+    const state = IMap([
+      [
+        'members',
+        IMap([
+          [
+            2,
+            IMap([['readAt', moment('2018-01-13T17:49:07+09:00').valueOf()]]),
+          ],
+        ]),
+      ],
+    ])
+    const expected = {
+      members: {
+        2: {
+          readAt: moment('2018-01-13T17:49:07+09:00').valueOf(),
+        },
+      },
+    }
+    const action = {
+      type: RECEIVE_MESSAGE_READ,
+      payload: {
+        userId: 2,
+        readAt: moment('2018-01-12T17:49:07+09:00').valueOf(),
+      },
+    }
+
+    expect(room(state, action).toJS()).toEqual(expected)
   })
 })
 
@@ -527,5 +604,82 @@ describe('messages', () => {
       },
     }
     expect(messages(undefined, action).toJS()).toEqual(expected)
+  })
+
+  it('add new user ID on receiving RECEIVE_MESSAGE_READ if the user has not read the message', () => {
+    const state = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['roomId', 3],
+              ['readBy', IList()],
+              ['createdAt', moment('2018-01-12T17:16:20+09:00').valueOf()],
+            ]),
+          ],
+        ]),
+      ],
+      ['byRoomId', IMap([[3, IList.of(5)]])],
+      ['all', IList.of(5)],
+    ])
+
+    const expected = {
+      byId: {
+        5: {
+          id: 5,
+          roomId: 3,
+          readBy: [5],
+          createdAt: moment('2018-01-12T17:16:20+09:00').valueOf(),
+        },
+      },
+      byRoomId: {
+        3: [5],
+      },
+      all: [5],
+    }
+
+    const action = {
+      type: RECEIVE_MESSAGE_READ,
+      payload: {
+        userId: 5,
+        roomId: 3,
+        readAt: moment('2018-01-13T17:16:20+09:00').valueOf(),
+      },
+    }
+    expect(messages(state, action).toJS()).toEqual(expected)
+  })
+
+  it('add new user ID on receiving RECEIVE_MESSAGE_READ if the user has already read the message', () => {
+    const state = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['roomId', 3],
+              ['readBy', IList.of(5)],
+              ['createdAt', moment('2018-01-12T17:16:20+09:00').valueOf()],
+            ]),
+          ],
+        ]),
+      ],
+      ['byRoomId', IMap([[3, IList.of(5)]])],
+      ['all', IList.of(5)],
+    ])
+
+    const action = {
+      type: RECEIVE_MESSAGE_READ,
+      payload: {
+        userId: 5,
+        roomId: 3,
+        readAt: moment('2018-01-13T17:16:20+09:00').valueOf(),
+      },
+    }
+    expect(messages(state, action)).toEqual(state)
   })
 })

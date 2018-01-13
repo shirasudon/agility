@@ -89,7 +89,8 @@ export function room(state = roomInitialState, action) {
 
     case RECEIVE_MESSAGE_READ:
       const { userId, readAt } = action.payload
-      return state.set(userId, Math.max(readAt, state.get(userId)))
+      const key = ['members', userId, 'readAt']
+      return state.setIn(key, Math.max(readAt, state.getIn(key)))
 
     default:
       return state
@@ -192,15 +193,13 @@ export function messages(
 
     case RECEIVE_MESSAGE_READ: {
       const { userId, roomId, readAt } = data
-      for (let messageId of state
-        .getIn(['byRoomId', roomId])
-        .reverse() // from the new messages
-        .toJS()) {
+      for (let messageId of state.getIn(['byRoomId', roomId]).reverse()) {
+        // from the new messages
         const msg = state.getIn(['byId', messageId, 'readBy'])
         if (!msg || msg.includes(userId)) {
           break
         }
-        if (msg.get('createdAt') <= readAt) {
+        if (state.getIn(['byId', messageId, 'createdAt']) <= readAt) {
           state = state.updateIn(['byId', messageId, 'readBy'], readBy =>
             readBy.push(userId)
           )

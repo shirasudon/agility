@@ -173,7 +173,11 @@ describe('fetchRoomInfo', () => {
     const expected = {
       id: 2,
       name: 'room name',
-      members: [[3, { readAt: -1 }], [5, { readAt: -1 }], [7, { readAt: -1 }]],
+      members: new Map([
+        [3, new Map([['readAt', -1]])],
+        [5, new Map([['readAt', -1]])],
+        [7, new Map([['readAt', -1]])],
+      ]),
       createdBy: 7,
       hasUnreadMessage: false,
     }

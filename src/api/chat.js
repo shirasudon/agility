@@ -22,9 +22,9 @@ export function fetchRoomInfo(roomId, config = {}) {
     const body = response.data
 
     // TODO: follow the server side spec when it is ready
-    let members = []
+    let members = new Map()
     for (let member of body.room_members) {
-      members.push([member.user_id, { readAt: member.read_at || -1 }])
+      members.set(member.user_id, new Map([['readAt', member.read_at || -1]]))
     }
 
     return {
@@ -129,7 +129,6 @@ export function fetchMessagesByRoomId(
           ...params,
           before: moment(before).format(SERVER_TIME_FORMAT),
         }
-        console.log('before:', before)
       }
       return axios.get(url, Object.assign(config, { params }))
     })
