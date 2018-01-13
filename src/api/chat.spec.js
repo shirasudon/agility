@@ -1,5 +1,7 @@
 // @format
 
+import moment from 'moment'
+
 import {
   fetchUser,
   fetchRooms,
@@ -10,6 +12,7 @@ import {
   fetchMessagesByRoomId,
   createRoom,
   deleteRoom,
+  sendMessageRead,
 } from './chat'
 
 describe('fetchUser', () => {
@@ -493,5 +496,27 @@ describe('deleteRoom', () => {
       },
     }
     return deleteRoom(roomId, config)
+  })
+})
+
+describe('sendMessageRead', () => {
+  it('sends a POST request to chat/rooms/{roomId}/messages/read', () => {
+    const roomId = 2
+    const readAt = moment('2018-01-13T18:01:50+09:00').valueOf()
+    const config = {
+      adapter: config => {
+        expect(config.url).toBe(`/chat/rooms/${roomId}/messages/read`)
+        expect(config.data).toEqual(
+          `{\"room_id\":2,\"read_at\":\"2018-01-13T18:01:50.000000000+09:00\"}`
+        )
+        return new Promise(resolve => {
+          resolve({
+            data: {},
+            status: 200,
+          })
+        })
+      },
+    }
+    return sendMessageRead(roomId, readAt, config)
   })
 })
