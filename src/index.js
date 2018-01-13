@@ -23,7 +23,7 @@ const store = createStore(
   applyMiddleware(thunk.withExtraArgument({ emit: websocket.emit }), logger)
 )
 
-websocket.initWebsocketService(store, 'ws://localhost:8080/chat/ws') // TODO: remove hard coding
+websocket.setStore(store)
 
 initSessionService(store).then(() => {
   render(

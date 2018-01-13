@@ -7,13 +7,17 @@ import { router } from '../actions/websocket'
 import startMockServer from '../mock/mockServer'
 
 let connection = null
+let store = null
 
 export const setConnection = newConnection => {
   connection = newConnection
 }
 
+export const setStore = newStore => {
+  store = newStore
+}
+
 export const initWebsocketService = (
-  store,
   endpoint,
   wsService = BufferingWebSocket
 ) => {
@@ -24,10 +28,11 @@ export const initWebsocketService = (
     reconnectionDelayGrowFactor: 2,
   }
   setConnection(new wsService(endpoint, options))
+  const eventHandler = type => messageEvent => {
+    store.dispatch(router(type, messageEvent.data))
+  }
   for (let type of Object.values(NATIVE_EVENTS)) {
-    connection.registerEvent(type, messageEvent => {
-      store.dispatch(router(type, messageEvent.data))
-    })
+    connection.registerEvent(type, eventHandler(type))
   }
   connection.connect()
 }
