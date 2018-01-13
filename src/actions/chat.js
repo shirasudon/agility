@@ -195,7 +195,7 @@ export default class ChatActionCreator {
     const readByIterator = entities
       .getIn(['rooms', 'byId', roomId, 'members'])
       .filter(userInfo => {
-        const { readAt } = userInfo
+        const readAt = userInfo.get('readAt')
         return readAt && readAt >= createdAt
       })
       .keys()

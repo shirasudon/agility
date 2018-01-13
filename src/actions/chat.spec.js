@@ -8,8 +8,6 @@ import { Map as IMap, List as IList } from 'immutable'
 
 import configureMockStore from 'redux-mock-store'
 
-let cac // an instance of ChatActionCreator
-
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
@@ -41,7 +39,7 @@ it('returns fetch room info', () => {
       })
     },
   }
-  cac = new ChatActionCreator(mockApi)
+  const cac = new ChatActionCreator(mockApi)
 
   const roomId = 3
   const expectedActions = [
@@ -401,5 +399,100 @@ it('create action RECEIVE_DELETE_ROOM', () => {
   expect(cac.receiveDeleteRoom(roomId)).toEqual({
     type: 'RECEIVE_DELETE_ROOM',
     payload: { roomId },
+  })
+})
+
+describe('getReadBy', () => {
+  it('returns list of userId from redux state', () => {
+    const cac = new ChatActionCreator({})
+    const roomId = 1
+    const createdAt = moment('2018-01-13T15:01:10+09:00').valueOf()
+    const state = IMap([
+      [
+        'entities',
+        IMap([
+          [
+            'rooms',
+            IMap([
+              [
+                'byId',
+                IMap([
+                  [
+                    roomId,
+                    IMap([
+                      [
+                        'members',
+                        IMap([
+                          [
+                            1,
+                            IMap([
+                              [
+                                'readAt',
+                                moment('2018-01-13T14:59:00+09:00').valueOf(),
+                              ],
+                            ]),
+                          ],
+                          [
+                            2,
+                            IMap([
+                              [
+                                'readAt',
+                                moment('2018-01-13T15:59:00+09:00').valueOf(),
+                              ],
+                            ]),
+                          ],
+                          [
+                            3,
+                            IMap([
+                              [
+                                'readAt',
+                                moment('2018-01-13T15:01:10+09:00').valueOf(),
+                              ],
+                            ]),
+                          ],
+                        ]),
+                      ],
+                    ]),
+                  ],
+                ]),
+              ],
+            ]),
+          ],
+        ]),
+      ],
+    ])
+    expect(cac.getReadBy(state, roomId, createdAt)).toEqual([2, 3])
+  })
+})
+
+describe('receiveMessageRead', () => {
+  it('returns a action of type RECEIVE_MESSAGE_READ', () => {
+    const cac = new ChatActionCreator({})
+    const userId = 2
+    const roomId = 3
+    const readAt = moment('2018-01-13T15:19:05+09:00').valueOf()
+    expect(cac.receiveMessageRead(userId, roomId, readAt)).toEqual({
+      type: 'RECEIVE_MESSAGE_READ',
+      payload: {
+        userId,
+        roomId,
+        readAt,
+      },
+    })
+  })
+})
+
+describe('sendMessageRead', () => {
+  it('returns a action of type RECEIVE_MESSAGE_READ', () => {
+    const sendMessageRead = jest.fn()
+    const dispatch = () => {}
+    const cac = new ChatActionCreator({
+      sendMessageRead,
+    })
+    const userId = 2
+    const roomId = 3
+    const readAt = moment('2018-01-13T15:19:05+09:00').valueOf()
+    cac.sendMessageRead(roomId, readAt)(dispatch)
+    expect(sendMessageRead).toHaveBeenCalledWith(roomId, readAt)
   })
 })
