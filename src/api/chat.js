@@ -24,7 +24,10 @@ export function fetchRoomInfo(roomId, config = {}) {
     // TODO: follow the server side spec when it is ready
     let members = new Map()
     for (let member of body.room_members) {
-      members.set(member.user_id, new Map([['readAt', member.read_at || -1]]))
+      members.set(
+        member.user_id,
+        new Map([['readAt', member.message_read_at ? moment().valueOf() : -1]])
+      )
     }
 
     return {

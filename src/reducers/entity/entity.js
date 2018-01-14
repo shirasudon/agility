@@ -185,7 +185,7 @@ export function messages(
           Immutable.List(),
           messages => Immutable.fromJS(insertOrdered(messages.toJS(), id))
         )
-        state = state.setIn(['byId', id], data)
+        state = state.setIn(['byId', id], Immutable.fromJS(data))
       }
 
       return state
@@ -193,6 +193,10 @@ export function messages(
 
     case RECEIVE_MESSAGE_READ: {
       const { userId, roomId, readAt } = data
+      const roomMessages = state.getIn(['byRoomId', roomId])
+      if (!roomMessages) {
+        return state
+      }
       for (let messageId of state.getIn(['byRoomId', roomId]).reverse()) {
         // from the new messages
         const msg = state.getIn(['byId', messageId, 'readBy'])
