@@ -32,7 +32,7 @@ describe('withMessageWindowHandlers', () => {
       expect(props.setCurText).toHaveBeenCalledWith('')
     })
 
-    it('does not sends a message and set current text to empty when key other than enter key is pressed', () => {
+    it('does not send a message and set current text to empty when key other than enter key is pressed', () => {
       const DummyComponent = ({ handleKeyPress }) => (
         <div>{handleKeyPress({ which: 20 })}</div>
       )
@@ -40,6 +40,46 @@ describe('withMessageWindowHandlers', () => {
       mount(<Component {...props} />)
       expect(props.sendMessage).not.toHaveBeenCalled()
       expect(props.setCurText).not.toHaveBeenCalled()
+    })
+
+    it('does not send a message when current text consists only of spaces (e.g., tab, whitespace, etc)', () => {
+      const props = {
+        setCurText: jest.fn(),
+        curText: ' \t \t  ',
+        currentRoomId: 2,
+        sendMessage: jest.fn(),
+        myId: 5,
+      }
+
+      const DummyComponent = ({ handleKeyPress }) => (
+        <div>{handleKeyPress({ which: KEY_ENTER })}</div>
+      )
+      const Component = withMessageWindowHandlers(DummyComponent)
+      mount(<Component {...props} />)
+      expect(props.sendMessage).not.toHaveBeenCalled()
+      expect(props.setCurText).not.toHaveBeenCalled()
+    })
+
+    it('sends a trimmed message when current text contains at least one non-space character', () => {
+      const props = {
+        setCurText: jest.fn(),
+        curText: ' \thello\t  ',
+        currentRoomId: 2,
+        sendMessage: jest.fn(),
+        myId: 5,
+      }
+
+      const DummyComponent = ({ handleKeyPress }) => (
+        <div>{handleKeyPress({ which: KEY_ENTER })}</div>
+      )
+      const Component = withMessageWindowHandlers(DummyComponent)
+      mount(<Component {...props} />)
+      expect(props.sendMessage).toHaveBeenCalledWith({
+        userId: props.myId,
+        roomId: props.currentRoomId,
+        body: props.curText.trim(),
+      })
+      expect(props.setCurText).toHaveBeenCalledWith('')
     })
   })
 

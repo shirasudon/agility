@@ -20,6 +20,10 @@ export const withMessageWindowHandlers = withHandlers({
   }) => event => {
     switch (event.which) {
       case KEY_ENTER:
+        curText = curText.trim()
+        if (curText === '') {
+          break
+        }
         sendMessage({
           userId: myId,
           roomId: currentRoomId,
