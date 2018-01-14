@@ -22,7 +22,7 @@ export const withMessageWindowHandlers = withHandlers({
       case KEY_ENTER:
         curText = curText.trim()
         if (curText === '') {
-          break
+          return
         }
         sendMessage({
           userId: myId,
