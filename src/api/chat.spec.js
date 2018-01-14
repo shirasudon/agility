@@ -178,7 +178,7 @@ describe('fetchRoomInfo', () => {
       name: 'room name',
       members: new Map([
         [3, new Map([['readAt', -1]])],
-        [5, new Map([['readAt', -1]])],
+        [5, new Map([['readAt', moment('2018-01-15T00:18:54Z').valueOf()]])],
         [7, new Map([['readAt', -1]])],
       ]),
       createdBy: 7,
@@ -191,7 +191,11 @@ describe('fetchRoomInfo', () => {
             data: {
               room_id: 2,
               room_name: 'room name',
-              room_members: [{ user_id: 3 }, { user_id: 5 }, { user_id: 7 }],
+              room_members: [
+                { user_id: 3 },
+                { user_id: 5, message_read_at: '2018-01-15T00:18:54Z' },
+                { user_id: 7 },
+              ],
               room_creator_id: 7,
             },
             status: 200,
