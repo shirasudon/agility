@@ -222,6 +222,58 @@ describe('withLifecycle', () => {
     expect(sendReadIfExistNonRead).toHaveBeenCalledTimes(2)
     expect(sendReadIfExistNonRead.mock.calls[1]).toEqual([nextProps])
   })
+
+  it('calls sendReadIfExistNonRead when it receives the first message in the room', () => {
+    const sendReadIfExistNonRead = jest.fn()
+    const BaseComponent = () => <div>dummy component</div>
+    const Component = withLifecycleFactory(sendReadIfExistNonRead, () => {})(
+      // scrollToBottom is set as empty func
+      BaseComponent
+    )
+    const constantProps = {
+      currentRoomId: 3,
+      refs: {
+        messageList: {
+          scrollTop: 10,
+          scrollHeight: 10,
+          clientHeight: 10,
+        },
+      },
+    }
+    const props = {
+      ...constantProps,
+      entities: {
+        messages: {
+          byId: {},
+          byRoomId: {},
+        },
+      },
+    }
+    const nextProps = {
+      ...constantProps,
+      entities: {
+        messages: {
+          byId: {
+            5: {
+              id: 5,
+              readBy: [1, 3, 5],
+              createdAt: moment('2018-01-10T21:57:29+09:00').valueOf(),
+            },
+          },
+          byRoomId: {
+            3: [5],
+          },
+        },
+      },
+    }
+
+    const wrapper = shallow(<Component {...props} />, {
+      lifecycleExperimental: true,
+    })
+    wrapper.setProps(nextProps)
+    expect(sendReadIfExistNonRead).toHaveBeenCalledTimes(2)
+    expect(sendReadIfExistNonRead.mock.calls[1]).toEqual([nextProps])
+  })
 })
 
 describe('ChatHistory', () => {
