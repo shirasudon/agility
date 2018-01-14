@@ -16,13 +16,17 @@ import * as transformer from '../service/transformer'
 const createChatActionCreator = () => {
   const fetchRooms = jest.fn(() => 'fetchRooms')
   const fetchFriends = jest.fn(() => 'fetchFriends')
+  const fetchUser = jest.fn(() => 'fetchUser')
   const unreadMessages = jest.fn(() => 'unreadMessages')
   const receiveMessage = jest.fn(() => 'receiveMessage')
+  const init = jest.fn(() => 'init')
   return {
     fetchRooms,
     fetchFriends,
+    fetchUser,
     unreadMessages,
     receiveMessage,
+    init,
   }
 }
 
@@ -88,11 +92,6 @@ describe('onMessage', () => {
     expect(chatActionCreator.unreadMessages).toHaveBeenCalledWith(4, true)
     expect(dispatch).toHaveBeenCalledWith('unreadMessages')
   })
-
-  // TODO
-  xit('dispatches receiveMessageRead', () => {
-    fail()
-  })
 })
 
 describe('onOpen', () => {
@@ -106,8 +105,10 @@ describe('onOpen', () => {
       })
     )
     onOpen()(dispatch, getState)
-    expect(dispatch.mock.calls[0]).toEqual(['fetchRooms'])
-    expect(dispatch.mock.calls[1]).toEqual(['fetchFriends'])
+    expect(dispatch.mock.calls[0]).toEqual(['init'])
+    expect(dispatch.mock.calls[1]).toEqual(['fetchUser'])
+    expect(dispatch.mock.calls[2]).toEqual(['fetchRooms'])
+    expect(dispatch.mock.calls[3]).toEqual(['fetchFriends'])
   })
 
   it('does not do initial fetch if not logged in', () => {
@@ -120,7 +121,8 @@ describe('onOpen', () => {
       })
     )
     onOpen()(dispatch, getState)
-    expect(dispatch).not.toHaveBeenCalled()
+    expect(dispatch).toHaveBeenCalledTimes(1)
+    expect(dispatch.mock.calls[0]).toEqual(['init'])
   })
 })
 

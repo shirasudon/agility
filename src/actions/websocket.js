@@ -58,11 +58,11 @@ export const onMessage = rawData => (dispatch, getState) => {
 export const onClose = () => (dispatch, getState) => {}
 
 export const onOpen = () => (dispatch, getState) => {
-  // TODO: initialize all entity data
+  dispatch(cac.init())
   const state = getState()
   const myId = state.getIn(['auth', 'myId'])
-
   if (myId) {
+    dispatch(cac.fetchUser(myId))
     dispatch(cac.fetchRooms(myId))
     dispatch(cac.fetchFriends(myId))
   }

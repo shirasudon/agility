@@ -1,4 +1,5 @@
 // @format
+
 import {
   RECEIVE_USER,
   REQUEST_FRIENDS,
@@ -19,6 +20,7 @@ import {
   RECEIVE_FRIEND_IDS,
   RECEIVE_MESSAGE_READ,
   UNREAD_MESSAGES,
+  INIT,
 } from '../constants/chat'
 
 export default class ChatActionCreator {
@@ -28,6 +30,10 @@ export default class ChatActionCreator {
 
   setChatApi(newApi) {
     this.chatApi = newApi
+  }
+
+  init() {
+    return { type: INIT }
   }
 
   requestRoomInfo() {
