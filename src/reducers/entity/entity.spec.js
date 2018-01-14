@@ -652,7 +652,7 @@ describe('messages', () => {
     expect(messages(state, action).toJS()).toEqual(expected)
   })
 
-  it('add new user ID on receiving RECEIVE_MESSAGE_READ if the user has already read the message', () => {
+  it('doest not add new user ID on receiving RECEIVE_MESSAGE_READ if the user has already read the message', () => {
     const state = IMap([
       [
         'byId',
@@ -669,6 +669,37 @@ describe('messages', () => {
         ]),
       ],
       ['byRoomId', IMap([[3, IList.of(5)]])],
+      ['all', IList.of(5)],
+    ])
+
+    const action = {
+      type: RECEIVE_MESSAGE_READ,
+      payload: {
+        userId: 5,
+        roomId: 3,
+        readAt: moment('2018-01-13T17:16:20+09:00').valueOf(),
+      },
+    }
+    expect(messages(state, action)).toEqual(state)
+  })
+
+  it('returns the original state on receiving RECEIVE_MESSAGE_READ if the room is not opened yet', () => {
+    const state = IMap([
+      [
+        'byId',
+        IMap([
+          [
+            5,
+            IMap([
+              ['id', 5],
+              ['roomId', 3],
+              ['readBy', IList.of(5)],
+              ['createdAt', moment('2018-01-12T17:16:20+09:00').valueOf()],
+            ]),
+          ],
+        ]),
+      ],
+      ['byRoomId', IMap([])],
       ['all', IList.of(5)],
     ])
 

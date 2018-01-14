@@ -71,6 +71,7 @@ export const withLifecycleFactory = (sendReadIfExistNonRead, scrollToBottom) =>
           scrollBottom <= 0 || scrollPos === scrollBottom
       }
       this.shouldTrySendRead =
+        (!messages && newMessages) ||
         (messages && newMessages && messages.length !== newMessages.length) ||
         this.props.currentRoomId !== nextRoomId
     },
