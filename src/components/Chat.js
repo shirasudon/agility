@@ -32,10 +32,6 @@ export const withLifecyclesFactory = webSocketService =>
   lifecycle({
     componentDidMount() {
       webSocketService.connect()
-      const { fetchMyself, fetchRooms, fetchFriends, myId } = this.props
-      fetchMyself(myId)
-      fetchRooms(myId)
-      fetchFriends(myId)
     },
   })
 
@@ -64,15 +60,6 @@ const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  fetchMyself: id => {
-    dispatch(cac.fetchUser(id))
-  },
-  fetchRooms: userId => {
-    dispatch(cac.fetchRooms(userId))
-  },
-  fetchFriends: userId => {
-    dispatch(cac.fetchFriends(userId))
-  },
   openCreateGroupModal: () => {
     dispatch(cac.openCreateGroupModal())
   },

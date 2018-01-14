@@ -11,6 +11,13 @@ import configureMockStore from 'redux-mock-store'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
+it('returns INIT type', () => {
+  const cac = new ChatActionCreator({})
+  expect(cac.init()).toEqual({
+    type: 'INIT',
+  })
+})
+
 it('returns request room info', () => {
   const cac = new ChatActionCreator({})
   expect(cac.requestRoomInfo()).toEqual({

@@ -50,18 +50,6 @@ describe('mapDispatchToProps', () => {
     setChatActionCreator(chatActionCreator)
   })
 
-  it('dispatches fetchRooms', () => {
-    mapDispatchToProps(dispatch).fetchRooms(3)
-    expect(chatActionCreator.fetchRooms).toHaveBeenCalledWith(3)
-    expect(dispatch).toHaveBeenCalledWith('fetchRooms: 3')
-  })
-
-  it('dispatches fetchFriends', () => {
-    mapDispatchToProps(dispatch).fetchFriends(5)
-    expect(chatActionCreator.fetchFriends).toHaveBeenCalledWith(5)
-    expect(dispatch).toHaveBeenCalledWith('fetchFriends: 5')
-  })
-
   it('dispatches openCreateGroupModal', () => {
     mapDispatchToProps(dispatch).openCreateGroupModal()
     expect(chatActionCreator.openCreateGroupModal).toHaveBeenCalled()
@@ -71,20 +59,12 @@ describe('mapDispatchToProps', () => {
 
 describe('componentDidMount', () => {
   it('calls fetchRooms and fetchFriends', () => {
-    const props = {
-      fetchRooms: jest.fn(),
-      fetchFriends: jest.fn(),
-      fetchMyself: jest.fn(),
-    }
-
     const DummyComponent = () => <div>Dummy</div>
     const WebSocketService = {
       connect: jest.fn(),
     }
     const Component = withLifecyclesFactory(WebSocketService)(DummyComponent)
-    mount(<Component {...props} />)
-    expect(props.fetchFriends).toHaveBeenCalled()
-    expect(props.fetchRooms).toHaveBeenCalled()
-    expect(props.fetchMyself).toHaveBeenCalled()
+    mount(<Component />)
+    expect(WebSocketService.connect).toHaveBeenCalledTimes(1)
   })
 })
