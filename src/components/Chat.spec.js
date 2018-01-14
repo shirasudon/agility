@@ -9,6 +9,7 @@ import {
   mapDispatchToProps,
   setChatActionCreator,
   withLifecycles,
+  withLifecyclesFactory,
 } from './Chat'
 import CreateGroupModal from './CreateGroupModal'
 import SideTabs from './SideTabs'
@@ -77,7 +78,10 @@ describe('componentDidMount', () => {
     }
 
     const DummyComponent = () => <div>Dummy</div>
-    const Component = withLifecycles(DummyComponent)
+    const WebSocketService = {
+      connect: jest.fn(),
+    }
+    const Component = withLifecyclesFactory(WebSocketService)(DummyComponent)
     mount(<Component {...props} />)
     expect(props.fetchFriends).toHaveBeenCalled()
     expect(props.fetchRooms).toHaveBeenCalled()

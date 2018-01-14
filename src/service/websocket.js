@@ -6,41 +6,52 @@ import { BufferingWebSocket } from './BufferingWebSocket'
 import { router } from '../actions/websocket'
 import startMockServer from '../mock/mockServer'
 
-let connection = null
-let store = null
+let instance = null
 
-export const setConnection = newConnection => {
-  connection = newConnection
-}
+export default class WebSocketService {
+  constructor(store, endpoint, wsClass = BufferingWebSocket) {
+    this.store = store
+    this.endpoint = endpoint
+    this.wsClass = wsClass
+    this.connection = null
+  }
 
-export const setStore = newStore => {
-  store = newStore
-}
+  static clear() {
+    instance = null
+  }
 
-export const initWebsocketService = (
-  endpoint,
-  wsService = BufferingWebSocket
-) => {
-  if (process.env.MOCK) {
-    startMockServer(endpoint)
+  // this method should only be used during test
+  static setInstance(newInstance) {
+    instance = newInstance
   }
-  const options = {
-    reconnectionDelayGrowFactor: 2,
-  }
-  setConnection(new wsService(endpoint, options))
-  const eventHandler = type => messageEvent => {
-    store.dispatch(router(type, messageEvent.data))
-  }
-  for (let type of Object.values(NATIVE_EVENTS)) {
-    connection.registerEvent(type, eventHandler(type))
-  }
-  connection.connect()
-}
 
-export const emit = (type, payload, buffer = false) => {
-  if (connection == null) {
-    throw new Error('connection is not yet initialized')
+  static init(store, endpoint, wsClass = BufferingWebSocket) {
+    instance = new WebSocketService(store, endpoint, wsClass)
+
+    if (process.env.MOCK) {
+      startMockServer(instance.endpoint)
+    }
+    const options = {
+      reconnectionDelayGrowFactor: 2,
+    }
+    instance.connection = new wsClass(instance.endpoint, options)
+    const eventHandler = type => messageEvent => {
+      instance.store.dispatch(router(type, messageEvent.data))
+    }
+    for (let type of Object.values(NATIVE_EVENTS)) {
+      instance.connection.registerEvent(type, eventHandler(type))
+    }
   }
-  const data = transformer.encode({ type, payload })
-  connection.send(data, buffer)
+
+  static connect() {
+    instance.connection.connect()
+  }
+
+  static emit(type, payload, buffer = false) {
+    if (!instance) {
+      throw new Error('You need to initialize the service first')
+    }
+    const data = transformer.encode({ type, payload })
+    instance.connection.send(data, buffer)
+  }
 }

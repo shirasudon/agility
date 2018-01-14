@@ -1,20 +1,19 @@
 // @format
 
-import {
-  initWebsocketService,
-  emit,
-  setConnection,
-  setStore,
-} from './websocket'
+import WebSocketService from './websocket'
 import { NATIVE_EVENTS } from '../constants/websocket'
 
+beforeEach(() => {
+  WebSocketService.clear()
+})
+
 describe('initWebsocketService', () => {
-  const createMockWebSocketService = () => {
+  const createMockWebSocketClass = () => {
     const mockFunc = {
       registerEvent: jest.fn(),
       connect: jest.fn(),
     }
-    class MockWebSocketService {
+    class MockWebSocketClass {
       registerEvent(...args) {
         mockFunc.registerEvent(...args)
       }
@@ -23,7 +22,7 @@ describe('initWebsocketService', () => {
         mockFunc.connect()
       }
     }
-    return { mockFunc, MockWebSocketService }
+    return { mockFunc, MockWebSocketClass }
   }
 
   const createMockStore = () => ({
@@ -33,36 +32,40 @@ describe('initWebsocketService', () => {
   const endpoint = 'ws://localhost/dummy'
 
   it('registers listeners for websocket native events and calls connect', () => {
-    const { mockFunc, MockWebSocketService } = createMockWebSocketService()
-    const { mockStore } = createMockStore()
-    setStore(mockStore)
-    initWebsocketService(endpoint, MockWebSocketService)
+    const { mockFunc, MockWebSocketClass } = createMockWebSocketClass()
+    const { mockStore: store } = createMockStore()
+
+    WebSocketService.init(store, endpoint, MockWebSocketClass)
+
     const resultArgs = mockFunc.registerEvent.mock.calls.map(args => args[0])
     expect(resultArgs.length).toBe(Object.keys(NATIVE_EVENTS).length)
     expect(Object.values(NATIVE_EVENTS)).toEqual(
       expect.arrayContaining(resultArgs)
     )
-    expect(mockFunc.connect).toHaveBeenCalledTimes(1)
   })
 })
 
 describe('emit', () => {
-  it('throws an error when connection is not initialized', () => {
-    setConnection(null)
+  it('throws an error when service is not initialized', () => {
     expect(() => {
-      emit()
+      WebSocketService.emit()
     }).toThrowError()
   })
 
   it('sends data when connection is initialized', () => {
-    const connection = {
-      send: jest.fn(),
+    const instance = {
+      connection: {
+        send: jest.fn(),
+      },
     }
-    setConnection(connection)
+    WebSocketService.setInstance(instance)
     const type = 'TYPE'
     const payload = { a: 1, b: 2 }
-    emit(type, payload, true)
-    expect(connection.send).toHaveBeenCalledTimes(1)
-    expect(connection.send).toHaveBeenCalledWith({ type, payload }, true)
+    WebSocketService.emit(type, payload, true)
+    expect(instance.connection.send).toHaveBeenCalledTimes(1)
+    expect(instance.connection.send).toHaveBeenCalledWith(
+      { type, payload },
+      true
+    )
   })
 })

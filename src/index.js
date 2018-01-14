@@ -11,7 +11,7 @@ import reducer from './reducers'
 import './index.css'
 import App from './components/App'
 import initSessionService from './service/sessionService'
-import * as websocket from './service/websocket'
+import WebSocketService from './service/websocket'
 import registerServiceWorker from './registerServiceWorker'
 
 const logger = createLogger({
@@ -20,11 +20,14 @@ const logger = createLogger({
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunk.withExtraArgument({ emit: websocket.emit }), logger)
+  applyMiddleware(
+    thunk.withExtraArgument({ emit: WebSocketService.emit }),
+    logger
+  )
 )
 
-websocket.setStore(store)
-
+// initializes services
+WebSocketService.init(store, 'ws://localhost:8080/chat/ws')
 initSessionService(store).then(() => {
   render(
     <Provider store={store}>
