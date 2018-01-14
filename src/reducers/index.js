@@ -20,10 +20,7 @@ export const rootReducer = (state, action) => {
   } else if (action.type === INIT) {
     const idPath = ['auth', 'myId']
     const userId = state.getIn(idPath)
-    const currentRoomId = state.getIn('currentRoomId')
-    state = IMap()
-      .setIn(idPath, userId)
-      .set('currentRoomId', currentRoomId)
+    state = IMap().setIn(idPath, userId)
   }
 
   return appReducer(state, action)
