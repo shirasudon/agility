@@ -34,9 +34,9 @@ describe('Balloon', () => {
     const wrapper = mount(<Balloon {...props} />)
     expect(wrapper.find('.balloonRight').text()).toBe(props.message.text)
     expect(wrapper.find('.readCount').text()).toBe('')
-    expect(wrapper.find('.postMetaRight')).toContainReact(
-      <div className="postMetaRight">
-        <span>hitochan</span> : <span>November 4th 2017, 12:34 pm</span>
+    expect(wrapper.find('.username-and-createdAt')).toContainReact(
+      <div className="username-and-createdAt">
+        <span>hitochan</span>: November 4th 2017, 12:34 pm
       </div>
     )
   })
@@ -73,9 +73,9 @@ describe('Balloon', () => {
     const wrapper = mount(<Balloon {...props} />)
     expect(wrapper.find('.balloonLeft').text()).toBe(props.message.text)
     expect(wrapper.find('.readCount').text()).toBe('3 Read')
-    expect(wrapper.find('.postMetaLeft')).toContainReact(
-      <div className="postMetaLeft">
-        <span>john</span> : <span>November 4th 2017, 12:34 pm</span>
+    expect(wrapper.find('.username-and-createdAt')).toContainReact(
+      <div className="username-and-createdAt">
+        <span>john</span>: November 4th 2017, 12:34 pm
       </div>
     )
   })

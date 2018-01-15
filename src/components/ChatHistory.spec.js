@@ -8,6 +8,7 @@ import {
   ChatHistory,
   sendReadIfExistNonRead,
   withLifecycleFactory,
+  scrollToBottom,
 } from './ChatHistory'
 import Balloon from './Balloon'
 
@@ -93,26 +94,36 @@ describe('sendReadIfExistNonRead', () => {
 })
 
 describe('withLifecycle', () => {
-  it('calls sendReadIfExistNonRead when component is mounted', () => {
+  it('calls sendReadIfExistNonRead and scrollToBottom when component is mounted', () => {
     const sendReadIfExistNonRead = jest.fn()
+    const scrollToBottom = jest.fn()
     const BaseComponent = () => <div>dummy component</div>
-    const Component = withLifecycleFactory(sendReadIfExistNonRead)(
-      BaseComponent
-    )
+    const Component = withLifecycleFactory(
+      sendReadIfExistNonRead,
+      scrollToBottom
+    )(BaseComponent)
     const props = {
       a: 2,
       b: 3,
+      refs: {
+        messageList: {
+          a: 2,
+        },
+      },
     }
     shallow(<Component {...props} />)
     expect(sendReadIfExistNonRead).toHaveBeenCalledWith(props)
+    expect(scrollToBottom).toHaveBeenCalledWith(props.refs.messageList)
   })
 
-  it('calls sendReadIfExistNonRead when the room is changed', () => {
+  it('calls sendReadIfExistNonRead and scrollToBottom when the room is changed', () => {
     const sendReadIfExistNonRead = jest.fn()
+    const scrollToBottom = jest.fn()
     const BaseComponent = () => <div>dummy component</div>
-    const Component = withLifecycleFactory(sendReadIfExistNonRead)(
-      BaseComponent
-    )
+    const Component = withLifecycleFactory(
+      sendReadIfExistNonRead,
+      scrollToBottom
+    )(BaseComponent)
     const constantProps = {
       entities: {
         messages: {
@@ -156,6 +167,8 @@ describe('withLifecycle', () => {
     wrapper.setProps(nextProps)
     expect(sendReadIfExistNonRead).toHaveBeenCalledTimes(2)
     expect(sendReadIfExistNonRead.mock.calls[1]).toEqual([nextProps])
+    expect(scrollToBottom).toHaveBeenCalledTimes(2)
+    expect(scrollToBottom.mock.calls[1]).toEqual([nextProps.refs.messageList])
   })
 
   it('calls sendReadIfExistNonRead when the message length is changed', () => {

@@ -22,7 +22,6 @@ let cac = chatActionCreator
 
 export const withChatHistoryHandlers = withHandlers({
   handleScroll: ({ fetchHistory, currentRoomId, entities }) => event => {
-    // const { refs, props } = this;
     const scrollTop = event.target.scrollTop
     if (scrollTop === 0) {
       const { oldestMessageTimestamp } = entities.rooms.byId[currentRoomId]
@@ -57,31 +56,48 @@ export const withLifecycleFactory = (sendReadIfExistNonRead, scrollToBottom) =>
   lifecycle({
     componentDidMount() {
       sendReadIfExistNonRead(this.props)
+      scrollToBottom(this.props.refs.messageList)
     },
     componentWillUpdate(nextProps) {
       const { refs, currentRoomId: nextRoomId } = nextProps
       const { messageList } = refs
       const messages = this.props.entities.messages.byRoomId[nextRoomId]
       const newMessages = nextProps.entities.messages.byRoomId[nextRoomId]
-      if (messages && newMessages && messages.length !== newMessages.length) {
+      this.historyChanged =
+        (!messages && newMessages) ||
+        (messages && newMessages && messages.length !== newMessages.length)
+      if (this.historyChanged) {
         // update shouldScrollToBottom only when the message history changed
         const scrollPos = messageList.scrollTop
         const scrollBottom = messageList.scrollHeight - messageList.clientHeight
         this.shouldScrollToBottom =
           scrollBottom <= 0 || scrollPos === scrollBottom
+        if (!this.shouldScrollToBottom) {
+          const numMessages = messageList.childNodes.length
+          // TODO: Since the messages fetched initially are dispatched one by one,
+          // the line code cannot actually prevent the user from losing their scroll position when new data arrives
+          this.topMessage = numMessages === 0 ? null : messageList.childNodes[0]
+        }
       }
-      this.shouldTrySendRead =
-        (!messages && newMessages) ||
-        (messages && newMessages && messages.length !== newMessages.length) ||
-        this.props.currentRoomId !== nextRoomId
+      this.roomChanged = this.props.currentRoomId !== nextRoomId
     },
     componentDidUpdate() {
-      const { messageList } = this.props.refs
-      // When new props are received, automatically scroll to the bottom
-      if (this.shouldScrollToBottom) {
-        scrollToBottom(messageList)
+      // force scroll bar to the bottom when the room is changed
+      if (this.roomChanged) {
+        scrollToBottom(this.props.refs.messageList)
       }
-      if (this.shouldTrySendRead) {
+      // When new props are received, automatically scroll to the bottom
+      if (this.historyChanged) {
+        if (this.shouldScrollToBottom) {
+          scrollToBottom(this.props.refs.messageList)
+        }
+        // Prevent the user from losing their scroll position when new data arrives
+        if (this.topMessage) {
+          ReactDOM.findDOMNode(this.topMessage).scrollIntoView()
+        }
+      }
+
+      if (this.historyChanged || this.roomChanged) {
         sendReadIfExistNonRead(this.props)
       }
     },
