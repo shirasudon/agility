@@ -35,6 +35,10 @@ const styleSheet = theme => ({
   postMetaRight: {
     textAlign: 'right',
   },
+  meta: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 })
 
 export const Balloon = ({ message, classes, myId, users }) => {
@@ -45,20 +49,19 @@ export const Balloon = ({ message, classes, myId, users }) => {
   const username = users.byId.hasOwnProperty(message.userId)
     ? users.byId[message.userId].username
     : ''
-  const postMeta = shouldPutRight ? classes.postMetaRight : classes.postMetaLeft
   const justify = shouldPutRight ? 'flex-end' : 'flex-start'
   return (
     <Grid id={message.id} container justify={justify}>
       <Grid item xs={6}>
         <div className={balloonStyle}>{message.text}</div>
-        <div className="readCount">
-          {message.readBy.length > 0 && message.readBy.length + ' Read'}
-        </div>
-        <div className={postMeta}>
-          {username && <span>{username}</span>} :{' '}
-          <span>
+        <div className={classes.meta}>
+          <div className="readCount">
+            {message.readBy.length > 0 && message.readBy.length + ' Read'}
+          </div>
+          <div className="username-and-createdAt">
+            {username && <span>{username}</span>}:{' '}
             {moment(message.createdAt).format('MMMM Do YYYY, h:mm a')}
-          </span>
+          </div>
         </div>
       </Grid>
     </Grid>

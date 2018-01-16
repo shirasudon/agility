@@ -1,15 +1,52 @@
 // @format
 
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import moment from 'moment'
 
 import {
+  withChatHistoryHandlers,
   ChatHistory,
   sendReadIfExistNonRead,
   withLifecycleFactory,
+  scrollToBottom,
 } from './ChatHistory'
 import Balloon from './Balloon'
+
+describe('handleScroll', () => {
+  it('calls fetchHistory with current room id and oldest message timestamp when the scroll bar is at the top', () => {
+    const BaseComponent = ({ handleScroll }) => {
+      handleScroll({ target: { scrollTop: 0 } })
+      return <div>hoge</div>
+    }
+    const Component = withChatHistoryHandlers(BaseComponent)
+    const props = {
+      currentRoomId: 3,
+      fetchHistory: jest.fn(),
+      entities: { rooms: { byId: { 3: { oldestMessageTimestamp: 10000 } } } },
+    }
+    const wrapper = mount(<Component {...props} />)
+    expect(props.fetchHistory).toHaveBeenCalledWith(
+      props.currentRoomId,
+      props.entities.rooms.byId[3].oldestMessageTimestamp
+    )
+  })
+
+  it('does NOT call fetchHistory when the scroll bar is NOT at the top', () => {
+    const BaseComponent = ({ handleScroll }) => {
+      handleScroll({ target: { scrollTop: 100 } })
+      return <div>hoge</div>
+    }
+    const Component = withChatHistoryHandlers(BaseComponent)
+    const props = {
+      currentRoomId: 3,
+      fetchHistory: jest.fn(),
+      entities: { rooms: { byId: { 3: { oldestMessageTimestamp: 10000 } } } },
+    }
+    const wrapper = mount(<Component {...props} />)
+    expect(props.fetchHistory).not.toHaveBeenCalled()
+  })
+})
 
 describe('sendReadIfExistNonRead', () => {
   it('calls sendRead when the last message is not read by the current user', () => {
@@ -93,26 +130,36 @@ describe('sendReadIfExistNonRead', () => {
 })
 
 describe('withLifecycle', () => {
-  it('calls sendReadIfExistNonRead when component is mounted', () => {
+  it('calls sendReadIfExistNonRead and scrollToBottom when component is mounted', () => {
     const sendReadIfExistNonRead = jest.fn()
+    const scrollToBottom = jest.fn()
     const BaseComponent = () => <div>dummy component</div>
-    const Component = withLifecycleFactory(sendReadIfExistNonRead)(
-      BaseComponent
-    )
+    const Component = withLifecycleFactory(
+      sendReadIfExistNonRead,
+      scrollToBottom
+    )(BaseComponent)
     const props = {
       a: 2,
       b: 3,
+      refs: {
+        messageList: {
+          a: 2,
+        },
+      },
     }
     shallow(<Component {...props} />)
     expect(sendReadIfExistNonRead).toHaveBeenCalledWith(props)
+    expect(scrollToBottom).toHaveBeenCalledWith(props.refs.messageList)
   })
 
-  it('calls sendReadIfExistNonRead when the room is changed', () => {
+  it('calls sendReadIfExistNonRead and scrollToBottom when the room is changed', () => {
     const sendReadIfExistNonRead = jest.fn()
+    const scrollToBottom = jest.fn()
     const BaseComponent = () => <div>dummy component</div>
-    const Component = withLifecycleFactory(sendReadIfExistNonRead)(
-      BaseComponent
-    )
+    const Component = withLifecycleFactory(
+      sendReadIfExistNonRead,
+      scrollToBottom
+    )(BaseComponent)
     const constantProps = {
       entities: {
         messages: {
@@ -156,6 +203,8 @@ describe('withLifecycle', () => {
     wrapper.setProps(nextProps)
     expect(sendReadIfExistNonRead).toHaveBeenCalledTimes(2)
     expect(sendReadIfExistNonRead.mock.calls[1]).toEqual([nextProps])
+    expect(scrollToBottom).toHaveBeenCalledTimes(2)
+    expect(scrollToBottom.mock.calls[1]).toEqual([nextProps.refs.messageList])
   })
 
   it('calls sendReadIfExistNonRead when the message length is changed', () => {
