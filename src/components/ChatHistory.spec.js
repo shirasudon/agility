@@ -1,16 +1,52 @@
 // @format
 
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import moment from 'moment'
 
 import {
+  withChatHistoryHandlers,
   ChatHistory,
   sendReadIfExistNonRead,
   withLifecycleFactory,
   scrollToBottom,
 } from './ChatHistory'
 import Balloon from './Balloon'
+
+describe('handleScroll', () => {
+  it('calls fetchHistory with current room id and oldest message timestamp when the scroll bar is at the top', () => {
+    const BaseComponent = ({ handleScroll }) => {
+      handleScroll({ target: { scrollTop: 0 } })
+      return <div>hoge</div>
+    }
+    const Component = withChatHistoryHandlers(BaseComponent)
+    const props = {
+      currentRoomId: 3,
+      fetchHistory: jest.fn(),
+      entities: { rooms: { byId: { 3: { oldestMessageTimestamp: 10000 } } } },
+    }
+    const wrapper = mount(<Component {...props} />)
+    expect(props.fetchHistory).toHaveBeenCalledWith(
+      props.currentRoomId,
+      props.entities.rooms.byId[3].oldestMessageTimestamp
+    )
+  })
+
+  it('does NOT call fetchHistory when the scroll bar is NOT at the top', () => {
+    const BaseComponent = ({ handleScroll }) => {
+      handleScroll({ target: { scrollTop: 100 } })
+      return <div>hoge</div>
+    }
+    const Component = withChatHistoryHandlers(BaseComponent)
+    const props = {
+      currentRoomId: 3,
+      fetchHistory: jest.fn(),
+      entities: { rooms: { byId: { 3: { oldestMessageTimestamp: 10000 } } } },
+    }
+    const wrapper = mount(<Component {...props} />)
+    expect(props.fetchHistory).not.toHaveBeenCalled()
+  })
+})
 
 describe('sendReadIfExistNonRead', () => {
   it('calls sendRead when the last message is not read by the current user', () => {
