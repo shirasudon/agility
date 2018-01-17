@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Requirements
-Although I specifies particular versions below, recent versions should work.
+Although I specify particular versions below, recent versions should work.
 
 - [go-chat](https://github.com/shirasudon/go-chat): Currently there is no version so use master branch.
 - Node.js: 9.3.0
@@ -26,7 +26,7 @@ yarn # installs dependencies
 
 ### Running development server
 
-Type simply one command below! Thanks to create-react-app!
+Run simply one command below! Thanks to create-react-app!
 Then it will open up `http://localhost:3000` automatically.
 ```
 yarn start
@@ -49,4 +49,4 @@ yarn build
 ### Deploy
 To be written...
 
-Written by Hitoshi Otsuki with :heart:
+Written by [Hitoshi Otsuki](http://github.com/hitochan777) with :heart:
