@@ -1,0 +1,3 @@
+[submodule "go-chat"]
+	path = go-chat
+	url = git@github.com:shirasudon/go-chat.git
