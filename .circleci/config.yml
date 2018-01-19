@@ -43,9 +43,9 @@ jobs:
           command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
   deploy-job:
-    - steps:
+    machine: true
+    steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: build docker image for chat
           command: docker build -t hitochan777/chat:${CIRCLE_SHA1} .
