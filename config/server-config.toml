@@ -1,0 +1,6 @@
+HTTP = "0.0.0.0:8080"
+ChatAPIPrefix = ""
+StaticHandlerPrefix = ""
+StaticFileDir = "./public"
+EnableServeStaticFile = true
+ShowRoutes = true

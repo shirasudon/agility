@@ -48,7 +48,7 @@ jobs:
       - checkout
       - run:
           name: build docker image for chat
-          command: docker build -t hitochan777/chat:${CIRCLE_SHA1} .
+          command: docker build -f docker/Dockerfile -t hitochan777/chat:${CIRCLE_SHA1} .
 
       # - run:
       #     name: push docker image to docker hub
