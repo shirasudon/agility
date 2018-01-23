@@ -30,7 +30,8 @@ const store = createStore(
 // initializes services
 WebSocketService.init(
   store,
-  getWebSocketURIFromPageURI(window.location, '/chat/ws')
+  process.env.REACT_APP_WSURI ||
+    getWebSocketURIFromPageURI(window.location, '/chat/ws')
 )
 initSessionService(store).then(() => {
   render(
