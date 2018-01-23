@@ -13,6 +13,7 @@ import App from './components/App'
 import initSessionService from './service/sessionService'
 import WebSocketService from './service/websocket'
 import registerServiceWorker from './registerServiceWorker'
+import { getWebSocketURIFromPageURI } from './utility/uri'
 
 const logger = createLogger({
   diff: true,
@@ -27,7 +28,11 @@ const store = createStore(
 )
 
 // initializes services
-WebSocketService.init(store, 'ws://localhost:8080/chat/ws')
+WebSocketService.init(
+  store,
+  process.env.REACT_APP_WSURI ||
+    getWebSocketURIFromPageURI(window.location, '/chat/ws')
+)
 initSessionService(store).then(() => {
   render(
     <Provider store={store}>
